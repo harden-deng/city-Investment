@@ -1,0 +1,68 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/nav/home",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/nav/pending",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/nav/completed",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/nav/profile",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#2D898B",
+		// "borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/nav/home",
+			"iconPath": "/static/images/home.png",
+			"selectedIconPath": "static/images/home-active.png",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/nav/pending",
+			"iconPath": "static/images/pending.png",
+			"selectedIconPath": "static/images/pending-active.png",
+			"text": "待办流程"
+		}, {
+			"pagePath": "pages/nav/completed",
+			"iconPath": "static/images/completed.png",
+			"selectedIconPath": "static/images/completed-active.png",
+			"text": "已办流程"
+		}, {
+			"pagePath": "pages/nav/profile",
+			"iconPath": "static/images/profile.png",
+			"selectedIconPath": "static/images/profile-active.png",
+			"text": "个人中心"
+		}]
+	}
+}
