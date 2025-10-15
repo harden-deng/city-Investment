@@ -29,39 +29,51 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/search/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/detail/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}
 	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	},
+	// "globalStyle": {
+	// 	"navigationBarTextStyle": "black",
+	// 	"navigationBarTitleText": "uni-app",
+	// 	"navigationBarBackgroundColor": "#F8F8F8",
+	// 	"backgroundColor": "#F8F8F8"
+	// },
 	"uniIdRouter": {},
 	"tabBar": {
 		"color": "#7A7E83",
-		"selectedColor": "#2D898B",
+		"selectedColor": "#3e65f6",
 		// "borderStyle": "white",
 		"backgroundColor": "#ffffff",
 		"list": [{
 			"pagePath": "pages/nav/home",
-			"iconPath": "/static/images/home.png",
-			"selectedIconPath": "static/images/home-active.png",
+			"iconPath": "/static/images/menu_1_1.svg",
+			"selectedIconPath": "/static/images/menu_1_2.svg",
 			"text": "首页"
 		}, {
 			"pagePath": "pages/nav/pending",
-			"iconPath": "static/images/pending.png",
-			"selectedIconPath": "static/images/pending-active.png",
+			"iconPath": "static/images/menu_2_1.svg",
+			"selectedIconPath": "static/images/menu_2_2.svg",
 			"text": "待办流程"
 		}, {
 			"pagePath": "pages/nav/completed",
-			"iconPath": "static/images/completed.png",
-			"selectedIconPath": "static/images/completed-active.png",
+			"iconPath": "static/images/menu_3_1.svg",
+			"selectedIconPath": "static/images/menu_3_2.svg",
 			"text": "已办流程"
 		}, {
 			"pagePath": "pages/nav/profile",
-			"iconPath": "static/images/profile.png",
-			"selectedIconPath": "static/images/profile-active.png",
+			"iconPath": "static/images/menu_4_1.svg",
+			"selectedIconPath": "static/images/menu_4_2.svg",
 			"text": "个人中心"
 		}]
 	}

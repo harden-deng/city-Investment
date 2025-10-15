@@ -14,14 +14,11 @@
 		<view class="form-container">
 			<!-- 账号输入框 -->
 			<view class="input-group">
-				<!-- <input v-model="phoneNumber" type="text" placeholder="请输入您的平台账号" class="account-input" maxlength="11" /> -->
 				<uni-easyinput :border="false" :height="'150px'" :styles="styles"  v-model="phoneNumber" focus placeholder="请输入您的平台账号" ></uni-easyinput>
 			</view>
-
 			<!-- 密码输入框 -->
 			<view class="input-group">
-				<!-- <input v-model="password" type="password" placeholder="请输入您的密码" class="password-input" /> -->
-				<uni-easyinput type="password"  v-model="password" focus placeholder="请输入您的密码" ></uni-easyinput>
+				<uni-easyinput type="password"  v-model="password"  placeholder="请输入您的密码" ></uni-easyinput>
 			</view>
 			<!-- 登录按钮 -->
 			<button class="login-btn" @click="handleLogin">
@@ -31,7 +28,7 @@
 	</view>
 </template>
 
-<script setup lang="ts">
+<script setup>
 	import { onLoad } from '@dcloudio/uni-app'
 	import { ref, onMounted, computed } from 'vue'
 	import { setStorage, getStorage, removeStorage } from '@/utils/storage'
@@ -40,29 +37,19 @@
 	}
 	const statusBarHeight = ref(0)
 	// 响应式数据
-	const phoneNumber = ref<string>('')
-	const password = ref<string>('')
+	const phoneNumber = ref('')
+	const password = ref('')
 	onLoad(() => {
-		const statusBarHeightNew = getStorage<any>('statusBarHeight');
+		const statusBarHeightNew = getStorage('statusBarHeight');
 		if (Number(statusBarHeightNew) != 0) {
 			statusBarHeight.value = Number(statusBarHeightNew)
 		}
 
 	})
-	// 生命周期钩子
-	onMounted(() => {
-		window.__onAppMessage = (data : any) => {
-			// let cc =  JSON.parse(data)
-			const msg = JSON.parse(JSON.stringify(data));
-			if (msg.type === 'staBarH') {
-				statusBarHeight.value = msg.statusBarHeight;
-				setStorage('statusBarHeight',statusBarHeight.value, 60 * 1440)
-			}
-		}
-	})
+
 
 	// 方法定义
-	const handleLogin = () : void => {
+	const handleLogin = () => {
 		if (!phoneNumber.value || !password.value) {
 			uni.showToast({
 				title: '请输入账号和密码',

@@ -1,245 +1,164 @@
 <template>
-	<uni-popup ref="popupRef" type="right" :safe-area="true" :mask-click="true" @change="onPopupChange">
+	<uni-popup ref="popupRef" type="bottom" :safe-area="true" :mask-click="true" @change="onPopupChange">
 		<view class="filter-popup">
-			<!-- Header -->
-			<scroll-view scroll-y="true" style="height: 100%;">
-				<view class="fp-header">
-					<text class="fp-title">服务/折扣</text>
-					<view class="fp-location" v-if="locationText">
-						<text class="dot"></text>
-						<text class="loc-text">{{ locationText }}</text>
-						<text class="loc-edit" @click="emit('editLocation')">修改</text>
+			<view class="filter-title">
+				选择筛选条件
+			</view>
+			<!-- 筛选内容 -->
+			<scroll-view scroll-y="true" style="height: calc(100% - 120rpx);">
+				<!-- 筛选分类一 -->
+				<view class="filter-category">
+					<view class="category-title">筛选分类一</view>
+					<view class="filter-grid">
+						<view 
+							v-for="(item, index) in category1Options" 
+							:key="item.value" 
+							class="filter-item"
+							:class="{ active: state.category1.has(item.value) }" 
+							@click="toggleFilter(state.category1, item.value)"
+						>
+							{{ item.label }}
+						</view>
 					</view>
 				</view>
 
-				<!-- 服务/折扣 多选 -->
-				<view class="fp-section">
-					<view class="chip-row">
-						<view v-for="it in serviceOptions" :key="it.value" class="chip"
-							:class="{ active: state.service.has(it.value) }"
-							@click="toggleSet(state.service, it.value)">{{ it.label }}</view>
+				<!-- 筛选分类二 -->
+				<view class="filter-category">
+					<view class="category-title">筛选分类二</view>
+					<view class="filter-grid">
+						<view 
+							v-for="(item, index) in category2Options" 
+							:key="item.value" 
+							class="filter-item"
+							:class="{ active: state.category2.has(item.value) }" 
+							@click="toggleFilter(state.category2, item.value)"
+						>
+							{{ item.label }}
+						</view>
 					</view>
 				</view>
-
-				<!-- 价格区间 -->
-				<view class="fp-block-title">价格区间</view>
-				<view class="fp-price">
-					<input class="price-input" v-model="state.priceMin" type="number" placeholder="最低价" />
-					<text class="price-split">—</text>
-					<input class="price-input" v-model="state.priceMax" type="number" placeholder="最高价" />
-				</view>
-
-				<!-- 品牌 可展开 -->
-				<view class="fp-block-title with-toggle">
-					<text>品牌</text>
-					<view class="toggle" @click="brandExpand = !brandExpand">
-						<text class="toggle-text">{{ brandExpand ? '收起' : '展开' }}</text>
-						<text class="toggle-arrow">{{ brandExpand ? '▲' : '▼' }}</text>
+				
+				<!-- 筛选分类二 -->
+				<view class="filter-category">
+					<view class="category-title">筛选分类二</view>
+					<view class="filter-grid">
+						<view 
+							v-for="(item, index) in category2Options" 
+							:key="item.value" 
+							class="filter-item"
+							:class="{ active: state.category2.has(item.value) }" 
+							@click="toggleFilter(state.category2, item.value)"
+						>
+							{{ item.label }}
+						</view>
 					</view>
 				</view>
-				<view class="fp-section">
-					<view class="chip-row">
-						<view v-for="(it, idx) in brandDisplay" :key="it.value" class="chip"
-							:class="{ active: state.brand.has(it.value) }" @click="toggleSet(state.brand, it.value)">
-							{{ it.label }}</view>
+				
+				<!-- 筛选分类二 -->
+				<view class="filter-category">
+					<view class="category-title">筛选分类二</view>
+					<view class="filter-grid">
+						<view 
+							v-for="(item, index) in category2Options" 
+							:key="item.value" 
+							class="filter-item"
+							:class="{ active: state.category2.has(item.value) }" 
+							@click="toggleFilter(state.category2, item.value)"
+						>
+							{{ item.label }}
+						</view>
 					</view>
 				</view>
-
-				<!-- 全部分类 单选 -->
-				<view class="fp-block-title with-note">
-					<text>全部分类</text>
-					<text class="note">单选</text>
-				</view>
-				<view class="fp-section">
-					<view class="chip-row">
-						<view v-for="it in categoryOptions" :key="it.value" class="chip"
-							:class="{ active: state.category === it.value }" @click="state.category = it.value">
-							{{ it.label }}</view>
-					</view>
-				</view>
-
-				<!-- 装订方式 多选 -->
-				<view class="fp-block-title with-toggle">
-					<text>装订方式</text>
-					<view class="toggle" @click="bindExpand = !bindExpand">
-						<text class="toggle-text">{{ bindExpand ? '收起' : '展开' }}</text>
-						<text class="toggle-arrow">{{ bindExpand ? '▲' : '▼' }}</text>
-					</view>
-				</view>
-				<view class="fp-section">
-					<view class="chip-row">
-						<view v-for="it in bindDisplay" :key="it.value" class="chip"
-							:class="{ active: state.bind.has(it.value) }" @click="toggleSet(state.bind, it.value)">
-							{{ it.label }}</view>
-					</view>
-				</view>
-
-				<!-- 类型 多选 -->
-				<view class="fp-block-title with-toggle">
-					<text>类型</text>
-					<view class="toggle" @click="typeExpand = !typeExpand">
-						<text class="toggle-text">{{ typeExpand ? '收起' : '展开' }}</text>
-						<text class="toggle-arrow">{{ typeExpand ? '▲' : '▼' }}</text>
-					</view>
-				</view>
-				<view class="fp-section">
-					<view class="chip-row">
-						<view v-for="it in typeDisplay" :key="it.value" class="chip"
-							:class="{ active: state.type.has(it.value) }" @click="toggleSet(state.type, it.value)">
-							{{ it.label }}</view>
-					</view>
-				</view>
-				<view style="height: 140rpx;">
-
+				<view style="height: 120rpx;">
+					
 				</view>
 			</scroll-view>
-			<!-- 底部操作 -->
+			<!-- 底部操作按钮 -->
 			<view class="fp-footer">
 				<view class="btn reset" @click="onReset">重置</view>
-				<view class="btn confirm" @click="onConfirm">
-					确定
-					<!-- <span v-if="confirmCount !== undefined">（{{ confirmCount }}+件商品）</span> -->
-				</view>
+				<view class="btn confirm" @click="onConfirm">完成</view>
 			</view>
 		</view>
 	</uni-popup>
 </template>
 
-<script setup lang="ts">
+<script setup>
 	import { ref, reactive, computed, watch, defineProps, defineEmits, defineExpose } from 'vue'
 
-	type KV = { label : string; value : string }
-
-	const props = defineProps<{
-		modelValue ?: boolean
-		locationText ?: string
-		confirmCount ?: number
-		serviceOptions ?: KV[]
-		brandOptions ?: KV[]
-		categoryOptions ?: KV[]
-		bindOptions ?: KV[]
-		typeOptions ?: KV[]
-		defaultExpandedCount ?: number // 每组默认展示的数量（超出可展开）
-	}>()
-
-	const emit = defineEmits<{
-		(e : 'update:modelValue', v : boolean) : void
-		(e : 'confirm', payload : any) : void
-		(e : 'reset') : void
-		(e : 'editLocation') : void
-	}>()
-
-	const locationText = computed(() => props.locationText || '张河头')
-	const confirmCount = computed(() => props.confirmCount)
-
-	const popupRef = ref<any>(null)
-
-	const serviceOptions = computed<KV[]>(() =>
-		props.serviceOptions || [
-			{ label: '京东物流', value: 'jdwuliu' },
-			{ label: '包邮', value: 'baoyou' },
-			{ label: '支持送礼', value: 'gift' },
-			{ label: '分期免息', value: 'fenqi' },
-			{ label: '配送全球', value: 'global' },
-			{ label: '促销', value: 'promo' },
-			{ label: '价保', value: 'priceprotect' },
-			{ label: '送礼95折起', value: '95off' },
-			{ label: '仅看有货', value: 'instock' },
-			{ label: '货到付款', value: 'cod' }
-		]
-	)
-
-	const brandOptions = computed<KV[]>(() =>
-		props.brandOptions || [
-			{ label: '得力', value: 'deli' },
-			{ label: '思进', value: 'sijin' },
-			{ label: '文轩', value: 'wenxuan' },
-			{ label: '山头林村', value: 'shantou' },
-			{ label: '当当', value: 'dangdang' },
-			{ label: '易复得', value: 'yfd' },
-			{ label: '帆软软件', value: 'fanruan' },
-			{ label: '欧客欣', value: 'aukewin' },
-			{ label: '人民出版社', value: 'renmin' }
-		]
-	)
-
-	const categoryOptions = computed<KV[]>(() =>
-		props.categoryOptions || [
-			{ label: '建筑', value: 'build' },
-			{ label: '文具', value: 'stationery' },
-			{ label: '更多分类', value: 'more' }
-		]
-	)
-
-	const bindOptions = computed<KV[]>(() =>
-		props.bindOptions || [
-			{ label: '活页夹装订', value: 'huoyejia' },
-			{ label: '胶装式装订', value: 'jiaozhuang' },
-			{ label: '其他', value: 'other' }
-		]
-	)
-
-	const typeOptions = computed<KV[]>(() =>
-		props.typeOptions || [
-			{ label: '彩色凭证', value: 'color' },
-			{ label: '单据', value: 'danju' },
-			{ label: '费用报销单', value: 'expense' }
-		]
-	)
-
-	const defaultExpandedCount = computed(() => props.defaultExpandedCount ?? 6)
-
-	const brandExpand = ref(false)
-	const bindExpand = ref(true)
-	const typeExpand = ref(true)
-
-	const brandDisplay = computed(() =>
-		brandExpand.value ? brandOptions.value : brandOptions.value.slice(0, defaultExpandedCount.value)
-	)
-	const bindDisplay = computed(() =>
-		bindExpand.value ? bindOptions.value : bindOptions.value.slice(0, defaultExpandedCount.value)
-	)
-	const typeDisplay = computed(() =>
-		typeExpand.value ? typeOptions.value : typeOptions.value.slice(0, defaultExpandedCount.value)
-	)
-
-	const state = reactive({
-		service: new Set<string>(),
-		brand: new Set<string>(),
-		bind: new Set<string>(),
-		type: new Set<string>(),
-		category: '' as string,
-		priceMin: '' as string,
-		priceMax: '' as string
+	const props = defineProps({
+		modelValue: {
+			type: Boolean,
+			default: false
+		},
+		category1Options: {
+			type: Array,
+			default: () => []
+		},
+		category2Options: {
+			type: Array,
+			default: () => []
+		}
 	})
 
-	function toggleSet(set : Set<string>, v : string) {
-		if (set.has(v)) set.delete(v)
-		else set.add(v)
+	const emit = defineEmits(['update:modelValue', 'confirm', 'reset'])
+
+	const popupRef = ref(null)
+
+	// 筛选分类一的选项（9个选项，按照图片中的布局）
+	const category1Options = computed(() =>
+		[
+			{ label: '筛选条件一', value: 'filter1_1' },
+			{ label: '筛选条件二', value: 'filter1_2' },
+			{ label: '筛选条件三', value: 'filter1_3' },
+			{ label: '筛选条件四', value: 'filter1_4' },
+			{ label: '筛选条件五', value: 'filter1_5' },
+			{ label: '筛选条件六', value: 'filter1_6' },
+			{ label: '筛选条件七', value: 'filter1_7' },
+			{ label: '筛选条件八', value: 'filter1_8' },
+			{ label: '筛选条件九', value: 'filter1_9' }
+		]
+	)
+
+	// 筛选分类二的选项（9个选项，按照图片中的布局）
+	const category2Options = computed(() =>
+		[
+			{ label: '筛选条件一', value: 'filter2_1' },
+			{ label: '筛选条件二', value: 'filter2_2' },
+			{ label: '筛选条件三', value: 'filter2_3' },
+			{ label: '筛选条件四', value: 'filter2_4' },
+			{ label: '筛选条件五', value: 'filter2_5' },
+			{ label: '筛选条件六', value: 'filter2_6' },
+			{ label: '筛选条件七', value: 'filter2_7' },
+			{ label: '筛选条件八', value: 'filter2_8' },
+			{ label: '筛选条件九', value: 'filter2_9' }
+		]
+	)
+
+	// 筛选状态管理
+	const state = reactive({
+		category1: new Set(['filter1_1', 'filter1_4']), // 默认选中筛选条件一和筛选条件四
+		category2: new Set(['filter2_1']) // 默认选中筛选条件一
+	})
+
+	// 切换筛选条件
+	function toggleFilter(set, value) {
+		if (set.has(value)) {
+			set.delete(value)
+		} else {
+			set.add(value)
+		}
 	}
 
 	function onReset() {
-		state.service.clear()
-		state.brand.clear()
-		state.bind.clear()
-		state.type.clear()
-		state.category = ''
-		state.priceMin = ''
-		state.priceMax = ''
+		state.category1.clear()
+		state.category2.clear()
 		emit('reset')
 	}
 
 	function onConfirm() {
 		const payload = {
-			service: Array.from(state.service),
-			brand: Array.from(state.brand),
-			bind: Array.from(state.bind),
-			type: Array.from(state.type),
-			category: state.category,
-			price: {
-				min: state.priceMin ? +state.priceMin : undefined,
-				max: state.priceMax ? +state.priceMax : undefined
-			}
+			category1: Array.from(state.category1),
+			category2: Array.from(state.category2)
 		}
 		emit('confirm', payload)
 		close()
@@ -248,12 +167,14 @@
 	function open() {
 		popupRef.value?.open?.()
 	}
+	
 	function close() {
 		popupRef.value?.close?.()
 	}
+	
 	defineExpose({ open, close, state })
 
-	// v-model 同步（可选）
+	// v-model 同步
 	watch(
 		() => props.modelValue,
 		v => {
@@ -261,18 +182,20 @@
 			else close()
 		}
 	)
-	function onPopupChange(e : any) {
+	
+	function onPopupChange(e) {
 		if (e?.show === false) emit('update:modelValue', false)
 	}
-	
-	
 </script>
 
 <style lang="scss" scoped>
-	$primary: #ff3b30;
-	$border: #eeeeee;
-	$text: #333;
-	$muted: #999;
+	// 颜色变量，精准还原图片样式
+	$primary: #3e65f6;  // 蓝色主题色
+	$text-dark: #000000;  // 深灰色文字
+	$text-muted: #666666;  // 浅灰色文字
+	$bg-light: #f6f8fc;  // 浅灰色背景
+	$bg-white: #ffffff;  // 白色背景
+	$border-light: #e0e0e0;  // 浅色边框
 
 	::v-deep .uni-popup__wrapper {
 		display: flex !important;
@@ -282,169 +205,119 @@
 	.filter-popup {
 		position: relative;
 		z-index: 19;
-		width: 600rpx;
-		background: #fff;
+		width: 750rpx;
+		background: $bg-white;
 		border-top-left-radius: 24rpx;
-		border-bottom-left-radius: 24rpx;
-		max-height: calc(100vh);
-		overflow-y: auto;
-		// padding-bottom: 140rpx; // 给底部按钮留空间
-		// margin-top: 100rpx;
+		border-top-right-radius: 24rpx;
+		min-height: calc(100vh - 300rpx);
+		max-height: calc(100vh - 298rpx);
 		overflow: hidden;
-	}
-
-	.fp-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 28rpx 28rpx 8rpx 28rpx;
-
-		.fp-title {
+		
+		.filter-title {
+			height: 100rpx;
 			font-size: 32rpx;
-			font-weight: 600;
-			color: $text;
-		}
-
-		.fp-location {
+			color: $text-dark;
+			font-family: "Microsoft Ya Hei";
 			display: flex;
 			align-items: center;
-			color: $muted;
-			font-size: 24rpx;
-
-			.dot {
-				width: 12rpx;
-				height: 12rpx;
-				background: $primary;
-				border-radius: 50%;
-				margin-right: 10rpx;
-			}
-
-			.loc-text {
-				margin-right: 12rpx;
-			}
-
-			.loc-edit {
-				color: $primary;
-			}
+			justify-content: center;
 		}
 	}
 
-	.fp-block-title {
-		padding: 24rpx 28rpx 8rpx 28rpx;
-		font-size: 30rpx;
-		color: $text;
-		font-weight: 600;
-
-		&.with-note {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-
-			.note {
-				font-size: 22rpx;
-				color: $muted;
-			}
+	// 筛选分类样式
+	.filter-category {
+		padding: 0rpx 32rpx 50rpx 32rpx;
+		
+		.category-title {
+			font-size: 28rpx;
+			font-family: "Alibaba Pu Hui Ti_3_55_ Regular";
+			color: #999999;
+			margin-bottom: 24rpx;
 		}
-
-		&.with-toggle {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-
-			.toggle {
+		
+		// 3x3 网格布局
+		.filter-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			grid-template-rows: repeat(3, 1fr);
+			gap: 20rpx;
+			
+			.filter-item {
+				height: 60rpx;
 				display: flex;
 				align-items: center;
-				color: $muted;
-
-				.toggle-text {
-					margin-right: 8rpx;
+				justify-content: center;
+				font-size: 24rpx;
+				color: #000000;
+				font-family: "Alibaba Pu Hui Ti_3_55_ Regular";
+				background: $bg-light;
+				border-radius: 12rpx;
+				border: 1rpx solid transparent;
+				transition: all 0.2s ease;
+				
+				// 选中状态 - 精准还原图片中的蓝色样式
+				&.active {
+					color: $primary;
+					background: rgba(62, 101, 246, 0.1);   // 浅蓝色背景
+					border: 2rpx solid $primary;  // 蓝色边框
+					font-size: 24rpx;
+					font-family: "Alibaba Pu Hui Ti_3_55_ Regular";
 				}
-
-				.toggle-arrow {
-					font-size: 20rpx;
+				
+				// 点击效果
+				&:active {
+					transform: scale(0.98);
 				}
 			}
 		}
 	}
 
-	.fp-section {
-		padding: 8rpx 20rpx 12rpx 20rpx;
-	}
 
-	.chip-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 18rpx;
-	}
 
-	.chip {
-		padding: 18rpx 26rpx;
-		font-size: 26rpx;
-		color: #222;
-		background: #f7f8fa;
-		border-radius: 14rpx;
-		border: 2rpx solid transparent;
-
-		&.active {
-			color: $primary;
-			background: #fff;
-			border-color: $primary;
-		}
-	}
-
-	.fp-price {
-		padding: 8rpx 28rpx 20rpx 28rpx;
-		display: flex;
-		align-items: center;
-
-		.price-input {
-			flex: 1;
-			height: 72rpx;
-			line-height: 72rpx;
-			background: #f7f8fa;
-			border-radius: 12rpx;
-			padding: 0 20rpx;
-			font-size: 28rpx;
-			color: #333;
-		}
-
-		.price-split {
-			margin: 0 20rpx;
-			color: $muted;
-		}
-	}
-
+	// 底部操作按钮
 	.fp-footer {
+		box-sizing: border-box;
+		width: 100%;
+		height: 120rpx;
 		position: absolute;
 		right: 0;
 		bottom: 0;
 		z-index: 29;
 		width: 100%;
 		display: flex;
-		justify-content: space-around;
+		justify-content: center;
 		align-items: center;
-		background-color: #FFFFFF;
-		padding: 10rpx;
+		background-color: $bg-white;
+		
+		// border-top: 1rpx solid $border-light;
 
 		.btn {
-			flex: 0.4;
-			height: 88rpx;
-			border-radius: 48rpx;
-			font-size: 30rpx;
+			box-sizing: border-box;
+			flex: 0.34;
+			height: 70rpx;
+			// border-radius: 48rpx;
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			transition: all 0.2s ease;
 		}
 
 		.reset {
-			background: #f7f8fa;
-			color: #333;
-			border: none;
+			font-size: 28rpx;
+			font-family: "Microsoft Ya Hei";
+			border-top-left-radius: 10rpx;
+			border-bottom-left-radius: 10rpx;
+			color: $primary;
+			border: 2rpx solid $primary;
 		}
 
 		.confirm {
+			font-size: 28rpx;
+			font-family: "Microsoft Ya Hei";
+			border-top-right-radius: 10rpx;
+			border-bottom-right-radius: 10rpx;
 			background: $primary;
-			color: #fff;
+			color: $bg-white;
 		}
 	}
 </style>

@@ -11,7 +11,7 @@
 	</uni-popup>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, defineProps, defineEmits, defineExpose } from 'vue'
 
 defineOptions({ name: 'confirmDialog' })
@@ -24,15 +24,15 @@ const props = defineProps<{
 const content = props.content ?? ''
 const msgType = props.msgType ?? 'info'
 
-const alertDialog = ref<any>()
-const emit = defineEmits<{ (e: 'confirm'): void }>()
+const alertDialog = ref()
+const emit = defineEmits()
 
 const dialogConfirm = () => {
     emit('confirm')
 }
 const dialogClose = () => {}
 
-function open(position?: string) {
+function open(position) {
     alertDialog.value?.open?.(position || 'center')
 }
 
