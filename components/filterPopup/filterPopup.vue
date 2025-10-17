@@ -191,8 +191,8 @@
 <style lang="scss" scoped>
 	// 颜色变量，精准还原图片样式
 	$primary: #3e65f6;  // 蓝色主题色
-	$text-dark: #000000;  // 深灰色文字
-	$text-muted: #666666;  // 浅灰色文字
+	$text-dark: #000;  // 深灰色文字
+	$text-muted: #666;  // 浅灰色文字
 	$bg-light: #f6f8fc;  // 浅灰色背景
 	$bg-white: #ffffff;  // 白色背景
 	$border-light: #e0e0e0;  // 浅色边框
@@ -209,8 +209,7 @@
 		background: $bg-white;
 		border-top-left-radius: 24rpx;
 		border-top-right-radius: 24rpx;
-		min-height: calc(100vh - 300rpx);
-		max-height: calc(100vh - 298rpx);
+		height: calc(100vh - 300rpx);
 		overflow: hidden;
 		
 		.filter-title {
@@ -230,7 +229,7 @@
 		
 		.category-title {
 			font-size: 28rpx;
-			font-family: "Alibaba Pu Hui Ti_3_55_ Regular";
+			
 			color: #999999;
 			margin-bottom: 24rpx;
 		}
@@ -243,17 +242,18 @@
 			gap: 20rpx;
 			
 			.filter-item {
+				box-sizing: border-box;
 				height: 60rpx;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				font-size: 24rpx;
-				color: #000000;
-				font-family: "Alibaba Pu Hui Ti_3_55_ Regular";
+				color: #000;
+				
 				background: $bg-light;
 				border-radius: 12rpx;
 				border: 1rpx solid transparent;
-				transition: all 0.2s ease;
+				transition: all 0.05s ease;
 				
 				// 选中状态 - 精准还原图片中的蓝色样式
 				&.active {
@@ -261,12 +261,12 @@
 					background: rgba(62, 101, 246, 0.1);   // 浅蓝色背景
 					border: 2rpx solid $primary;  // 蓝色边框
 					font-size: 24rpx;
-					font-family: "Alibaba Pu Hui Ti_3_55_ Regular";
+					
 				}
 				
 				// 点击效果
 				&:active {
-					transform: scale(0.98);
+					transform: scale(0.99);
 				}
 			}
 		}

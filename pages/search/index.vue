@@ -179,7 +179,7 @@
 	// 颜色变量，精准还原图片样式
 	$primary: #3e65f6; // 蓝色主题色
 	$text-dark: #000000; // 深灰色文字
-	$text-muted: #666666; // 浅灰色文字
+	$text-muted: #666; // 浅灰色文字
 	$bg-light: #f6f8fc; // 浅灰色背景
 	$bg-white: #ffffff; // 白色背景
 	$border-light: #e0e0e0; // 浅色边框

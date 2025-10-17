@@ -2,6 +2,7 @@
 	<view class="order-page">
 		<view class="header-stickt">
 			<view class="status_bar" :style="{height: `${statusBarHeight*2}rpx`}"></view>
+
 			<uni-nav-bar class="nav-bar-top">
 				<template v-slot:left>
 					<view class="nav-bar-title">
@@ -15,12 +16,13 @@
 			                color: #333333;">待办流程</view>
 				<view slot="right" class="" style="width: 15%;text-align: end;">
 				</view> -->
-				<view class="nav-input-view" @click="doSearch">
-					<uni-icons class="input-uni-icon" type="search" size="12" color="#999" />
-					<text class="search-bar">搜索</text>
+				<view class="nav-input-view">
+					<!-- <uni-icons class="input-uni-icon" type="search" size="12" color="#999" /> -->
+					<image class="input-seach" src="../../static/images/search.svg" mode=""></image>
+					<input class="input-view" placeholder="搜索" type="text" />
 				</view>
 				<template v-slot:right>
-					<view @click="openFilter"> 筛选 </view>
+					<view @click="openFilter" class="nav-bar-filter"> 筛选 </view>
 				</template>
 			</uni-nav-bar>
 			<!-- 搜索栏和筛选 -->
@@ -39,37 +41,47 @@
 
 			<!-- 分段控制器 -->
 			<view class="segmented-section">
-				<uni-segmented-control :current="currentTab" :values="tabValues" :activeColor="'#3e65f6'"
-					:inActiveColor="'#cccccc'" :styleType="'text'" @clickItem="onTabChange" class="custom-segmented" />
+				<!-- <uni-segmented-control :current="currentTab" :values="tabValues" :activeColor="'#3e65f6'"
+					:inActiveColor="'#cccccc'" :styleType="'text'" @clickItem="onTabChange" class="custom-segmented" /> -->
+				<view class="segmented-section-item" v-for="(item,index) in tabValues" :key="index"
+					@click="onTabChange(index)">
+					<text class="section-item-0" style="height: 0;"></text>
+					<view class="section-item-1" :class="{'section-item-1-active':index === currentTab}">
+						{{item}}
+						<text :class="{'msg':index === currentTab}"></text>
+					</view>
+					<text class="section-item-0" :class="{'section-item-0-active':index === currentTab}"></text>
+				</view>
 			</view>
 		</view>
 		<!-- 订单列表 -->
 		<view class="order-list">
 			<!-- <z-paging ref="paging" v-model="dataList" @query="queryList"> -->
-			<view class="order-card" v-for="order in dataList " :key="order.id">
+			<view class="order-card" v-for="order in dataList " :key="order.id" @click="toDetail(order)">
+				<view class="approved-view" v-show="order?.isApproval">
+					<image src="../../static/images/approved.png" mode="" style="width: 100%;height: 100%;"></image>
+				</view>
 				<view class="order-header">
 					<text class="order-id">{{ order.id }}</text>
 					<view class="order-time">
 						<text class="time-text">{{ order.time }}</text>
 					</view>
 				</view>
-
 				<view class="order-content">
 					<view class="quote-section">
-						<text class="quote-label">最新报价:</text>
+						<text class="quote-label">申请费用：</text>
 						<text class="quote-price">¥{{ order.price }}</text>
 					</view>
 					<view class="quote-section">
-						<text class="quote-label">客户名称: </text>
-						<text class="description-text">{{ order.customerName }}</text>
+						<text class="quote-label">申请单位：</text>
+						<text class="description-text">{{ order.applicant }} | {{ order.customerName }}</text>
 					</view>
 					<view class="quote-section">
-						<text class="quote-label">客户联系人:</text>
-						<text class="description-text">{{ order.contactName }} {{ order.contactPhone }}</text>
+						<text class="quote-label">关键信息：</text>
+						<text class="description-text">{{ order.keyInformation }}</text>
 					</view>
-
 					<view class="quote-section">
-						<text class="quote-label">报价描述:</text>
+						<text class="quote-label">业务摘要：</text>
 						<text class="description-text">{{ order.description }}</text>
 					</view>
 					<view class="label-view">
@@ -77,9 +89,7 @@
 							<text class="point-icon"></text><text class="label-text">{{item.label}}</text>
 						</view>
 					</view>
-					<view class="approved-view" v-show="order?.isApproval">
-						<image src="../../static/images/approved.png" mode="" style="width: 100%;height: 100%;"></image>
-					</view>
+
 				</view>
 			</view>
 			<!-- </z-paging> -->
@@ -152,16 +162,15 @@
 	}
 	// 订单数据
 	const dataList = ref([{
-			id: 'QA2019091723123100145001',
+			id: 'QA2019091723123100',
 			time: '15分钟前',
-			price: '14,500.00',
-			interestLevel: 3,
-			interestText: '兴趣浓厚',
-			customerName: '上海圆通',
-			contactName: '李莫凡',
+			price: '10,400,500.00',
+			customerName: '张三',
+			applicant: '第一事业部',
 			contactPhone: '13982003346',
-			description: '刹车片更换、机油更换、发动机维修发动机维修',
-			isApproval: false,
+			description: '本期支付中：支付农民工工资专户10000000元，基本户9943492元。',
+			keyInformation: '外环西段交通功能提升工程，土建施工3标段（主线）',
+			isApproval: true,
 			labelArr: [{
 				label: '标签1',
 				id: '2313131'
@@ -180,15 +189,14 @@
 			}]
 		},
 		{
-			id: 'QA201909172031231231235001',
+			id: 'QA2019091723123100',
 			time: '15分钟前',
-			price: '14,500.00',
-			interestLevel: 3,
-			interestText: '兴趣浓厚',
-			customerName: '上海圆通',
-			contactName: '李莫凡',
+			price: '10,400,500.00',
+			customerName: '张三',
+			applicant: '第一事业部',
 			contactPhone: '13982003346',
-			description: '刹车片更换、机油更换、发动机维修发动机维修',
+			description: '本期支付中：支付农民工工资专户10000000元，基本户9943492元。',
+			keyInformation: '外环西段交通功能提升工程，土建施工3标段（主线）',
 			isApproval: false,
 			labelArr: [{
 				label: '标签1',
@@ -196,17 +204,25 @@
 			}, {
 				label: '标签2',
 				id: '2313131'
+			}, {
+				label: '标签2',
+				id: '2313131'
+			}, {
+				label: '标签2',
+				id: '2313131'
+			}, {
+				label: '标签2',
+				id: '2313131'
 			}]
 		}, {
-			id: 'QA201909172123100145001',
+			id: 'QA20190917212310',
 			time: '15分钟前',
-			price: '14,500.00',
-			interestLevel: 3,
-			interestText: '兴趣浓厚',
-			customerName: '上海圆通',
-			contactName: '李莫凡',
+			price: '10,400,500.00',
+			customerName: '张三',
+			applicant: '第一事业部',
 			contactPhone: '13982003346',
-			description: '刹车片更换、机油更换、发动机维修发动机维修',
+			description: '本期支付中：支付农民工工资专户10000000元，基本户9943492元。',
+			keyInformation: '外环西段交通功能提升工程，土建施工3标段（主线）',
 			isApproval: false,
 			labelArr: [{
 				label: '标签1',
@@ -216,16 +232,15 @@
 				id: '2313131'
 			}],
 		}, {
-			id: 'QA2019091720011231245001',
+			id: 'QA20190917200112312',
 			time: '15分钟前',
-			price: '14,500.00',
-			interestLevel: 3,
-			interestText: '兴趣浓厚',
-			customerName: '上海圆通',
-			contactName: '李莫凡',
+			price: '10,400,500.00',
+			customerName: '张三',
+			applicant: '第一事业部',
 			contactPhone: '13982003346',
-			description: '刹车片更换、机油更换、发动机维修发动机维修',
-			isApproval: true,
+			description: '本期支付中：支付农民工工资专户10000000元，基本户9943492元。',
+			keyInformation: '外环西段交通功能提升工程，土建施工3标段（主线）',
+			isApproval: false,
 			labelArr: [{
 				label: '标签1',
 				id: '2313131'
@@ -242,9 +257,9 @@
 		})
 	}
 	// 分段控制器切换
-	const onTabChange = (e) => {
-		currentTab.value = e.currentIndex
-		console.log('切换到:', tabValues.value[e.currentIndex])
+	const onTabChange = (val) => {
+		currentTab.value = val
+		console.log('切换到:', tabValues.value[val])
 	}
 
 	//分页加载
@@ -264,7 +279,11 @@
 		// })
 	}
 
-
+	const toDetail = (order) => {
+		uni.navigateTo({
+			url: `/pages/detail/index?id=${order.id}&type=pending`
+		})
+	}
 	onMounted(() => {
 		console.log('订单页面加载完成')
 	})
@@ -282,25 +301,27 @@
 	}
 
 	::v-deep .uni-navbar__header-btns-left {
-		width: 160rpx !important;
-
+		min-width: 180rpx !important;
 	}
 
 	::v-deep .uni-navbar__header-btns-right {
-		width: 80rpx !important;
-		font-size: 24rpx;
-		color: #666666;
-		font-family: "Microsoft Ya Hei";
+		width: 112rpx !important;
+		margin-right: 0 !important;
 	}
 
 	::v-deep .uni-navbar__header-container {
 		display: flex;
 		justify-content: flex-end;
-		padding: 0 10rpx 0 0 !important;
+		padding: 0 !important;
 	}
 
 	::v-deep .uni-popup {
 		z-index: 999 !important;
+	}
+
+	::v-deep .uni-navbar__header {
+		height: 50px !important;
+		padding: 0 !important;
 	}
 
 	@media (max-width: 768px) {
@@ -322,12 +343,12 @@
 		width: 100%;
 		min-height: calc(100vh - 100rpx);
 		height: 100%;
-		background-color: #f8f8f8;
+		background: #f3f7ff;
 		padding-bottom: 100rpx; // 为底部导航留空间
 
 		.header-stickt {
 			position: sticky;
-			z-index: 19;
+			z-index: 99;
 			left: 0;
 			top: 0;
 			right: 0;
@@ -341,33 +362,53 @@
 	}
 
 	.nav-bar-top {
-
-		// width: 100%;
-		// background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 100%);
-		// opacity: 1;
-		// border-bottom: 12rpx solid #EEEEEE;
+		// height: 100rpx;
+		
 		.nav-bar-title {
-			// width: 70rpx !important;
+			width: 100%;
 			font-size: 32rpx;
-			color: #000000;
+			color: #000;
 			font-weight: bold;
-			font-family: "Microsoft Ya Hei";
+			margin-left: 32rpx !important;
 		}
 
 		.nav-input-view {
-			max-width: 350rpx;
-			height: auto;
+			box-sizing: border-box;
+			width: 324rpx;
+			height: 66rpx;
+			border-radius: 32rpx;
 			font-size: 24rpx;
-			color: #666666;
-			font-family: "Microsoft Ya Hei";
-			// border: 1rpx solid red;
+			color: #666;
+			border: 2rpx solid #eee;
 			display: flex;
-			justify-content: flex-end;
+			
 			align-items: center;
 
-			.search-bar {
-				margin-left: 6rpx;
+			.input-seach {
+				width: 24rpx;
+				height: 24rpx;
+				margin: 0 24rpx 0 32rpx;
 			}
+
+			.input-view {
+				flex: 1;
+				// margin-left: 80rpx;
+				margin-right: 12rpx;
+				font-size: 24rpx;
+				color: #666;
+
+			}
+		}
+
+		.nav-bar-filter {
+			box-sizing: border-box;
+			display: flex;
+			padding: 0 32rpx;
+			font-size: 24rpx;
+			color: #666;
+			align-items: center;
+			justify-content: center;
+			white-space: nowrap;
 		}
 	}
 
@@ -393,7 +434,7 @@
 	}
 
 	::v-deep .uni-navbar__header-btns {
-		margin-right: 10rpx;
+		// margin-right: 10rpx;
 	}
 
 	// 搜索区域
@@ -411,10 +452,8 @@
 		flex: 1;
 		display: flex;
 		align-items: center;
-		// background-color: #f8f8f8;
 		overflow: hidden;
 		border-radius: 8rpx;
-		// padding: 16rpx 20rpx;
 
 		.search-icon {
 			font-size: 28rpx;
@@ -456,9 +495,52 @@
 
 	// 分段控制器区域
 	.segmented-section {
+		box-sizing: border-box;
 		background-color: #ffffff;
-		padding: 4px 30rpx -2rpx;
-		border-bottom: 1rpx solid #dddddd;
+		// padding: 4px 30rpx -2rpx;
+		border-bottom: 1rpx solid #eee;
+		display: flex;
+		justify-content: space-around;
+		height: 62rpx;
+
+		.segmented-section-item {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			justify-content: space-between;
+			align-items: center;
+
+			.section-item-0 {
+				box-sizing: border-box;
+				width: 60rpx;
+				height: 6rpx;
+
+				&.section-item-0-active {
+					background: #3e65f6;
+				}
+			}
+
+			.section-item-1 {
+				position: relative;
+				font-size: 24rpx;
+
+				.msg {
+					display: block;
+					width: 6px;
+					height: 6px;
+					background: red;
+					border-radius: 3px;
+					position: absolute;
+					right: -16px;
+					top: -12rpx;
+				}
+
+				&.section-item-1-active {
+					color: #3e65f6;
+				}
+			}
+
+		}
 	}
 
 	.custom-segmented {
@@ -487,27 +569,40 @@
 	}
 
 	.order-card {
+		box-sizing: border-box;
 		background-color: #ffffff;
-		// border-radius: 25rpx;
-		padding: 30rpx;
-		// margin-bottom: 20rpx;
-		margin: 0 30rpx 30rpx;
-		border-radius: 25rpx;
-		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+		padding: 32rpx;
+		// margin: 0 30rpx 30rpx;
+		width: 90%;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 32rpx;
+		border-radius: 24rpx;
+		position: relative;
+		z-index: 19;
+
+		.approved-view {
+			width: 160rpx;
+			height: 128rpx;
+			position: absolute;
+			z-index: 29;
+			top: 40rpx;
+			right: 80rpx;
+		}
 	}
 
 	.order-header {
+		box-sizing: border-box;
+		height: 80rpx;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: 20rpx;
 
 		.order-id {
 			width: calc(100% - 130rpx);
 			font-size: 32rpx;
 			color: #000000;
 			font-weight: bold;
-			font-family: "Microsoft Ya Hei";
 			overflow-x: auto;
 		}
 
@@ -517,8 +612,7 @@
 
 			.time-text {
 				font-size: 24rpx;
-				color: #999999;
-				font-family: "Microsoft Ya Hei";
+				color: #999;
 				text-align: right;
 			}
 		}
@@ -529,29 +623,33 @@
 		z-index: 9;
 
 		.quote-section {
+			box-sizing: border-box;
+			min-height: 40rpx;
+			line-height: 40rpx;
 			display: flex;
-			// align-items: center;
-			margin-bottom: 8rpx;
+			padding: 8rpx 0;
 
 			.quote-label {
 				font-size: 24rpx;
-				color: #000000;
-				font-family: "Microsoft Ya Hei";
+				color: #000;
 				white-space: nowrap;
-				margin-right: 12rpx;
+				width: 120rpx;
+				line-height: 40rpx;
 			}
 
 			.quote-price {
 				font-size: 24rpx;
-				font-family: "Microsoft Ya Hei";
-				color: #007aff;
+				color: #3e65f6;
+				font-weight: bold;
+				line-height: 40rpx;
+				margin-left: 8rpx;
 			}
 
 			.description-text {
 				font-size: 24rpx;
-				color: #666666;
-				font-family: "Microsoft Ya Hei";
-				line-height: 1.4;
+				color: #666;
+				line-height: 40rpx;
+				margin-left: 8rpx;
 
 			}
 		}
@@ -561,57 +659,49 @@
 		.label-view {
 			position: absolute;
 			z-index: 19;
-			top: 0;
+			top: 8rpx;
 			right: 0;
 			min-width: 200rpx;
-			max-width: 250rpx;
-			max-height: 80rpx;
-			overflow-y: auto;
+			max-width: 270rpx;
+			max-height: 100rpx;
+			overflow: hidden;
 			display: flex;
 			/* 弹性布局 */
 			flex-wrap: wrap;
 			/* 自动换行 */
 			justify-content: flex-end;
 			/* 每行内容靠右 */
-			gap: 6px;
+			gap: 8px;
 
 			.label-item {
-				max-width: 90rpx;
+				max-width: 110rpx;
 				min-width: 10rpx;
 				white-space: nowrap;
-				height: 30rpx;
-				border: 1rpx solid #99ccff;
-				border-radius: 25rpx;
+				height: 36rpx;
+				border: 2rpx #88afff solid;
+				border-radius: 20rpx;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				padding: 0 20rpx;
+				padding: 0 16rpx;
 
 				.point-icon {
-					width: 10rpx;
-					height: 10rpx;
+					width: 12rpx;
+					height: 12rpx;
 					border-radius: 50%;
-					background: #88aff8;
-					margin-right: 10rpx;
+					background: #88afff;
+					margin-right: 16rpx;
 
 				}
 
 				.label-text {
-					font-size: 16rpx;
+					font-size: 24rpx;
 					color: #3e65f6;
-					font-family: "Microsoft Ya Hei";
 				}
 			}
 		}
 
-		.approved-view {
-			position: absolute;
-			z-index: 29;
-			top: -50rpx;
-			right: 0;
-			width: 140rpx;
-			height: 140rpx;
-		}
+
 
 	}
 
@@ -620,13 +710,6 @@
 		.order-page {
 			max-width: 768rpx;
 			margin: 0 auto;
-		}
-	}
-
-	// 超大屏幕适配
-	@media screen and (min-width: 1200px) {
-		.order-page {
-			max-width: 1200rpx;
 		}
 	}
 </style>

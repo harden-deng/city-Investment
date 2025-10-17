@@ -42,7 +42,6 @@
 				<image src="../../static/images/ib_2.jpg" mode="" style="width: 100%;height: 100%;border-radius: 24rpx;"></image>
 			</view>
 		</view>
-
 	</view>
 </template>
 <script setup>
@@ -66,13 +65,13 @@ const quickAccessList = ref([
 	{
 		label: '待办流程',
 		imgUrl: '../../static/images/index_menu_1.svg',
-		path: '',
+		path: '/pages/nav/pending',
 		bjColor: '#6599ff'
 	},
 	{
 		label: '已办流程',
 		imgUrl: '../../static/images/index_menu_2.svg',
-		path: '',
+		path: '/pages/nav/completed',
 		bjColor: '#9933ff'
 	},
 	{
@@ -97,7 +96,7 @@ onMounted(() => {
 const handleQuickAccess = (item) => {
 	console.log('点击快捷功能:', item.label)
 	if (item.path) {
-		uni.navigateTo({
+		uni.switchTab({
 			url: item.path
 		})
 	} else {
@@ -151,13 +150,11 @@ const getData = () => {
 				display: flex;
 				align-items: center;
 				justify-content: center;
-
-
 			}
 		}
 
 		.notification-bar {
-			width: 686rpx;
+			width: 90%;
 			margin: -30rpx auto 0;
 			position: relative;
 			z-index: 10;
@@ -190,18 +187,19 @@ const getData = () => {
 
 
 	.main-content {
-		padding: 30rpx 30rpx 40rpx;
+		padding: 30rpx 0 40rpx;
 
 		.quick-access {
 			box-sizing: border-box;
 			height: 226rpx;
-			
+			width: 90%;
+			margin-left: auto;
+			margin-right: auto;
 			display: flex;
 			justify-content: space-around;
 			align-items: center;
 			margin-bottom: 30rpx;
 			background-color: #ffffff;
-			// padding: 20rpx;
 			border-radius: 25rpx;
 			box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 
@@ -220,11 +218,6 @@ const getData = () => {
 					align-items: center;
 					justify-content: center;
 					margin-bottom: 16rpx;
-
-					// .icon-text {
-					// 	font-size: 48rpx;
-					// 	color: #FFFFFF;
-					// }
 				}
 
 				.access-label {
@@ -237,7 +230,10 @@ const getData = () => {
 
 		.announcement-section {
 			box-sizing: border-box;
+			width: 90%;
 			height: 448rpx;
+			margin-left: auto;
+			margin-right: auto;
 			margin-bottom: 30rpx;
 			background-color: #ffffff;
 			padding: 26rpx 30rpx;
@@ -255,7 +251,6 @@ const getData = () => {
 
 				.section-title-text {
 					font-size: 32rpx;	
-					font-family: '微软雅黑', 'Arial', 'sans-serif';
 					color: #000000;
 					font-weight: bold;
 					position: absolute;
@@ -283,7 +278,9 @@ const getData = () => {
 
 		.help-section {
 			box-sizing: border-box;
-			width: 100%;
+			width: 90%;
+			margin-left: auto;
+			margin-right: auto;
 			height: 200rpx;
 			border-radius: 24rpx;
 			box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
