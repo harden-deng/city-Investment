@@ -80,18 +80,19 @@
 
 			<!-- 用款情况 -->
 			<view class="section">
-				<view class="section-title-2">
+				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
 						<text class="section-title-text">用款情况</text>
 					</view>
 					<!-- <image class="section-title-2-right" src="../../static/images/c2.png" mode="scaleToFill"
 						style=" width: 28rpx;height: 16rpx;" /> -->
-					<view class="section-title-2-right" @click="setOptions(FUND_USAGE_STATUS)" :class="{ 'active': getOptions(FUND_USAGE_STATUS) }">
+					<view class="section-title-2-right"  :class="{ 'active': getOptions(FUND_USAGE_STATUS) }">
 
 					</view>
 				</view>
-				<view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
+				<transition name="collapse">
+					<view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
 					<!-- 整体合同 -->
 					<view class="contract-section">
 						<view class="contract-header">
@@ -289,22 +290,24 @@
 						</view>
 					</view>
 
-				</view>
+					</view>
+				</transition>
 			</view>
 
 			<!-- 付款账户信息 -->
 			<view class="section">
-				<view class="section-title-2">
+				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
 						<text class="section-title-text">付款账户信息</text>
 					</view>
-					<view class="section-title-2-right" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)" :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
+					<view class="section-title-2-right"  :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
 
                      </view>
 				</view>
 				<!-- 付款账户信息卡片 -->
-				<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
+				<transition name="collapse">
+					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
 					<view style="height: 10rpx;"></view>
 					<!-- 第一个公司账户信息 -->
 					<view class="account-card">
@@ -351,21 +354,23 @@
 							</view>
 						</view>
 					</view>
-				</view>
+					</view>
+				</transition>
 			</view>
 
-			<!-- 付款账户信息 -->
+			<!-- 收款账户信息 -->
 			<view class="section">
-				<view class="section-title-2">
+				<view class="section-title-2" @click="setOptions(COLLECTION_ACCOUNT_INFORMATION)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
 						<text class="section-title-text">收款账户信息</text>
 					</view>
-					<view class="section-title-2-right" @click="setOptions(COLLECTION_ACCOUNT_INFORMATION)" :class="{ 'active': getOptions(COLLECTION_ACCOUNT_INFORMATION) }">
+					<view class="section-title-2-right" :class="{ 'active': getOptions(COLLECTION_ACCOUNT_INFORMATION) }">
                     </view>
 				</view>
-				<!-- 付款账户信息卡片 -->
-				<view class="account-info-section" v-if="getOptions(COLLECTION_ACCOUNT_INFORMATION)">
+				<!-- 收款账户信息卡片 -->
+				<transition name="collapse">
+					<view class="account-info-section" v-if="getOptions(COLLECTION_ACCOUNT_INFORMATION)">
 					<view style="height: 10rpx;"></view>
 					<!-- 第一个公司账户信息 -->
 					<view class="account-card">
@@ -404,7 +409,8 @@
 							</view>
 						</view>
 					</view>
-				</view>
+					</view>
+				</transition>
 			</view>
 		</scroll-view>
 		<InputDialog ref="inputDialogRef" v-model="inputDialogVisible" :required="inputDialogRequired" :title="inputDialogTitle" :placeholder="inputDialogPlaceholder" @confirm="handleInputConfirm" @cancel="handleInputCancel"></InputDialog>
@@ -829,13 +835,36 @@
 				background: url('../../static/images/c2.png') center center no-repeat;
 				background-size: 24rpx;
 				margin-right: -31rpx;
+				transition: transform 0.3s ease;
 				&.active {
-					background: url('../../static/images/c1.png') center center no-repeat !important;
+					background: url('../../static/images/c2.png') center center no-repeat !important;
 				    background-size: 24rpx !important;
 				    margin-right: -31rpx !important;
+				    transform: rotate(180deg);
 				}
 			}
 
+		}
+
+		// 折叠动画样式
+		.collapse-enter-active,
+		.collapse-leave-active {
+			transition: all 0.3s ease;
+			overflow: hidden;
+		}
+
+		.collapse-enter-from,
+		.collapse-leave-to {
+			opacity: 0;
+			transform: translateY(-10rpx);
+			max-height: 0;
+		}
+
+		.collapse-enter-to,
+		.collapse-leave-from {
+			opacity: 1;
+			transform: translateY(0);
+			max-height: 2000rpx;
 		}
 
 		.info-list {

@@ -61,9 +61,12 @@
 
 	const goMessage = () => {
 		// 这里可替换为实际业务页面
-		uni.showToast({
-			title: '消息中心开发中',
-			icon: 'none'
+		// uni.showToast({
+		// 	title: '消息中心开发中',
+		// 	icon: 'none'
+		// })
+		uni.navigateTo({
+			url: '/pages/info/msg'
 		})
 	}
 	const goSign = () => {
@@ -86,7 +89,7 @@
 		// 	icon: 'none'
 		// })
 		uni.navigateTo({
-			url: '/pages/signatures/index'
+			url: '/pages/info/help'
 		})
 	}
 	const goLogout = () => {

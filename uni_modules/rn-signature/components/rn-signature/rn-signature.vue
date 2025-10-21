@@ -1,10 +1,10 @@
 <!-- 签名 -->
 <template>
-	<view class="rn_signature" :style="[optionsAll.style]">
+	<view class="rn_signature" :style="[optionsAll.style]" style="border: 1px soild red;">
 		<view class="sign_container" @click="btnClick">
 			<!-- <span v-if="!data.url">{{ optionsAll.placeholder.content }}</span> -->
 			<span v-if="!data.url">请点击设置签名</span>
-			<span v-if="data.url && optionsAll.clear.show" :class="{
+			<!-- <span v-if="data.url && optionsAll.clear.show" :class="{
 					clear_url: !optionsAll.clear.slot,
 					[clearClassName]: optionsAll.clear.slot
 				}" @tap.stop="clearClick">
@@ -12,7 +12,7 @@
 					<view class="icon_left"></view>
 					<view class="icon_right"></view>
 				</slot>
-			</span>
+			</span> -->
 			<image v-if="data.url" class="signature_img" :src="data.url" alt=""></image>
 		</view>
 	</view>
@@ -65,7 +65,8 @@
 						width: "100%",
 						height: "300rpx",
 						background: "#fff",
-						"box-shadow": "0px 0px 5px rgba(0, 0, 0, 0.4)",
+						// "box-shadow": "0px 0px 5px rgba(0, 0, 0, 0.4)",
+						border: '1px soild',
 						borderRadius: "20rpx"
 					},
 					placeholder: {
@@ -129,7 +130,7 @@
 <style lang="scss" scoped>
 	.rn_signature {
 		overflow: hidden;
-
+		border-radius: 24rpx !important;
 		.sign_container {
 			width: 100%;
 			height: 100%;
@@ -156,7 +157,7 @@
 				top: 0;
 				transform: translate(-50%, -50%);
 
-				box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
+				// box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
 				overflow: hidden;
 				z-index: 999;
 

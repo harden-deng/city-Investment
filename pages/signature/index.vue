@@ -19,10 +19,16 @@
 
 		<!-- 操作按钮区域 -->
 		<view class="action-buttons">
-			<button @click="saveSignature" class="save-btn" :disabled="!signatureData.url">
+			<view 
+				@click="saveSignature" 
+				class="save-btn" 
+				:class="{ 'disabled': !signatureData.url }"
+			>
 				保存签名
-			</button>
-			<button @click="goBack" class="back-btn">返回</button>
+			</view>
+			<view @click="goBack" class="back-btn">
+				返回
+			</view>
 		</view>
 	</view>
 </template>
@@ -82,17 +88,28 @@
 					},
 					// 按钮配置
 					btn: {
-						saveBtn: {
-							content: '保存',
-							order: 3
-						},
-						resetBtn: {
-							content: '重签',
-							order: 2
-						},
 						cancelBtn: {
 							content: '取消',
-							order: 3
+							order: 1,
+							style: {
+								backgroundColor: '#007aff',
+								color: '#fff'
+							}
+						},resetBtn: {
+							content: '重签',
+							order: 2,
+							style: {
+								backgroundColor: '#ff9900',
+								color: '#fff'
+							}
+						},
+						saveBtn: {
+							content: '保存',
+							order: 3,
+							style: {
+								backgroundColor: '#19be6b',
+								color: '#fff'
+							}
 						}
 					}
 				},
@@ -100,7 +117,9 @@
 				signatureData: {
 					url: '', // 签名生成的图片地址
 					tempTime: Date.now() // 时间戳，用于事件通信
-				}
+				},
+				// 保存状态
+				isSaving: false
 			}
 		},
 
@@ -123,6 +142,7 @@
 
 			// 保存签名
 			saveSignature() {
+				// 检查是否禁用状态
 				if (!this.signatureData.url) {
 					uni.showToast({
 						title: '请先进行签名',
@@ -130,6 +150,13 @@
 					});
 					return;
 				}
+				
+				// 防止重复点击
+				if (this.isSaving) {
+					return;
+				}
+				
+				this.isSaving = true;
 				this.goBack();
 
 				// 这里可以调用API保存签名到服务器
@@ -174,6 +201,9 @@
 						icon: 'none'
 					});
 					console.error('保存签名失败:', error);
+				} finally {
+					// 重置保存状态
+					this.isSaving = false;
 				}
 			},
 
@@ -362,6 +392,7 @@
 		border-top: 1rpx solid #eee;
 		display: flex;
 		justify-content: space-around;
+		// box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
 
 		.save-btn,
 		.back-btn {
@@ -372,37 +403,62 @@
 			border-radius: 40rpx;
 			font-size: 30rpx;
 			font-weight: bold;
+			text-align: center;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			user-select: none;
 		}
 
 		.save-btn {
-			background-color: #007aff;
+			background: linear-gradient(135deg, #007aff, #0056cc);
 			color: white;
+			// box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.3);
 
-			&:disabled {
-				background-color: #ccc;
-				color: #999;
+			&:active {
+				transform: translateY(2rpx);
+				// box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.3);
+			}
+
+			&.disabled {
+				background: linear-gradient(135deg, #ccc, #999);
+				color: #666;
+				// box-shadow: none;
+				cursor: not-allowed;
+				opacity: 0.6;
+
+				&:active {
+					transform: none;
+				}
 			}
 		}
 
 		.back-btn {
-			background-color: #f0f0f0;
-			color: #333;
+			background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+			color: #495057;
+			// border: 2rpx solid #dee2e6;
+			// box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+
+			&:active {
+				transform: translateY(2rpx);
+				box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.1);
+				background: linear-gradient(135deg, #e9ecef, #dee2e6);
+			}
 		}
 	}
 
 	/* 深度样式修改 */
-	::v-deep .rn_signature {
-		.sign_container {
-			border: 2rpx dashed #cccccc;
-			border-radius: 10rpx;
-			background-color: #fff;
-		}
+	// ::v-deep .rn_signature {
+	// 	.sign_container {
+	// 		// border: 2rpx dashed #cccccc;
+	// 		border-radius: 24rpx;
+	// 		background-color: #fff;
+	// 	}
 
-		.btn_clear_wrap {
-			position: absolute;
-			top: 10rpx;
-			right: 10rpx;
-			z-index: 999;
-		}
-	}
+	// 	.btn_clear_wrap {
+	// 		position: absolute;
+	// 		top: 10rpx;
+	// 		right: 10rpx;
+	// 		z-index: 999;
+	// 	}
+	// }
 </style>

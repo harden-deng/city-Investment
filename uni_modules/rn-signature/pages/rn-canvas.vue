@@ -270,15 +270,16 @@
 			},
 			//取消
 			cancelClick() {
-				uni.showModal({
-					title: "提示",
-					content: "确定取消签名？",
-					success(res) {
-						if (res.confirm) {
-							uni.navigateBack(-1);
-						}
-					}
-				});
+				uni.navigateBack(-1);
+				// uni.showModal({
+				// 	title: "提示",
+				// 	content: "确定取消签名？",
+				// 	success(res) {
+				// 		if (res.confirm) {
+				// 			uni.navigateBack(-1);
+				// 		}
+				// 	}
+				// });
 			},
 			/**
 			 * 绘制过程=========
@@ -319,10 +320,8 @@
 		left: 0;
 		bottom: 0;
 		right: 0;
-		border: 1px solid red;
 
 		.control_wrap {
-			border: 1px solid blue;
 			position: absolute;
 			transform-origin: bottom;
 			z-index: 9999;
@@ -344,7 +343,7 @@
 			/* #endif */
 			.btn {
 				width: fit-content;
-				border: 1px solid #777;
+				// border: 1px solid #777;
 				border-radius: 10rpx;
 				/* #ifdef APP-HARMONY|| MP-WEIXIN || APP-PLUS */
 				font-size: 24rpx;

@@ -406,15 +406,7 @@
 		  height: 0 !important;
 	  }
 	}
-
 	
-	@media (min-aspect-ratio: 13/20) {
-	  ::v-deep .uni-tabbar-bottom {
-		display: none !important;
-		height: 0 !important;
-	  }
-	}
-
 	.scroller {
 		flex: 1;
 		background: #f5f5f5

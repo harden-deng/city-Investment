@@ -72,12 +72,24 @@
 		{
 			"path": "pages/signature/index",
 			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/signatures/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/info/msg",
+			"style": {
 				"navigationStyle": "custom",
 				"disableScroll": true
 			}
 		},
 		{
-			"path": "pages/signatures/index",
+			"path": "pages/info/help",
 			"style": {
 				"navigationStyle": "custom",
 				"disableScroll": true

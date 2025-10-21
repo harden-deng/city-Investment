@@ -10,7 +10,7 @@
 				</view>
 				<!-- 通知栏 -->
 				<view class="notification-bar">
-					<view class="notification-content">
+					<view class="notification-content" @click="handleNotification">
 						<image class="speaker-icon" src="../../static/images/icon_1.svg" mode="aspectFit"></image>
 						<text class="notification-text">·本市排水管理体制改革取得阶段性进展</text>
 					</view>
@@ -97,7 +97,7 @@ const quickAccessList = ref([{
 {
 	label: '在线帮助',
 	imgUrl: '../../static/images/index_menu_4.svg',
-	path: '',
+	path: '/pages/info/help',
 	bjColor: '#33cb99'
 }
 ]);
@@ -106,11 +106,21 @@ onMounted(() => {
 	getData();
 })
 
+const handleNotification = () => {
+	uni.navigateTo({
+		url: '/pages/info/msg'
+	})
+}
+
 // 快捷访问点击处理
 const handleQuickAccess = (item) => {
 	console.log('点击快捷功能:', item.label)
-	if (item.path) {
+	if (item.path && item.path.includes('pages/nav/')) {
 		uni.switchTab({
+			url: item.path
+		})
+	} else if (item.path && !item.path.includes('pages/nav/')) {
+		uni.navigateTo({
 			url: item.path
 		})
 	} else {
