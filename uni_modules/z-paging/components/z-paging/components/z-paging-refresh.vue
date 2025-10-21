@@ -41,7 +41,7 @@
 				R: Enum.Refresher,
 				refresherTimeText: '',
 				zTheme: {
-					title: { white: '#efefef', black: '#555555' },
+					title: { white: '#efefef', black: '#666' },
 					arrow: { white: zStatic.base64ArrowWhite, black: zStatic.base64Arrow },
 					flower: { white: zStatic.base64FlowerWhite, black: zStatic.base64Flower },
 					success: { white: zStatic.base64SuccessWhite, black: zStatic.base64Success },
@@ -81,7 +81,7 @@
 			// 左侧图片style
 			leftImageStyle() {
 				const showUpdateTime = this.showUpdateTime;
-				const size = showUpdateTime ? u.addUnit(36, this.unit) : u.addUnit(34, this.unit);
+				const size = showUpdateTime ? u.addUnit(26, this.unit) : u.addUnit(24, this.unit);
 				return {width: size,height: size,'margin-right': showUpdateTime ? u.addUnit(20, this.unit) : u.addUnit(9, this.unit)};
 			},
 			// 左侧图片src
@@ -114,7 +114,7 @@
 				stl = {'height': textHeight, 'line-height': textHeight}
 				// #endif
 				stl['color'] = this.zTheme.title[this.ts];
-				stl['font-size'] = u.addUnit(30, this.unit);
+				stl['font-size'] = u.addUnit(24, this.unit);
 				return stl;
 			}
 		},

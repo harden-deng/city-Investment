@@ -1,0 +1,2 @@
+export declare function setLandscape(): Promise<void>
+export declare function setPortrait(): Promise<void>

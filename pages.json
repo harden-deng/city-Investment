@@ -9,72 +9,114 @@
 		{
 			"path": "pages/nav/home",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"disableScroll": true //设置为 true 则页面整体不能上下滚动
 			}
 		},
 		{
 			"path": "pages/nav/pending",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				// "safeAreaInsets": true,
+				"disableScroll": true
+				// "softinputMode": "adjustResize"
 			}
 		},
 		{
 			"path": "pages/nav/completed",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				// "safeAreaInsets": true,
+				"disableScroll": true
+				// "softinputMode": "adjustResize"
 			}
 		},
 		{
 			"path": "pages/nav/profile",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"disableScroll": true
 			}
 		},
 		{
 			"path": "pages/search/index",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"disableScroll": true
 			}
 		},
 		{
 			"path": "pages/detail/index",
 			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
+		}, {
+			"path": "uni_modules/rn-signature/pages/rn-canvas",
+			"style": {
+				"app-harmony": {
+					"orientation": "landscape",
+					"pageOrientation": "landscape"
+				},
+				"app-plus": {
+					"pageOrientation": "landscape"
+				},
+				"enablePullDownRefresh": false,
+				"mp-weixin": {
+					"pageOrientation": "landscape"
+				},
+				"navigationBarTitleText": "uni-app",
 				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/signature/index",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
+		},
+		{
+			"path": "pages/signatures/index",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
 			}
 		}
 	],
-	// "globalStyle": {
-	// 	"navigationBarTextStyle": "black",
-	// 	"navigationBarTitleText": "uni-app",
-	// 	"navigationBarBackgroundColor": "#F8F8F8",
-	// 	"backgroundColor": "#F8F8F8"
-	// },
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
 	"uniIdRouter": {},
 	"tabBar": {
+		"height": "0",
 		"color": "#7A7E83",
 		"selectedColor": "#3e65f6",
 		// "borderStyle": "white",
 		"backgroundColor": "#ffffff",
 		"list": [{
-			"pagePath": "pages/nav/home",
-			"iconPath": "/static/images/menu_1_1.svg",
-			"selectedIconPath": "/static/images/menu_1_2.svg",
-			"text": "首页"
+			"pagePath": "pages/nav/home"
+			// "iconPath": "/static/images/menu_1_1.svg",
+			// "selectedIconPath": "/static/images/menu_1_2.svg",
+			// "text": "首页"
 		}, {
-			"pagePath": "pages/nav/pending",
-			"iconPath": "static/images/menu_2_1.svg",
-			"selectedIconPath": "static/images/menu_2_2.svg",
-			"text": "待办流程"
+			"pagePath": "pages/nav/pending"
+			// "iconPath": "static/images/menu_2_1.svg",
+			// "selectedIconPath": "static/images/menu_2_2.svg",
+			// "text": "待办流程"
 		}, {
-			"pagePath": "pages/nav/completed",
-			"iconPath": "static/images/menu_3_1.svg",
-			"selectedIconPath": "static/images/menu_3_2.svg",
-			"text": "已办流程"
+			"pagePath": "pages/nav/completed"
+			// "iconPath": "static/images/menu_3_1.svg",
+			// "selectedIconPath": "static/images/menu_3_2.svg",
+			// "text": "已办流程"
 		}, {
-			"pagePath": "pages/nav/profile",
-			"iconPath": "static/images/menu_4_1.svg",
-			"selectedIconPath": "static/images/menu_4_2.svg",
-			"text": "个人中心"
+			"pagePath": "pages/nav/profile"
+			// "iconPath": "static/images/menu_4_1.svg",
+			// "selectedIconPath": "static/images/menu_4_2.svg",
+			// "text": "个人中心"
 		}]
 	}
 }

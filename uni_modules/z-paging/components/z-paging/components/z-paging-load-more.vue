@@ -35,7 +35,7 @@
 			return {
 				M: Enum.More,
 				zTheme: {
-					title: { white: '#efefef', black: '#a4a4a4' },
+					title: { white: '#efefef', black: '#666' },
 					line: { white: '#efefef', black: '#eeeeee' },
 					circleBorder: { white: '#aaaaaa', black: '#c8c8c8' },
 					circleBorderTop: { white: '#ffffff', black: '#444444' },
@@ -98,6 +98,7 @@
 	}
 	.zp-l-container-rpx {
 		height: 80rpx;
+		margin-bottom: 80px;
 		font-size: 27rpx;
 	}
 	.zp-l-container-px {
@@ -148,12 +149,13 @@
 	}
 
 	.zp-l-text-rpx {
-		font-size: 30rpx;
+		font-size: 24rpx;
 		margin: 0rpx 6rpx;
 	}
 	.zp-l-text-px {
 		font-size: 15px;
 		margin: 0px 3px;
+		
 	}
 
 	.zp-l-line-rpx {

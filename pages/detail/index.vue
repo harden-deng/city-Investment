@@ -407,7 +407,7 @@
 				</view>
 			</view>
 		</scroll-view>
-		<InputDialog ref="inputDialogRef" v-model="inputDialogVisible" :title="inputDialogTitle" :placeholder="inputDialogPlaceholder" @confirm="handleInputConfirm" @cancel="handleInputCancel"></InputDialog>
+		<InputDialog ref="inputDialogRef" v-model="inputDialogVisible" :required="inputDialogRequired" :title="inputDialogTitle" :placeholder="inputDialogPlaceholder" @confirm="handleInputConfirm" @cancel="handleInputCancel"></InputDialog>
 	</view>
 </template>
 
@@ -437,6 +437,7 @@
 		if (Number(h)) statusBarHeight.value = Number(h)
 	})
 	const inputDialogVisible = ref(false)
+	const inputDialogRequired = ref(false)
 	const inputDialogTitle = ref('')
 	const inputDialogPlaceholder = ref('')
 	const inputDialogValue = ref('')
@@ -556,6 +557,7 @@
 		// 	title: '已打回',
 		// 	icon: 'none'
 		// })
+		inputDialogRequired.value = true
 		openInputDialog('打回原因', '请输入打回原因', '')
 	}
 
@@ -564,6 +566,7 @@
 		// 	title: '已通过',
 		// 	icon: 'success'
 		// })
+		inputDialogRequired.value = false
 		openInputDialog('通过原因', '请输入通过原因', '')
 	}
 	const openInputDialog = (title, placeholder, value) => {

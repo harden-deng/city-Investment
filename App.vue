@@ -26,4 +26,11 @@
 	    font-family: '微软雅黑', 'Arial', 'sans-serif';
 		box-sizing: border-box;
 	}
+
+	/* H5 内置 tabbar 强制固定底部，避免被布局挤压 */
+	::v-deep .kb-open .uni-tabbar {
+		transform: translateY(100%);
+		transition: transform .15s ease;
+	}
+
 </style>

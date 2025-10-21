@@ -4,7 +4,7 @@
 			<text class="idlg-title">{{ title }}</text>
 			<view class="idlg-input-wrap">
 				<uni-easyinput type="textarea" :placeholder="placeholder" clearable :maxlength="maxlength" autoHeight
-					v-model="innerValue" @confirm="handleConfirm"></uni-easyinput>
+					v-model="innerValue"></uni-easyinput>
 			</view>
 			<view class="idlg-footer">
 				<view class="btn cancel" @click="handleCancel">取消</view>
@@ -16,6 +16,7 @@
 </template>
 
 <script setup>
+import { throttle } from '@/utils/h5Bribge'
 	import {
 		ref,
 		watch,
@@ -25,6 +26,10 @@
 		defineExpose
 	} from 'vue'
 
+	const handleConfirm = throttle(() => {
+		doConfirm()
+	}, 1000)
+	
 	const props = defineProps({
 		modelValue: {
 			type: Boolean,
@@ -88,7 +93,7 @@
 		close()
 	}
 
-	function handleConfirm() {
+	function doConfirm() {
 		if (confirmDisabled.value) return
 		emit('confirm', innerValue.value)
 		innerValue.value = ''

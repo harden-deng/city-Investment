@@ -43,6 +43,8 @@
 			</view>
 		</view>
 		<confirmDialog ref="confirmRef" :content="'确定退出吗？'" @confirm="doLogout"></confirmDialog>
+		<!-- 底部导航栏 -->
+		<BottomNavBar ref="bottomNavRef" :modelValueFlag="3"/>
 	</view>
 </template>
 
@@ -51,6 +53,7 @@
 		ref
 	} from 'vue'
 	import confirmDialog from "@/components/confirmDialog/confirmDialog.vue"
+	import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	const confirmRef = ref(null)
 	const userName = ref('张三')
 	const department = ref('第一事业部')
@@ -64,15 +67,26 @@
 		})
 	}
 	const goSign = () => {
-		uni.showToast({
-			title: '签名维护开发中',
-			icon: 'none'
+		// uni.showToast({
+		// 	title: '签名维护开发中',
+		// 	icon: 'none'
+		// })
+		
+		uni.navigateTo({
+			url: '/pages/signature/index'
 		})
+		// uni.navigateTo({
+		// 	url: '/uni_modules/rn-signature/pages/rn-canvas'
+		// })
+		
 	}
 	const goHelp = () => {
-		uni.showToast({
-			title: '在线帮助开发中',
-			icon: 'none'
+		// uni.showToast({
+		// 	title: '在线帮助开发中',
+		// 	icon: 'none'
+		// })
+		uni.navigateTo({
+			url: '/pages/signatures/index'
 		})
 	}
 	const goLogout = () => {

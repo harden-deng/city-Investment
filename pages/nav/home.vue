@@ -1,55 +1,70 @@
 <template>
 	<view class="workplace-container">
-		<!-- 顶部标题栏 -->
-		<view class="header-stickt">
-			<view class="status_bar" :style="{ height: `${statusBarHeight * 2}rpx` }"></view>
-			<view class="header-banner">
-				<view class="banner-bg">
-				</view>
-			</view>
-			<!-- 通知栏 -->
-			<view class="notification-bar">
-				<view class="notification-content">
-					<image class="speaker-icon" src="../../static/images/icon_1.svg" mode="aspectFit"></image>
-					<text class="notification-text">·本市排水管理体制改革取得阶段性进展</text>
-				</view>
-			</view>
-		</view>
-		<!-- 主内容区域 -->
-		<view class="main-content">
-			<!-- 快捷功能图标 -->
-			<view class="quick-access">
-				<view class="access-item" v-for="(item, index) in quickAccessList" :key="index"
-					@click="handleQuickAccess(item)">
-					<view class="access-icon" :style="{ backgroundColor: item.bjColor }">
-						<image :src="item.imgUrl" mode="aspectFit" style="width: 48rpx; height: 48rpx"></image>
+		<scroll-view scroll-y="true" class="scroller" :style="{ height: scrollViewHeight }">
+			<!-- 顶部标题栏 -->
+			<view class="header-stickt">
+				<view class="status_bar" :style="{ height: `${statusBarHeight * 2}rpx` }"></view>
+				<view class="header-banner">
+					<view class="banner-bg">
 					</view>
-					<text class="access-label">{{ item.label }}</text>
+				</view>
+				<!-- 通知栏 -->
+				<view class="notification-bar">
+					<view class="notification-content">
+						<image class="speaker-icon" src="../../static/images/icon_1.svg" mode="aspectFit"></image>
+						<text class="notification-text">·本市排水管理体制改革取得阶段性进展</text>
+					</view>
 				</view>
 			</view>
-			<!-- 在线公示 -->
-			<view class="announcement-section">
-				<view class="section-title">
-					<view class="section-title-text">在线公示</view>
-					<text class="section-title-bj"></text>
+			<!-- 主内容区域 -->
+			<view class="main-content">
+				<!-- 快捷功能图标 -->
+				<view class="quick-access">
+					<view class="access-item" v-for="(item, index) in quickAccessList" :key="index"
+						@click="handleQuickAccess(item)">
+						<view class="access-icon" :style="{ backgroundColor: item.bjColor }">
+							<image :src="item.imgUrl" mode="aspectFit" style="width: 48rpx; height: 48rpx"></image>
+						</view>
+						<text class="access-label">{{ item.label }}</text>
+					</view>
 				</view>
-				<view class="announcement-banner">
-					<image src="../../static/images/ib_1.jpg" mode="" style="width: 100%;height: 100%;"></image>
+				<!-- 在线公示 -->
+				<view class="announcement-section">
+					<view class="section-title">
+						<view class="section-title-text">在线公示</view>
+						<text class="section-title-bj"></text>
+					</view>
+					<view class="announcement-banner">
+						<image src="../../static/images/ib_1.jpg" mode="" style="width: 100%;height: 100%;"></image>
+					</view>
+				</view>
+				<!-- 在线帮助 -->
+				<view class="help-section">
+					<image src="../../static/images/ib_2.jpg" mode=""
+						style="width: 100%;height: 100%;border-radius: 24rpx;"></image>
 				</view>
 			</view>
-			<!-- 在线帮助 -->
-			<view class="help-section">
-				<image src="../../static/images/ib_2.jpg" mode="" style="width: 100%;height: 100%;border-radius: 24rpx;"></image>
-			</view>
-		</view>
+		</scroll-view>
+		<!-- 底部导航栏 -->
+		<BottomNavBar ref="bottomNavRef" :modelValueFlag="0"/>
 	</view>
 </template>
 <script setup>
-import { onLoad } from '@dcloudio/uni-app'
-import { ref, reactive, onMounted } from 'vue'
+import {
+	onLoad
+} from '@dcloudio/uni-app'
+import {
+	ref,
+	reactive,
+	onMounted
+} from 'vue'
 import http from '@/utils/request.js'
-import { setStorage, getStorage, removeStorage } from '@/utils/storage'
-// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
+import {
+	setStorage,
+	getStorage,
+	removeStorage
+} from '@/utils/storage'
+import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 // import { useH5Bridge } from '../../utils/h5Bribge.js'
 
 const statusBarHeight = ref(0);
@@ -61,31 +76,30 @@ onLoad(() => {
 })
 
 // 快捷功能列表
-const quickAccessList = ref([
-	{
-		label: '待办流程',
-		imgUrl: '../../static/images/index_menu_1.svg',
-		path: '/pages/nav/pending',
-		bjColor: '#6599ff'
-	},
-	{
-		label: '已办流程',
-		imgUrl: '../../static/images/index_menu_2.svg',
-		path: '/pages/nav/completed',
-		bjColor: '#9933ff'
-	},
-	{
-		label: '掌上看板',
-		imgUrl: '../../static/images/index_menu_3.svg',
-		path: '',
-		bjColor: '#65cb33'
-	},
-	{
-		label: '在线帮助',
-		imgUrl: '../../static/images/index_menu_4.svg',
-		path: '',
-		bjColor: '#33cb99'
-	}
+const quickAccessList = ref([{
+	label: '待办流程',
+	imgUrl: '../../static/images/index_menu_1.svg',
+	path: '/pages/nav/pending',
+	bjColor: '#6599ff'
+},
+{
+	label: '已办流程',
+	imgUrl: '../../static/images/index_menu_2.svg',
+	path: '/pages/nav/completed',
+	bjColor: '#9933ff'
+},
+{
+	label: '掌上看板',
+	imgUrl: '../../static/images/index_menu_3.svg',
+	path: '',
+	bjColor: '#65cb33'
+},
+{
+	label: '在线帮助',
+	imgUrl: '../../static/images/index_menu_4.svg',
+	path: '',
+	bjColor: '#33cb99'
+}
 ]);
 
 onMounted(() => {
@@ -113,13 +127,42 @@ const getData = () => {
 		console.log("请求成功!")
 	})
 };
+
+const scrollViewHeight = ref('calc(100vh - 50px)');
+// 获取tabBar高度
+const calculateScrollViewHeight = () => {
+	try {
+        const systemInfo = uni.getSystemInfoSync()
+        const windowHeight = systemInfo.windowHeight
+        const tabBarHeight = 0 // 根据实际tabBar高度调整
+        const availableHeight = windowHeight - tabBarHeight
+        scrollViewHeight.value = `${availableHeight - 50}px`
+    } catch (error) {
+        scrollViewHeight.value = 'calc(100vh - 50px)'
+    }
+}
+onMounted(() => {
+	calculateScrollViewHeight()
+	// 监听窗口大小变化（H5有效）
+    uni.onWindowResize?.(() => {
+        calculateScrollViewHeight()
+    })
+})
 </script>
 
 <style lang="scss" scoped>
+	page{
+		background: #f3f7ff;
+	}
 .workplace-container {
-	min-height: 100vh;
+	height: auto;
 	background: #f3f7ff;
-	position: relative;
+
+	.scroller {
+		box-sizing: border-box;
+		background: #f3f7ff;
+		overflow-y: auto;
+	}
 
 	.header-stickt {
 		// position: sticky;
@@ -239,9 +282,9 @@ const getData = () => {
 			padding: 26rpx 30rpx;
 			border-radius: 25rpx;
 			box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-		    display: flex;
-		    flex-direction: column;
-		    align-items: center;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 
 			.section-title {
 				width: 622rpx;
@@ -250,7 +293,7 @@ const getData = () => {
 				margin-bottom: 16rpx;
 
 				.section-title-text {
-					font-size: 32rpx;	
+					font-size: 32rpx;
 					color: #000000;
 					font-weight: bold;
 					position: absolute;

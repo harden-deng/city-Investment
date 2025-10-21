@@ -37,46 +37,14 @@
 						</view>
 					</view>
 				</view>
-				
-				<!-- 筛选分类二 -->
-				<view class="filter-category">
-					<view class="category-title">筛选分类二</view>
-					<view class="filter-grid">
-						<view 
-							v-for="(item, index) in category2Options" 
-							:key="item.value" 
-							class="filter-item"
-							:class="{ active: state.category2.has(item.value) }" 
-							@click="toggleFilter(state.category2, item.value)"
-						>
-							{{ item.label }}
-						</view>
-					</view>
-				</view>
-				
-				<!-- 筛选分类二 -->
-				<view class="filter-category">
-					<view class="category-title">筛选分类二</view>
-					<view class="filter-grid">
-						<view 
-							v-for="(item, index) in category2Options" 
-							:key="item.value" 
-							class="filter-item"
-							:class="{ active: state.category2.has(item.value) }" 
-							@click="toggleFilter(state.category2, item.value)"
-						>
-							{{ item.label }}
-						</view>
-					</view>
-				</view>
 				<view style="height: 120rpx;">
 					
 				</view>
 			</scroll-view>
 			<!-- 底部操作按钮 -->
 			<view class="fp-footer">
-				<view class="btn reset" @click="onReset">重置</view>
-				<view class="btn confirm" @click="onConfirm">完成</view>
+				<view class="btn reset" @click="handleReset">重置</view>
+				<view class="btn confirm" @click="handleConfirm">完成</view>
 			</view>
 		</view>
 	</uni-popup>
@@ -84,7 +52,13 @@
 
 <script setup>
 	import { ref, reactive, computed, watch, defineProps, defineEmits, defineExpose } from 'vue'
-
+    import { throttle } from '@/utils/h5Bribge'
+    const handleReset = throttle(() => {
+        onReset()
+    }, 500)
+    const handleConfirm = throttle(() => {
+        onConfirm()
+    }, 1000)
 	const props = defineProps({
 		modelValue: {
 			type: Boolean,
@@ -136,8 +110,8 @@
 
 	// 筛选状态管理
 	const state = reactive({
-		category1: new Set(['filter1_1', 'filter1_4']), // 默认选中筛选条件一和筛选条件四
-		category2: new Set(['filter2_1']) // 默认选中筛选条件一
+		category1: new Set([]), // 默认选中筛选条件一和筛选条件四
+		category2: new Set([]) // 默认选中筛选条件一
 	})
 
 	// 切换筛选条件
@@ -209,7 +183,7 @@
 		background: $bg-white;
 		border-top-left-radius: 24rpx;
 		border-top-right-radius: 24rpx;
-		height: calc(100vh - 300rpx);
+		height: calc(100vh - 400rpx);
 		overflow: hidden;
 		
 		.filter-title {

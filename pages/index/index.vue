@@ -44,6 +44,9 @@
 		if (Number(statusBarHeightNew) != 0) {
 			statusBarHeight.value = Number(statusBarHeightNew)
 		}
+    //    uni.redirectTo({
+    //    	url: "/pages/nav/home"
+    //    })
        uni.switchTab({
        	url: "/pages/nav/home"
        })

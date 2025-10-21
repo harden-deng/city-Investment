@@ -1,0 +1,16 @@
+
+import window from '@ohos.window'
+import common from '@ohos.app.ability.common'
+
+export class ScreenOrientation {
+	async setLandscape(context : common.UIAbilityContext) : Promise<void> {
+		console.log(getContext(), 'getContext()')
+		const win = await window.getLastWindow(getContext())
+		await win.setPreferredOrientation(window.Orientation.LANDSCAPE)
+	}
+
+	async setPortrait(context : common.UIAbilityContext) : Promise<void> {
+		const win = await window.getLastWindow(getContext())
+		await win.setPreferredOrientation(window.Orientation.PORTRAIT)
+	}
+}
