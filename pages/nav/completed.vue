@@ -8,47 +8,23 @@
 						已办流程
 					</view>
 				</template>
-				<!-- <view class="" style="width: 30%;">待办流程</view>
-				<view class="title" style="width: 55%;text-align: center;font-size: 36rpx;
-			                font-family: PingFang SC-Heavy, PingFang SC;
-			                font-weight: 800;
-			                color: #333333;">待办流程</view>
-				<view slot="right" class="" style="width: 15%;text-align: end;">
-				</view> -->
-				<view class="nav-input-view" @click="focusInput">
+				<view class="nav-input-view">
 					<!-- <uni-icons class="input-uni-icon" type="search" size="12" color="#999" /> -->
 					<image class="input-seach" src="../../static/images/search.svg" mode=""  @click.stop="doSearch"></image>
-					<input  ref="searchInput"  class="input-view" placeholder="搜索" type="text"  v-model="searchKeyword"  @input="onSearchInput" confirm-type="search" @confirm="doSearch" @keyup.enter="doSearch"/>
+					<input  class="input-view" placeholder="搜索" type="text"  v-model="searchKeyword" confirm-type="search" @confirm="doSearch" @keyup.enter="doSearch"/>
 				</view>
 				<template v-slot:right>
 					<view @click="openFilter" class="nav-bar-filter"> 筛选 </view>
 				</template>
 			</uni-nav-bar>
-
-			<!-- 搜索栏和筛选 -->
-			<!-- <view class="search-section">
-				<view class="search-bar">
-					<view class="search-input">
-						<uni-easyinput prefixIcon="search" v-model="searchKeyword" placeholder="搜索" @input="doSearch"
-							:styles="styles"></uni-easyinput>
-					</view>
-					<view class="filter-dropdown" @click="openFilter">
-						<text class="filter-text">筛选</text>
-						<text class="dropdown-arrow">▼</text>
-					</view>
-				</view>
-			</view> -->
-
 			<!-- 分段控制器 -->
 			<view class="segmented-section">
-				<!-- <uni-segmented-control :current="currentTab" :values="tabValues" :activeColor="'#3e65f6'"
-					:inActiveColor="'#cccccc'" :styleType="'text'" @clickItem="onTabChange" class="custom-segmented" /> -->
 				<view class="segmented-section-item" v-for="(item,index) in tabValues" :key="index"
 					@click="onTabChange(index)">
 					<text class="section-item-0" style="height: 0;"></text>
 					<view class="section-item-1" :class="{'section-item-1-active':index === currentTab}">
 						{{item}}
-						<text :class="{'msg':msgFlag.includes(index)}"></text>
+						<!-- <text :class="{'msg':msgFlag.includes(index)}"></text> -->
 					</view>
 					<text class="section-item-0" :class="{'section-item-0-active':index === currentTab}"></text>
 				</view>
@@ -56,34 +32,34 @@
 		</view>
 		<!-- 订单列表 -->
 		<view class="order-list" :style="{height: orderListHeight}">
-			<z-paging ref="paging" v-model="dataList" @onRefresh="onRefresh" @query="queryList" :fixed="false">
+			<z-paging ref="paging" v-model="dataList" @onRefresh="onRefreshWatch" @query="queryList" :fixed="false">
 				<view style="height: 30rpx;"></view>
-				<view class="order-card" v-for="order in dataList " :key="order.id" @click="toDetail(order)">
-					<view class="approved-view" v-show="order?.isApproval">
+				<view class="order-card" v-for="order in dataList " :key="order.id || order.requestFormNo" @click="toDetail(order)">
+					<view class="approved-view" v-show="order?.wfStatus === 'Completed'">
 						<image src="../../static/images/approved.png" mode="" style="width: 100%;height: 100%;"></image>
 					</view>
 					<view class="order-header">
-						<text class="order-id">{{ order.id }}</text>
+						<text class="order-id">{{ order.requestFormNo }}</text>
 						<view class="order-time">
-							<text class="time-text">{{ order.time }}</text>
+							<text class="time-text">{{ formatRelativeTime(order.submittedDate) }}</text>
 						</view>
 					</view>
 					<view class="order-content">
 						<view class="quote-section">
 							<text class="quote-label">申请费用：</text>
-							<text class="quote-price">¥{{ order.price }}</text>
+							<text class="quote-price">¥{{ order.price || '--' }}</text>
 						</view>
 						<view class="quote-section">
 							<text class="quote-label">申请单位：</text>
-							<text class="description-text">{{ order.applicant }} | {{ order.customerName }}</text>
+							<text class="description-text">{{ order.procDefName }} | {{ order.submittedByName }}</text>
 						</view>
 						<view class="quote-section">
 							<text class="quote-label">关键信息：</text>
-							<text class="description-text">{{ order.keyInformation }}</text>
+							<text class="description-text">{{ order.taskName}}</text>
 						</view>
 						<view class="quote-section">
 							<text class="quote-label">业务摘要：</text>
-							<text class="description-text">{{ order.description }}</text>
+							<text class="description-text">{{ order.stepName }}</text>
 						</view>
 						<view class="label-view">
 							<view class="label-item" v-for="(item,index) in (order?.labelArr || [])" :key="index">
@@ -95,9 +71,7 @@
 				</view>
 			</z-paging>
 		</view>
-		
 		<FilterPopup ref="filterRef" v-model="show" :confirmCount="1400" @confirm="onConfirm" @reset="onReset" />
-		
 		<!-- 底部导航栏 -->
 		<BottomNavBar ref="bottomNavRef" :modelValueFlag="2"/>
 	</view>
@@ -119,10 +93,10 @@
 		getStorage,
 		removeStorage
 	} from '@/utils/storage'
+	import http from '@/utils/request.js'
+	import { formatRelativeTime } from '@/utils/h5Bribge.js'
 	import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
-	// import { useNavigationBar, toBack } from '@/utils/common.js'
-	// const { statusBarHeight, navHeight, navigationBarHeight, initNavigationBar } = useNavigationBar()
 	const statusBarHeight = ref(0)
 	onLoad(() => {
 		const statusBarHeightNew = getStorage('statusBarHeight');
@@ -130,40 +104,22 @@
 			statusBarHeight.value = Number(statusBarHeightNew)
 		}
 	})
-	// onLoad(() => {
-	// initNavigationBar();
-	// })
 	const paging = ref(null)
-	const styles = {
-		background: '#bbb'
-	}
 	// 搜索相关
 	const searchKeyword = ref('')
-	const searchInput = ref(null)
-
-	// 点击边框区域让input获取焦点
-	const focusInput = () => {
-		nextTick(() => {
-			console.log('searchInput', searchInput.value)
-			if (searchInput.value) {
-				searchInput.value.focus()
-			}
-		})
-	}
-
-	// 搜索输入处理
-	const onSearchInput = (e) => {
-		searchKeyword.value = e.detail.value
-		console.log('搜索关键词:', searchKeyword.value)
-		// 可以在这里添加实时搜索逻辑
-	}
-
-	const showFilter = ref(false)
-	const msgFlag = ref([0, 1, 2])
+	
+	// const msgFlag = ref([0, 1, 2])
 	// 分段控制器
 	const currentTab = ref(0)
-	const tabValues = ref(['所有', '流转中', '已审核'])
-	//筛选
+
+	const tabs = [
+		{ label: '所有', wf: '' },
+		{ label: '流转中', wf: 'Running' },
+		{ label: '已审核', wf: 'Completed' },
+	];
+	const wfstatusArr = ref(tabs.map(t => t.wf));
+	const tabValues = ref(tabs.map(t => t.label));
+	//弹窗筛选--------start
 	const show = ref(false)
 	const filterRef = ref(null)
 
@@ -179,105 +135,12 @@
 	function onReset() {
 		console.log('重置筛选')
 	}
-
-	function onEditLocation() {
-		console.log('点击修改位置')
-	}
-	// 订单数据
-	const dataList = ref([{
-			id: 'QA2019091723123100',
-			time: '15分钟前',
-			price: '10,400,500.00',
-			customerName: '张三',
-			applicant: '第一事业部',
-			contactPhone: '13982003346',
-			description: '本期支付中：支付农民工工资专户10000000元，基本户9943492元。',
-			keyInformation: '外环西段交通功能提升工程，土建施工3标段（主线）',
-			isApproval: true,
-			labelArr: [{
-				label: '标签1',
-				id: '2313131'
-			}, {
-				label: '标签2',
-				id: '2313131'
-			}, {
-				label: '标签2',
-				id: '2313131'
-			}, {
-				label: '标签2',
-				id: '2313131'
-			}, {
-				label: '标签2',
-				id: '2313131'
-			}]
-		},
-		{
-			id: 'QA2019091723123100',
-			time: '15分钟前',
-			price: '10,400,500.00',
-			customerName: '张三',
-			applicant: '第一事业部',
-			contactPhone: '13982003346',
-			description: '本期支付中：支付农民工工资专户10000000元，基本户9943492元。',
-			keyInformation: '外环西段交通功能提升工程，土建施工3标段（主线）',
-			isApproval: false,
-			labelArr: [{
-				label: '标签1',
-				id: '2313131'
-			}, {
-				label: '标签2',
-				id: '2313131'
-			}, {
-				label: '标签2',
-				id: '2313131'
-			}, {
-				label: '标签2',
-				id: '2313131'
-			}, {
-				label: '标签2',
-				id: '2313131'
-			}]
-		}, {
-			id: 'QA20190917212310',
-			time: '15分钟前',
-			price: '10,400,500.00',
-			customerName: '张三',
-			applicant: '第一事业部',
-			contactPhone: '13982003346',
-			description: '本期支付中：支付农民工工资专户10000000元，基本户9943492元。',
-			keyInformation: '外环西段交通功能提升工程，土建施工3标段（主线）',
-			isApproval: false,
-			labelArr: [{
-				label: '标签1',
-				id: '2313131'
-			}, {
-				label: '标签2',
-				id: '2313131'
-			}],
-		}, {
-			id: 'QA20190917200112312',
-			time: '15分钟前',
-			price: '10,400,500.00',
-			customerName: '张三',
-			applicant: '第一事业部',
-			contactPhone: '13982003346',
-			description: '本期支付中：支付农民工工资专户10000000元，基本户9943492元。',
-			keyInformation: '外环西段交通功能提升工程，土建施工3标段（主线）',
-			isApproval: false,
-			labelArr: [{
-				label: '标签1',
-				id: '2313131'
-			}, {
-				label: '标签2',
-				id: '2313131'
-			}],
-		}
-	])
+    //弹窗筛选------end
 	const doSearch = () => {
-		if (!searchKeyword.value?.trim()) {
-			uni.showToast({ title: '请输入搜索关键词', icon: 'none' })
-			return
-		}
+		// if (!searchKeyword.value?.trim()) {
+		// 	uni.showToast({ title: '请输入搜索关键词', icon: 'none' })
+		// 	return
+		// }
 		uni.hideKeyboard()
 		// 真正搜索逻辑：刷新列表或跳转搜索页
 		// 例1：刷新当前列表
@@ -287,31 +150,37 @@
 	const onTabChange = (val) => {
 		currentTab.value = val
 		onRefresh()
-		// if(msgFlag.value == val){
-		// 	setTimeout(()=>{
-		// 		msgFlag.value = -1
-		// 	},100)
-		// }
 		// 1. 找到索引
-		const idx = msgFlag.value.indexOf(val);
+		// const idx = msgFlag.value.indexOf(val);
 		// 2. 有就删
-		if (idx !== -1) msgFlag.value.splice(idx, 1);
+		// if (idx !== -1) msgFlag.value.splice(idx, 1);
 		console.log('切换到:', tabValues.value[val])
 	}
 
 	const onRefresh =() => {
 		// 告知z-paging下拉刷新结束，这样才可以开始下一次的下拉刷新
-		setTimeout(() => {
-			// 1.5秒之后停止刷新动画
-			paging.value.complete();
-			paging.value.reload()
-		}, 10)
+		paging.value.reload()
 	}
-	//分页加载
+	const onRefreshWatch =() => {
+		// 告知z-paging下拉刷新结束，这样才可以开始下一次的下拉刷新
+		console.log('下拉刷新触发')
+	}
+	// 订单数据--------start
+	const dataList = ref([])
+	//分页加载--------start
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
 	const queryList = (pageNo, pageSize) => {
-		console.log("pageNo-->", pageNo, "pageSize---->", pageSize)
-		paging.value.complete(dataList.value);
+		http.get('/WF/GetInvolvedProcess', {
+			Page: pageNo,
+			Limit: pageSize,
+			Wfstatus: wfstatusArr.value[currentTab.value],
+			RequestFormNo: searchKeyword.value
+		}).then(res => {
+			paging.value.complete(res.data.data || [])
+		}).catch(() => {
+			paging.value.complete(false)
+			uni.showToast({ title: '加载失败', icon: 'none' });
+		})
 		// let cc = pageNo + pageSize
 		// 此处请求仅为演示，请替换为自己项目中的请求
 		//       request.queryList({ pageNo,pageSize }).then(res => {
@@ -324,14 +193,22 @@
 		// 	paging.value.complete(false);
 		// })
 	}
+	//分页加载--------end
 
 	const toDetail = (order) => {
 		uni.navigateTo({
-			url: `/pages/detail/index?id=${order.id}&type=pending`
+			url: '/pages/detail/index',
+			success(res) {
+				console.log('res', res)
+				res.eventChannel.emit('open-detail', {
+					type: 'completed',
+					order: order // 也可直接传整条数据
+				})
+			}
 		})
 	}
+	//计算订单列表高度--------start
 	const orderListHeight = ref('')
-
 	const computeOrderListHeight = () => {
 		try {
 			const {
@@ -355,6 +232,7 @@
 		// 横竖屏切换/窗口改变时重算（H5 有效）
 		uni.onWindowResize?.(() => computeOrderListHeight())
 	})
+	//计算订单列表高度-------end
 </script>
 
 <style lang="scss" scoped>
@@ -679,7 +557,13 @@
 			font-size: 32rpx;
 			color: #000000;
 			font-weight: bold;
-			overflow-x: auto;
+			white-space: normal;
+			word-break: break-all;
+			overflow-wrap: break-word;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
 		}
 
 		.order-time {

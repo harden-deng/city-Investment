@@ -438,9 +438,14 @@
 	} from '@/utils/definitions'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	const statusBarHeight = ref(0)
+	let eventChannel
 	onLoad(() => {
 		const h = getStorage('statusBarHeight')
 		if (Number(h)) statusBarHeight.value = Number(h)
+		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
+		eventChannel.on('open-detail', (data) => {
+			console.log('open-detail', data)
+		})
 	})
 	const inputDialogVisible = ref(false)
 	const inputDialogRequired = ref(false)

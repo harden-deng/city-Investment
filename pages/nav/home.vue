@@ -10,8 +10,8 @@
 				</view>
 				<!-- 通知栏 -->
 				<view class="notification-bar">
-					<view class="notification-content" @click="handleNotification">
-						<image class="speaker-icon" src="../../static/images/icon_1.svg" mode="aspectFit"></image>
+					<view class="notification-content" @click="handleNotification" role="button" tabindex="0">
+						<image class="speaker-icon" src="../../static/images/icon_1.svg" mode="aspectFit" aria-label="公告"></image>
 						<text class="notification-text">·本市排水管理体制改革取得阶段性进展</text>
 					</view>
 				</view>
@@ -35,12 +35,12 @@
 						<text class="section-title-bj"></text>
 					</view>
 					<view class="announcement-banner">
-						<image src="../../static/images/ib_1.jpg" mode="" style="width: 100%;height: 100%;"></image>
+						<image class="announcement-img" src="../../static/images/ib_1.jpg" mode="aspectFill" loading="lazy" aria-label="在线公示"></image>
 					</view>
 				</view>
 				<!-- 在线帮助 -->
 				<view class="help-section">
-					<image src="../../static/images/ib_2.jpg" mode=""
+					<image src="../../static/images/ib_2.jpg" mode="" aria-label="在线帮助"
 						style="width: 100%;height: 100%;border-radius: 24rpx;"></image>
 				</view>
 			</view>
@@ -55,108 +55,56 @@ import {
 } from '@dcloudio/uni-app'
 import {
 	ref,
-	reactive,
-	onMounted
+	onMounted,
+	computed
 } from 'vue'
-import http from '@/utils/request.js'
 import {
-	setStorage,
 	getStorage,
-	removeStorage
 } from '@/utils/storage'
 import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
-// import { useH5Bridge } from '../../utils/h5Bribge.js'
 
-const statusBarHeight = ref(0);
+const statusBarHeight = ref(0)
+const tabBarHeight = ref(50) // 如有实际高度可替换
+const windowHeight = ref(0)
 onLoad(() => {
 	const statusBarHeightNew = getStorage('statusBarHeight');
 	if (Number(statusBarHeightNew) != 0) {
 		statusBarHeight.value = Number(statusBarHeightNew)
 	}
 })
-
 // 快捷功能列表
-const quickAccessList = ref([{
-	label: '待办流程',
-	imgUrl: '../../static/images/index_menu_1.svg',
-	path: '/pages/nav/pending',
-	bjColor: '#6599ff'
-},
-{
-	label: '已办流程',
-	imgUrl: '../../static/images/index_menu_2.svg',
-	path: '/pages/nav/completed',
-	bjColor: '#9933ff'
-},
-{
-	label: '掌上看板',
-	imgUrl: '../../static/images/index_menu_3.svg',
-	path: '',
-	bjColor: '#65cb33'
-},
-{
-	label: '在线帮助',
-	imgUrl: '../../static/images/index_menu_4.svg',
-	path: '/pages/info/help',
-	bjColor: '#33cb99'
+const quickAccessList = ref([
+  { label:'待办流程', imgUrl:'../../static/images/index_menu_1.svg', path:'/pages/nav/pending', bjColor:'#6599ff', isTab:true },
+  { label:'已办流程', imgUrl:'../../static/images/index_menu_2.svg', path:'/pages/nav/completed', bjColor:'#9933ff', isTab:true },
+  { label:'掌上看板', imgUrl:'../../static/images/index_menu_3.svg', path:'', bjColor:'#65cb33', isTab:false },
+  { label:'在线帮助', imgUrl:'../../static/images/index_menu_4.svg', path:'/pages/info/help', bjColor:'#33cb99', isTab:false },
+])
+const handleQuickAccess = (item) => {
+  if (!item.path) {
+    uni.showToast({ title: `${item.label}功能开发中`, icon: 'none' })
+    return
+  }
+  item.isTab ? uni.switchTab({ url: item.path }) : uni.navigateTo({ url: item.path })
 }
-]);
-
-onMounted(() => {
-	getData();
-})
-
 const handleNotification = () => {
 	uni.navigateTo({
 		url: '/pages/info/msg'
 	})
 }
-
-// 快捷访问点击处理
-const handleQuickAccess = (item) => {
-	console.log('点击快捷功能:', item.label)
-	if (item.path && item.path.includes('pages/nav/')) {
-		uni.switchTab({
-			url: item.path
-		})
-	} else if (item.path && !item.path.includes('pages/nav/')) {
-		uni.navigateTo({
-			url: item.path
-		})
-	} else {
-		uni.showToast({
-			title: `${item.label}功能开发中`,
-			icon: 'none'
-		})
-	}
-}
-
-
-const getData = () => {
-	http.get('arr', {}).then((res) => {
-		console.log("请求成功!")
-	})
-};
-
-const scrollViewHeight = ref('calc(100vh - 50px)');
-// 获取tabBar高度
-const calculateScrollViewHeight = () => {
-	try {
-        const systemInfo = uni.getSystemInfoSync()
-        const windowHeight = systemInfo.windowHeight
-        const tabBarHeight = 0 // 根据实际tabBar高度调整
-        const availableHeight = windowHeight - tabBarHeight
-        scrollViewHeight.value = `${availableHeight - 50}px`
-    } catch (error) {
-        scrollViewHeight.value = 'calc(100vh - 50px)'
-    }
-}
+const scrollViewHeight = computed(() => {
+	return `${Math.max(0, windowHeight.value - tabBarHeight.value)}px`
+})
 onMounted(() => {
-	calculateScrollViewHeight()
-	// 监听窗口大小变化（H5有效）
-    uni.onWindowResize?.(() => {
-        calculateScrollViewHeight()
-    })
+	try {
+		const sys = uni.getSystemInfoSync()
+		windowHeight.value = sys.windowHeight
+	} catch (e) {
+		windowHeight.value = 600
+	}
+	uni.onWindowResize?.(() => {
+		const sys = uni.getSystemInfoSync?.()
+		if (sys?.windowHeight) windowHeight.value = sys.windowHeight
+	})
 })
 </script>
 
@@ -164,7 +112,7 @@ onMounted(() => {
 	page{
 		background: #f3f7ff;
 	}
-.workplace-container {
+   .workplace-container {
 	height: auto;
 	background: #f3f7ff;
 
@@ -230,8 +178,11 @@ onMounted(() => {
 
 				.notification-text {
 					font-size: 24rpx;
-					color: #333333;
+					color: #333;
 					flex: 1;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
 				}
 			}
 		}
@@ -341,6 +292,17 @@ onMounted(() => {
 			background-color: #ffffff;
 		}
 	}
+}
+.announcement-img {
+	width: 100%;
+	height: 100%;
+	border-radius: 20rpx;
+}
+
+// 窄屏下适当减小字体与间距：
+@media screen and (max-width: 360px) {
+  .notification-text { font-size: 22rpx; }
+  .access-label { font-size: 22rpx; }
 }
 
 // PC端适配

@@ -68,5 +68,41 @@
     "uniStatistics" : {
         "enable" : false
     },
+    // "h5" : {
+    //     "devServer" : {
+    //         // "port" : 80,
+    //         // "disableHostCheck" : true,
+    //         "proxy" : {
+    //             "/WebApi/api" : {
+    //                 "target" : "http://47.99.104.91:8039",
+    //                 "changeOrigin" : true,
+    //                 "secure" : false
+    //             }
+    //         },
+    //         "https" : true,
+    //         "port" : 3000
+    //     }
+    // },
+    "h5" : {
+        "devServer" : {
+            "proxy" : {
+                "/WebApi/api" : {
+                    // 只代理 /api 开头的请求
+                    "target" : "http://47.99.104.91:8039",
+                    "changeOrigin" : true, //是否跨域
+                    "secure" : true, // 设置支持https协议的代理
+                    "pathRewrite" : {
+                        "^/WebApi/api" : "/WebApi/api"
+                    }
+                }
+            }
+        },
+        "router" : {
+            "mode" : "history"
+        }
+    },
+    // "https" : false
     "vueVersion" : "3"
 }
+
+

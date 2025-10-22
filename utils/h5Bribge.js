@@ -69,3 +69,45 @@ export function throttle(fn, gapTime) {
         }
     }
 }
+
+
+export function formatRelativeTime(dateString) {
+    if (!dateString) return ''
+    
+    const now = new Date()
+    const targetDate = new Date(dateString)
+    
+    // 如果日期无效，返回原字符串
+    if (isNaN(targetDate.getTime())) {
+        return dateString
+    }
+    
+    const diffInSeconds = Math.floor((now - targetDate) / 1000)
+    
+    if (diffInSeconds < 60) {
+        return '刚刚'
+    }
+    
+    const diffInMinutes = Math.floor(diffInSeconds / 60)
+    if (diffInMinutes < 60) {
+        return `${diffInMinutes}分钟前`
+    }
+    
+    const diffInHours = Math.floor(diffInMinutes / 60)
+    if (diffInHours < 24) {
+        return `${diffInHours}小时前`
+    }
+    
+    const diffInDays = Math.floor(diffInHours / 24)
+    if (diffInDays < 30) {
+        return `${diffInDays}天前`
+    }
+    
+    const diffInMonths = Math.floor(diffInDays / 30)
+    if (diffInMonths < 12) {
+        return `${diffInMonths}个月前`
+    }
+    
+    const diffInYears = Math.floor(diffInMonths / 12)
+    return `${diffInYears}年前`
+}

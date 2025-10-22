@@ -32,13 +32,14 @@
 	import { onLoad } from '@dcloudio/uni-app'
 	import { ref, onMounted, computed } from 'vue'
 	import { setStorage, getStorage, removeStorage } from '@/utils/storage'
+	import http from '@/utils/request.js'
 	const styles = {
 	    placeholderColor: '#999999',
 	}
 	const statusBarHeight = ref(0)
 	// 响应式数据
-	const phoneNumber = ref('')
-	const password = ref('')
+	const phoneNumber = ref('sybzgo');
+	const password = ref(123);
 	onLoad(() => {
 		const statusBarHeightNew = getStorage('statusBarHeight');
 		if (Number(statusBarHeightNew) != 0) {
@@ -47,9 +48,10 @@
     //    uni.redirectTo({
     //    	url: "/pages/nav/home"
     //    })
-       uni.switchTab({
-       	url: "/pages/nav/home"
-       })
+    //    uni.switchTab({
+    //    	url: "/pages/nav/home"
+    //    })
+	//  handleLogin();
 	})
 
 
@@ -62,20 +64,33 @@
 			})
 			return
 		}
-
-		// 登录逻辑
-		console.log('登录', { account: phoneNumber.value, password: password.value })
-		uni.showToast({
-			title: '登录成功',
-			icon: 'success'
-		})
-
-		// 验证成功后跳转
-		setTimeout(() => {
+		if(uni.getStorageSync('token')){
 			uni.switchTab({
-				url: "/pages/nav/home"
+				url: '/pages/nav/home'
 			})
-		}, 500) // 等待toast显示完成后跳转
+			return
+		}
+		// 登录逻辑
+		http.post('/Auth/accountlogin', {
+			userAccount: phoneNumber.value,
+			userPassword: password.value
+		}).then(res => {
+			console.log('登录成功', res)
+			if (res.code == 0) {
+				uni.setStorageSync('token', res.data.accessToken)
+				uni.setStorageSync('userFullName', res.data.userFullName)
+				uni.switchTab({
+					url: '/pages/nav/home'
+				})
+			} else {
+				uni.showToast({
+					title: res.message,
+					icon: 'none'
+				})
+			}
+		}).catch(err => {
+			console.log('登录失败', err)
+		})
 	}
 </script>
 
