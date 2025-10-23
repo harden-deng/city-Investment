@@ -41,29 +41,8 @@
 				</view>
 			</view>
 		</view>
-		<scroll-view scroll-y="true" class="scroller" :style="{ height: scrollerHeight }">
+		<scroll-view scroll-y="true" class="scroller">
 			<!-- 顶部蓝卡片 -->
-			<!-- <view class="hero-card">
-                <view class="hero-header">
-                    <view class="project-name">
-                        {{ detail.projectName }} <br />
-                        勘察设计1标 <br />
-                    </view>
-                    <view class="amount-box">
-                        <view class="amount-label">申请支付总金额</view>
-                        <view class="amount-value"><text class="amount-value-symbol">¥</text><text
-                                class="amount-value-number">
-                                {{ detail.amount }}</text></view>
-                    </view>
-                </view>
-                <view class="hero-tags">
-                    <view class="tag" v-for="(t, i) in detail.stageTags" :key="i">{{ t }}</view>
-                </view>
-                <view class="hero-actions">
-                    <view class="btn outline" @click="onReject">打回</view>
-                    <view class="btn primary" @click="onApprove">通过</view>
-                </view>
-            </view> -->
 			<!-- 基本信息 -->
 			<view class="section">
 				<view class="section-title">
@@ -536,33 +515,7 @@
 	}
 
 
-	// 计算 scroll-view 高度 = 设备窗口高 - 头部实际高
-	function computeScrollHeight() {
-		try {
-			const {
-				windowHeight
-			} = uni.getSystemInfoSync() // px
-			const inst = getCurrentInstance()
-			const q = uni.createSelectorQuery().in(inst?.proxy)
-			// q.select('.nav-bar-top').boundingClientRect(data => {
-			//     const navBarTopH = data?.height || 0
-			//     const h = Math.max(0, windowHeight - navBarTopH)
-			//     scrollerHeight.value = `${h}px`
-			// }).exec()
-			// q.select('.hero-card').boundingClientRect(data => {
-			//     const headerH = data?.height || 0
-			//     heroCardHeight.value = headerH
-			// }).exec()
-			q.select('.header-stickt').boundingClientRect(data => {
-				const headerH = data?.height || 0
-				const h = Math.max(0, windowHeight - headerH)
-				scrollerHeight.value = `${h}px`
-			}).exec()
-		} catch (e) {
-			// 兜底：若获取失败，至少不挡住页面
-			scrollerHeight.value = 'calc(100vh - 88rpx)'
-		}
-	}
+
 	const onReject = () => {
 		// uni.showToast({
 		// 	title: '已打回',
@@ -593,16 +546,76 @@
 		inputDialogVisible.value = false
 		inputDialogValue.value = ''
 	}
+	// 计算 scroll-view 高度 = 设备窗口高 - 头部实际高
+	function computeScrollHeight() {
+		try {
+			const {
+				windowHeight
+			} = uni.getSystemInfoSync() // px
+			const inst = getCurrentInstance()
+			const q = uni.createSelectorQuery().in(inst?.proxy)
 
+			q.select('.header-stickt').boundingClientRect(data => {
+				const headerH = data?.height || 0
+				const h = Math.max(0, windowHeight - headerH)
+				scrollerHeight.value = `${h}px`
+			}).exec()
+		} catch (e) {
+			// 兜底：若获取失败，至少不挡住页面
+			scrollerHeight.value = 'calc(100vh - 88rpx)'
+		}
+	}
 	onMounted(() => {
 		nextTick(() => {
 			computeScrollHeight()
 		})
 		// 可选：横竖屏/窗口尺寸改变时重算
-		uni.onWindowResize?.(() => {
-			computeScrollHeight()
-		})
+		// uni.onWindowResize?.(() => {
+		// 	computeScrollHeight()
+		// })
+		// focusout 事件在元素失去焦点时触发，特别是在移动端输入框收起键盘时
+		// document.addEventListener('focusout', () => {
+	  	//   setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' }), 20)
+		// })
+		  // 视口变化 = 键盘弹起/收起
+		
+        // 获取系统信息
+		const systemInfo = uni.getSystemInfoSync()
+		const isIOS = systemInfo.platform === 'ios'
+		const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
+		
+		// 只在 iOS H5 环境下添加滚动修复
+		if (isIOS && isH5) {
+			console.log('检测到 iOS H5 环境，添加滚动修复')
+			
+			// 添加失焦滚动修复
+			document.addEventListener('focusout', () => {
+					setTimeout(() => {
+						window.scrollTo({ 
+						top: 0, 
+						left: 0, 
+						behavior: 'instant' 
+						})
+					}, 20)
+			})
+			
+			// // 可选：添加其他 iOS H5 特有的修复
+			// document.addEventListener('touchstart', () => {
+			// // iOS H5 触摸开始时的处理
+			// })
+		} else{
+			window.visualViewport?.addEventListener('resize', onResize)
+            window.addEventListener('resize', onResize)   // 部分浏览器兼容
+		}
+
+
 	})
+
+	function onResize() {
+		setTimeout(() => {
+		 computeScrollHeight()
+		},100)
+	}
 </script>
 
 <style lang="scss" scoped>
@@ -613,9 +626,24 @@
     ::v-deep .uni-navbar__header{
 		  padding: 0 !important;
 	}
+	::v-deep .uni-tabbar-bottom{
+		display: none !important;
+		height: 0 !important;
+	}
+	// @media (min-aspect-ratio: 13/20) {
+	// //   ::v-deep .uni-tabbar-bottom {
+	// // 	display: none !important;
+	// // 	height: 0 !important;
+	// //   }
+	//   ::v-deep .bottom-nav-bar{
+	// 	  display: none !important;
+	// 	  height: 0 !important;
+	//   }
+	// }
+
 	.detail-page {
 		width: 100%;
-		min-height: 100vh;
+		height: 100vh;
 		background: #f8f8f8;
 
 		.header-stickt {
@@ -650,6 +678,7 @@
 
 		.scroller {
 			box-sizing: border-box;
+			height: v-bind(scrollerHeight);
 			// position: absolute;
 			// z-index: 19;
 			// top: 88rpx;

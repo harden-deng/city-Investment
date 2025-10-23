@@ -16,7 +16,7 @@
             </uni-nav-bar>
         </view>
         <!-- 消息列表 -->
-        <view class="msg-list" :style="{ height: msgListHeight }">
+        <view class="msg-list">
             <z-paging ref="paging" v-model="dataList" @onRefresh="onRefresh" @query="queryList"
                 :fixed="false">
                 <view class="msg-item" v-for="(item, index) in dataList" :key="index">
@@ -260,6 +260,7 @@ onMounted(() => {
 /* 消息列表样式 */
 .msg-list {
     box-sizing: border-box;
+    height: v-bind(msgListHeight);
 }
 
 .msg-item {

@@ -11,7 +11,8 @@
 				<!-- 通知栏 -->
 				<view class="notification-bar">
 					<view class="notification-content" @click="handleNotification" role="button" tabindex="0">
-						<image class="speaker-icon" src="../../static/images/icon_1.svg" mode="aspectFit" aria-label="公告"></image>
+						<!-- <image class="speaker-icon" src="../../static/images/icon_1.svg" mode="aspectFit" aria-label="公告"></image> -->
+						<view class="speaker-icon"></view>
 						<text class="notification-text">·本市排水管理体制改革取得阶段性进展</text>
 					</view>
 				</view>
@@ -40,7 +41,7 @@
 				</view>
 				<!-- 在线帮助 -->
 				<view class="help-section">
-					<image src="../../static/images/ib_2.jpg" mode="" aria-label="在线帮助"
+					<image src="../../static/images/ib_2.jpg" mode="" aria-label="在线帮助" loading="lazy"
 						style="width: 100%;height: 100%;border-radius: 24rpx;"></image>
 				</view>
 			</view>
@@ -173,7 +174,11 @@ onMounted(() => {
 				.speaker-icon {
 					width: 30rpx;
 					height: 30rpx;
-					margin-right: 22rpx;
+					// margin-right: 22rpx;
+					background-image: url('../../static/images/icon_1.svg');
+					background-size: contain;
+					background-repeat: no-repeat;
+					background-position: center;
 				}
 
 				.notification-text {

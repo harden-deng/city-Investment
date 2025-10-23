@@ -157,7 +157,7 @@
 				}
 				
 				this.isSaving = true;
-				this.goBack();
+				// this.goBack();
 
 				// 这里可以调用API保存签名到服务器
 				this.uploadSignatureToServer();
@@ -165,17 +165,19 @@
 
 			// 上传签名到服务器
 			async uploadSignatureToServer() {
+				console.log('uploadSignatureToServer', this.signatureData);
 				try {
 					uni.showLoading({
 						title: '保存中...'
 					});
 
 					// 将base64转换为临时文件
+					console.log('tempFilePath11111');
 					const tempFilePath = await this.base64ToTempFile(this.signatureData.url);
-
+                    console.log('tempFilePath22222', tempFilePath);
 					// 上传到服务器
 					const uploadResult = await this.uploadFile(tempFilePath);
-
+					console.log('uploadResult', uploadResult);
 					uni.hideLoading();
 
 					if (uploadResult.success) {
@@ -399,7 +401,9 @@
 			flex: 1;
 			margin: 0 10rpx;
 			height: 80rpx;
-			line-height: 80rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			border-radius: 40rpx;
 			font-size: 30rpx;
 			font-weight: bold;
@@ -410,7 +414,7 @@
 		}
 
 		.save-btn {
-			background: linear-gradient(135deg, #007aff, #0056cc);
+			background: linear-gradient(135deg, #6699ff, #1f67ca);
 			color: white;
 			// box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.3);
 
@@ -422,10 +426,8 @@
 			&.disabled {
 				background: linear-gradient(135deg, #ccc, #999);
 				color: #666;
-				// box-shadow: none;
 				cursor: not-allowed;
 				opacity: 0.6;
-
 				&:active {
 					transform: none;
 				}

@@ -3,7 +3,7 @@
 		<view class="idlg">
 			<text class="idlg-title">{{ title }}</text>
 			<view class="idlg-input-wrap">
-				<uni-easyinput type="textarea" :placeholder="placeholder" clearable :maxlength="maxlength" autoHeight
+				<uni-easyinput type="textarea" :placeholder="placeholder" :clearable="true" :maxlength="maxlength" autoHeight
 					v-model="innerValue"></uni-easyinput>
 			</view>
 			<view class="idlg-footer">
@@ -17,14 +17,7 @@
 
 <script setup>
 import { throttle } from '@/utils/h5Bribge'
-	import {
-		ref,
-		watch,
-		computed,
-		defineProps,
-		defineEmits,
-		defineExpose
-	} from 'vue'
+import { ref, watch, computed } from 'vue'
 
 	const handleConfirm = throttle(() => {
 		doConfirm()

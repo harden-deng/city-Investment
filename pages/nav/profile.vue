@@ -8,7 +8,7 @@
 					<text class="card__dept">第一事业部</text>
 				</view>
 			</view>
-			<image class="card__avatar" src="../../static/images/user.jpg" mode="aspectFill"></image>
+			<image class="card__avatar" src="../../static/images/user.jpg" mode="aspectFill" loading="lazy"></image>
 		</view>
 		<view class="list">
 			<view class="list__item" hover-class="list__item--hover" @click="goMessage">

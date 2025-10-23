@@ -7,10 +7,7 @@
 
 <script setup>
 	import {
-		ref,
-		defineProps,
-		defineEmits,
-		defineExpose
+		ref
 	} from 'vue'
 
 	defineOptions({

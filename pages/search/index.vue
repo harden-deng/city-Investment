@@ -54,7 +54,6 @@
 		reactive,
 		computed,
 		watch,
-		defineProps,
 		defineEmits,
 		defineExpose
 	} from 'vue'

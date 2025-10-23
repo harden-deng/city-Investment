@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-	import { ref, reactive, computed, watch, defineProps, defineEmits, defineExpose } from 'vue'
+	import { ref, reactive, computed, watch } from 'vue'
     import { throttle } from '@/utils/h5Bribge'
     const handleReset = throttle(() => {
         onReset()

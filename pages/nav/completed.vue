@@ -11,7 +11,7 @@
 				<view class="nav-input-view">
 					<!-- <uni-icons class="input-uni-icon" type="search" size="12" color="#999" /> -->
 					<image class="input-seach" src="../../static/images/search.svg" mode=""  @click.stop="doSearch"></image>
-					<input  class="input-view" placeholder="搜索" type="text"  v-model="searchKeyword" confirm-type="search" @confirm="doSearch" @keyup.enter="doSearch"/>
+					<input :adjust-position="false"   :hold-keyboard="true"    class="input-view" placeholder="搜索" type="text"  v-model="searchKeyword" confirm-type="search" @confirm="doSearch" @keyup.enter="doSearch"/>
 				</view>
 				<template v-slot:right>
 					<view @click="openFilter" class="nav-bar-filter"> 筛选 </view>
@@ -31,12 +31,11 @@
 			</view>
 		</view>
 		<!-- 订单列表 -->
-		<view class="order-list" :style="{height: orderListHeight}">
+		<view class="order-list">
 			<z-paging ref="paging" v-model="dataList" @onRefresh="onRefreshWatch" @query="queryList" :fixed="false">
 				<view style="height: 30rpx;"></view>
 				<view class="order-card" v-for="order in dataList " :key="order.id || order.requestFormNo" @click="toDetail(order)">
 					<view class="approved-view" v-show="order?.wfStatus === 'Completed'">
-						<image src="../../static/images/approved.png" mode="" style="width: 100%;height: 100%;"></image>
 					</view>
 					<view class="order-header">
 						<text class="order-id">{{ order.requestFormNo }}</text>
@@ -79,7 +78,9 @@
 
 <script setup>
 	import {
-		onLoad
+		onLoad,
+		onShow,  // 添加这个
+        onHide   // 添加这个
 	} from '@dcloudio/uni-app'
 	import {
 		ref,
@@ -207,6 +208,17 @@
 			}
 		})
 	}
+	// 页面显示时重新计算高度
+	onShow(() => {
+		console.log('页面显示，重新计算高度')
+		nextTick(() => {
+			computeOrderListHeight()
+		})
+	})
+	// 页面隐藏时记录状态
+	onHide(() => {
+	   console.log('页面隐藏')
+	})
 	//计算订单列表高度--------start
 	const orderListHeight = ref('')
 	const computeOrderListHeight = () => {
@@ -275,20 +287,16 @@
 	// }
 	
 	@media (min-aspect-ratio: 13/20) {
-	  ::v-deep .uni-tabbar-bottom {
-		display: none !important;
-		height: 0 !important;
-	  }
+	//   ::v-deep .uni-tabbar-bottom {
+	// 	display: none !important;
+	// 	height: 0 !important;
+	//   }
 	  ::v-deep .bottom-nav-bar{
 		  display: none !important;
 		  height: 0 !important;
 	  }
 	}
-	
-	.scroller {
-		flex: 1;
-		background: #f5f5f5
-	}
+
 
 	page {
 		background: #f3f7ff;
@@ -375,9 +383,7 @@
 		border-bottom: none;
 	}
 
-	::v-deep .uni-navbar__header-btns-left {
-		// width: 0 !important;
-	}
+
 
 	::v-deep .uni-navbar__header {
 		width: 100%;
@@ -387,9 +393,7 @@
 		align-items: center;
 	}
 
-	::v-deep .uni-navbar__header-btns {
-		// margin-right: 10rpx;
-	}
+	
 
 	// 搜索区域
 	.search-section {
@@ -497,29 +501,11 @@
 		}
 	}
 
-	.custom-segmented {
-		:deep(.segmented-control) {
-			height: 60rpx;
-		}
-
-		:deep(.segmented-control__item) {
-			padding: 0 20rpx;
-		}
-
-		:deep(.segmented-control__text) {
-			font-size: 28rpx;
-			font-weight: 500;
-		}
-
-		:deep(.segmented-control__item--text) {
-			border-bottom-width: 4rpx;
-			padding-bottom: 8rpx;
-		}
-	}
-
 	// 订单列表
 	.order-list {
 		// padding: 0 0rpx;
+		box-sizing: border-box;
+		height: v-bind(orderListHeight);
 	}
 
 	.order-card {
@@ -542,6 +528,11 @@
 			z-index: 29;
 			top: 40rpx;
 			right: 80rpx;
+			background-image: url('../../static/images/approved.png');
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-position: center;
+			background-color: transparent;
 		}
 	}
 
