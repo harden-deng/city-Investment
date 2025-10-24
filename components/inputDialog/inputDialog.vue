@@ -50,15 +50,10 @@ import { ref, watch, computed } from 'vue'
 		}
 	})
 
-	const emit = defineEmits(['update:modelValue', 'confirm', 'cancel', 'change'])
+	const emit = defineEmits(['update:modelValue', 'confirm', 'cancel'])
 
 	const popupRef = ref(null)
 	const innerValue = ref('')
-
-	watch(() => props.value, v => {
-		if (typeof v === 'string') innerValue.value = v
-	})
-	watch(innerValue, v => emit('change', v))
 
 	const title = computed(() => props.title ?? '输入内容')
 	const placeholder = computed(() => props.placeholder ?? '请输入内容')
@@ -71,8 +66,7 @@ import { ref, watch, computed } from 'vue'
 		return r !== true
 	})
 
-	function open(defaultValue) {
-		if (typeof defaultValue === 'string') innerValue.value = defaultValue
+	function open() {
 		popupRef.value?.open?.('center')
 	}
 

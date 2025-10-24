@@ -111,3 +111,14 @@ export function formatRelativeTime(dateString) {
     const diffInYears = Math.floor(diffInMonths / 12)
     return `${diffInYears}年前`
 }
+
+// 方法1：使用 toLocaleString() - 推荐
+export function formatNumber(num) {
+	if (num === null || num === undefined || isNaN(num)) {
+	  return '0.00';
+	}
+	return Number(num).toLocaleString('en-US', {
+	  minimumFractionDigits: 2,
+	  maximumFractionDigits: 2
+	});
+  }

@@ -46,7 +46,7 @@
 					<view class="order-content">
 						<view class="quote-section">
 							<text class="quote-label">申请费用：</text>
-							<text class="quote-price">¥{{ order.price || '--' }}</text>
+							<text class="quote-price">¥{{formatNumber(order.planToPayTotal) || '--' }}</text>
 						</view>
 						<view class="quote-section">
 							<text class="quote-label">申请单位：</text>
@@ -79,6 +79,7 @@
 <script setup>
 	import {
 		onLoad,
+		onUnload,
 		onShow,  // 添加这个
         onHide   // 添加这个
 	} from '@dcloudio/uni-app'
@@ -95,6 +96,7 @@
 		removeStorage
 	} from '@/utils/storage'
 	import http from '@/utils/request.js'
+	import { formatNumber } from '@/utils/h5Bribge'
 	import { formatRelativeTime } from '@/utils/h5Bribge.js'
 	import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
@@ -104,7 +106,13 @@
 		if (Number(statusBarHeightNew) != 0) {
 			statusBarHeight.value = Number(statusBarHeightNew)
 		}
+		uni.$on('refresh-pending', () => {
+			onRefresh()
+		})
 	})
+	onUnload(() => {
+      uni.$off("refresh-pending");
+    });
 	const paging = ref(null)
 	// 搜索相关
 	const searchKeyword = ref('')
