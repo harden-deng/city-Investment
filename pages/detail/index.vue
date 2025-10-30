@@ -178,117 +178,147 @@
 								</view>
 							</view>
 						</view>
-						<!-- 支付渠道 -->
-						<view class="payment-channel-section">
-							<view class="payment-table">
-								<view class="payment-header">
-									<text class="payment-header-cell payment-header-cell-left">支付渠道</text>
-									<text class="payment-header-cell amount-header">总金额</text>
-								</view>
 
-								<!-- 城投拨付资金 -->
-								<view class="payment-category">
-									<view class="payment-category-header">
-										<text class="payment-category-name">城投拨付资金</text>
-									</view>
+						<scroll-view scroll-x class="table-scroll-x">
+							<table cellspacing="0" cellpadding="0" class="table1 margin_1" >
+								<tbody>
+									<tr>
+									<td colspan="2" class="type font_w sticky-1">用款性质</td>
+									<td class="type font_w text_right" v-for="value in roadSectionList" :key="value.id">{{ value.roadName }}</td>
+									</tr>
+									<tr>
+									<td class="text sticky-2">确定性</td>
+									<td class="info">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</td>
+									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.confirmed) }}</td>
+									</tr>
+									<tr>
+									<td class="text sticky-2">预估性</td>
+									<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
+									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.estimated) }}</td>
+									</tr>
+								</tbody>
+							</table>
+					   </scroll-view>
 
-									<view class="payment-items">
-										<view class="payment-item-row">
-											<text class="payment-item-name">市财力</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayCtfundCityPr) }}</text>
-										</view>
-										<view class="payment-item-row">
-											<text class="payment-item-name">土地出让金</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayCtfundLandTransferFeePr) }}</text>
-										</view>
-										<view class="payment-item-row">
-											<text class="payment-item-name">专项债</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayCtfundSpecialPurposeBondPr) }}</text>
-										</view>
-										<view class="payment-item-row">
-											<text class="payment-item-name">城投其他资金</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayCtfundOtherPr) }}</text>
-										</view>
-										<view class="payment-item-row">
-											<text class="payment-item-name">资本金</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayCtfundCapitalPr) }}</text>
-										</view>
-									</view>
-								</view>
-
-								<!-- 非城投拨付资金 -->
-								<view class="payment-category">
-									<view class="payment-category-header">
-										<text class="payment-category-name">非城投拨付资金</text>
-									</view>
-									<view class="payment-items">
-										<view class="payment-item-row">
-											<text class="payment-item-name">市级财力</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayNonCtfundCityPr) }}</text>
-										</view>
-										<view class="payment-item-row">
-											<text class="payment-item-name">区县财力</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayNonCtfundDistrictPr) }}</text>
-										</view>
-										<view class="payment-item-row">
-											<text class="payment-item-name">自筹资金</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayNonCtfundSelfPr) }}</text>
-										</view>
-										<view class="payment-item-row">
-											<text class="payment-item-name">其他</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayNonCtfundOtherPr) }}</text>
-										</view>
-									</view>
-								</view>
-
-								<!-- 直拨(无资金流入) -->
-								<view class="payment-category">
-									<view class="payment-category-header">
-										<text class="payment-category-name">直拨(无资金流入)</text>
-									</view>
-									<view class="payment-items">
-										<view class="payment-item-row">
-											<text class="payment-item-name">交通专项</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayDirectFundTransportationSpecialPr) }}</text>
-										</view>
-										<view class="payment-item-row">
-											<text class="payment-item-name">超长期国债</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayDirectFundUltraTbpr) }}</text>
-										</view>
-										<view class="payment-item-row">
-											<text class="payment-item-name">其他</text>
-											<text
-												class="payment-item-amount">{{ formatNumber(itemDatas.planToPayDirectFundOtherPr) }}</text>
-										</view>
-									</view>
-								</view>
-
-								<!-- 开具银票(无资金流出) -->
-								<!-- <view class="payment-category">
-                                <view class="payment-item-row">
-                                    <text class="payment-item-name">开具银票(无资金流出)</text>
-                                    <text class="payment-item-amount">10,000,000.00</text>
-                                </view>
-                            </view> -->
-								<view class="payment-footer">
-									<text class="payment-footer-cell payment-footer-cell-left">开具银票(无资金流出)</text>
-									<text
-										class="payment-footer-cell amount-footer">{{ formatNumber(itemDatas.planToPayBankNotePr) }}</text>
-								</view>
-							</view>
-						</view>
-
+					   <scroll-view scroll-x class="table-scroll-x">
+							<table cellspacing="0" cellpadding="0" class="table1 margin_1" >
+								<tbody>
+									<tr>
+									<td colspan="2" class="type font_w sticky-1">款项类型</td>
+									<td class="type font_w text_right" v-for="value in roadSectionList" :key="value.id">{{ value.roadName }}</td>
+									</tr>
+								
+									<tr>
+									<td class="text sticky-2">工程费用</td>
+									<td class="info">{{ formatNumber(itemDatas.planToPayConstructionAmountPr) }}</td>
+									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.confirmed) }}</td>
+									</tr>
+									<tr>
+									<td class="text sticky-2">农民工工资</td>
+									<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
+									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.estimated) }}</td>
+									</tr>
+									<tr>
+									<td class="text sticky-2">材料款</td>
+									<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
+									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.estimated) }}</td>
+									</tr>
+									<tr>
+									<td class="text sticky-2">前期费用</td>
+									<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
+									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.estimated) }}</td>
+									</tr>
+									<tr>
+									<td class="text sticky-2">其他</td>
+									<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
+									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.estimated) }}</td>
+									</tr>
+								</tbody>
+							</table>
+					   </scroll-view>
+					
+					
+					 
+						<scroll-view scroll-x class="table-scroll-x">
+						<table cellspacing="0" cellpadding="0" class="table1 margin_1" >
+							<tbody>
+								<tr>
+								<td colspan="2" class="type font_w sticky-1">支付渠道</td>
+								<td class="type font_w text_right">总金额</td>
+								<td class="type font_w text_right" v-for="value in roadSectionList" :key="value.id">{{ value.roadName }}</td>
+								</tr>
+								<tr>
+								<td rowspan="5" class="type td_w1 sticky-1">城投拨付资金</td>
+								<td class="type td_w2 sticky-2">市财力</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCityPr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCity) }}</td>
+								</tr>
+								<tr>
+								<td class="type sticky-2">土地出让金</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayCtfundLandTransferFeePr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundLandTransferFee) }}</td>
+								</tr>
+								<tr>
+								<td class="type sticky-2">专项债</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayCtfundSpecialPurposeBondPr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundSpecialPurposeBond) }}</td>
+								</tr>
+								<tr>
+								<td class="type sticky-2">城投其他资金</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayCtfundOtherPr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundOther) }}</td>
+								</tr>
+								<tr>
+								<td class="type sticky-2">资本金</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCapitalPr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCapital) }}</td>
+								</tr>
+								<tr>
+								<td rowspan="4" class="type sticky-1">城投拨付资金</td>
+								<td class="type sticky-2">市财力</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundCityPr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundCity) }}</td>
+								</tr>
+								<tr>
+								<td class="type sticky-2">区县财力</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundDistrictPr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundDistrict) }}</td>
+								</tr>
+								<tr>
+								<td class="type sticky-2">自筹资金</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundSelfPr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundSelf) }}</td>
+								</tr>
+								<tr>
+								<td class="type sticky-2">其他</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundOtherPr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundOther) }}</td>
+								</tr>
+								<tr>
+								<td rowspan="3" class="type sticky-1">直拨(无资金流入)</td>
+								<td class="type sticky-2">交通专项</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundTransportationSpecialPr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundTransportationSpecial) }}</td>
+								</tr>
+								<tr>
+								<td class="type sticky-2">超长期国债</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundUltraTbpr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundUltraTb) }}</td>
+								</tr>
+								<tr>
+								<td class="type sticky-2">其他</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundOtherPr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundOther) }}</td>
+								</tr>
+								<tr>
+								<td colspan="2" class="type sticky-1">开具银票(无资金流出)</td>
+								<td class="info">{{ formatNumber(itemDatas.planToPayBankNotePr) }}</td>
+								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayBankNote) }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</scroll-view>
+												
 					</view>
 				</transition>
 			</view>
@@ -419,7 +449,7 @@
 				</transition>
 			</view>
 		</scroll-view>
-		<InputDialog ref="inputDialogRef" v-model="inputDialogVisible" :required="inputDialogRequired"
+		<InputDialog ref="inputDialogRef" :required="inputDialogRequired"
 			:title="inputDialogTitle" :placeholder="inputDialogPlaceholder" @confirm="handleInputConfirm"
 			@cancel="handleInputCancel"></InputDialog>
 	</view>
@@ -459,6 +489,7 @@
 			currentType.value = data.type
 			itemDetail.value = data.order
 			getFormDataApproval()
+			getApprovalRecord()
 		})
 	})
 	const currentType = ref('')
@@ -466,7 +497,7 @@
 		pending: '/WF/GetFormDataApproval',
 		completed: '/WF/GetFormDataView'
 	})
-	const inputDialogVisible = ref(false)
+	const inputDialogRef = ref(null)
 	const inputDialogRequired = ref(false)
 	const inputDialogTitle = ref('')
 	const inputDialogPlaceholder = ref('')
@@ -479,6 +510,40 @@
 		amount: '3,200,000.00',
 		stageTags: ['勘察设计招标', '第一审批', '过程款'],
 	})
+    const amountColumns = ref(['总金额', '总金额']);
+	// 每行高度（与样式保持一致）
+	const ROW_H = 60
+
+	// 分类-科目映射（key 对应你现有 itemDatas 字段）
+	const categories = computed(() => ([
+		{
+			name: '城投拨付资金',
+			items: [
+				{ label: '市财力', key: 'planToPayCtfundCityPr' },
+				{ label: '土地出让金', key: 'planToPayCtfundLandTransferFeePr' },
+				{ label: '专项债', key: 'planToPayCtfundSpecialPurposeBondPr' },
+				{ label: '城投其他资金', key: 'planToPayCtfundOtherPr' },
+				{ label: '资本金', key: 'planToPayCtfundCapitalPr' },
+			],
+		},
+		{
+			name: '非城投拨付资金',
+			items: [
+				{ label: '市级财力', key: 'planToPayNonCtfundCityPr' },
+				{ label: '区县财力', key: 'planToPayNonCtfundDistrictPr' },
+				{ label: '自筹资金', key: 'planToPayNonCtfundSelfPr' },
+				{ label: '其他', key: 'planToPayNonCtfundOtherPr' },
+			],
+		},
+		{
+			name: '直拨(无资金流入)',
+			items: [
+				{ label: '交通专项', key: 'planToPayDirectFundTransportationSpecialPr' },
+				{ label: '超长期国债', key: 'planToPayDirectFundUltraTbpr' },
+				{ label: '其他', key: 'planToPayDirectFundOtherPr' },
+			],
+		},
+	]))
 
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
@@ -583,12 +648,14 @@
 		uni.navigateBack()
 	}
 	const itemDatas = ref({});
+	const roadSectionList = ref([]);
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			itemDatas.value = res.data?.itemdata || {}
 			infoRows.value.forEach(item => {
 				item.value = itemDatas.value[item.key] || ''
 			})
+			roadSectionList.value = itemDatas.value.roadSectionList || []
 		})
 	}
 
@@ -598,7 +665,7 @@
 		// 	icon: 'none'
 		// })
 		inputDialogRequired.value = true
-		openInputDialog('打回原因', '请输入打回原因', '')
+		openInputDialog('打回原因', '请输入打回原因')
 	}
 
 	const onApprove = () => {
@@ -607,28 +674,32 @@
 		// 	icon: 'success'
 		// })
 		inputDialogRequired.value = false
-		openInputDialog('通过原因', '请输入通过原因', '')
+		openInputDialog('通过原因', '请输入通过原因')
 	}
-	const openInputDialog = (title, placeholder, value) => {
+	const openInputDialog = (title, placeholder) => {
 		inputDialogTitle.value = title
 		inputDialogPlaceholder.value = placeholder
-		inputDialogVisible.value = true
+		inputDialogRef.value.open()
 	}
-	const handleInputConfirm = (value) => {
+	const handleInputConfirm = (value, dialogType) => {
 		inputDialogValue.value = value
-		inputDialogVisible.value = false
-		doSubmitApproval()
+		inputDialogRef.value.close()
+		doSubmitApproval(dialogType)
 	}
 	const handleInputCancel = () => {
-		inputDialogVisible.value = false
+		inputDialogRef.value.close()
 		inputDialogValue.value = ''
 	}
-	const doSubmitApproval = () => {
-		http.post('/WF/SubmitApproval', {
-			procCode: itemDetail.value.procDefCode,
-			workitemid: itemDetail.value.workItemId,
-			approvalResult: inputDialogValue.value
-		}).then(res => {
+	const doSubmitApproval = (dialogType) => {
+		let params = {
+			procDefCod: itemDetail.value.procDefCode,  //ZC01和GC01两个类型的可以了
+			workItemId: itemDetail.value.workItemId,
+			approvalComment: inputDialogValue.value,
+			annotationComment: '',
+			pictureBaseData: '',
+			isApproval: dialogType,
+		}
+		http.post('/WF/SubmitApproval', params).then(res => {
 			if (res.code === 0) {
 				uni.showToast({
 					title: '已审批',
@@ -639,7 +710,7 @@
 						uni.$emit('refresh-pending')
 						uni.$emit('refresh-completed')
 					};
-					goBack()
+					goBack();
 				}, 1000)
 			} else {
 				uni.showToast({
@@ -649,6 +720,15 @@
 			}
 		})
 	}
+	//获取审批记录接口 start
+	const getApprovalRecord = () => {
+		http.get('/WF/GetApprovalHistory?', {
+			wfinstanceId: itemDetail.value.wfinstanceId,
+		}).then(res => {
+			console.log(res)
+		})
+	}
+	//获取审批记录接口 end
 	// 计算 scroll-view 高度 = 设备窗口高 - 头部实际高
 	function computeScrollHeight() {
 		try {
@@ -1139,148 +1219,252 @@
 
 		}
 
-		// 支付渠道表格独立样式 - 不与其他样式共用
-		.payment-channel-section {
-			//  padding: 20rpx 30rpx 10rpx;
-			margin-top: 30rpx;
 
-			.payment-table {
-				background: #ffffff;
-				overflow: hidden;
-				border: 1rpx solid #ddd;
-				border-bottom: none;
+		// 支付渠道表格独立样式 - 两列固定 + 右侧横滑
+		// .payment-channel-section {
+		// 	margin-top: 30rpx;
 
-				.payment-header {
-					box-sizing: border-box;
-					height: 60rpx;
-					background: #f6f8fc;
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					border-bottom: 1rpx solid #ddd;
+		// 	.payment-scroll {
+		// 		overflow-x: auto;
+		// 		overflow-y: hidden;
+		// 		-webkit-overflow-scrolling: touch;
+		// 	}
 
-					.payment-header-cell {
-						box-sizing: border-box;
-						height: 100%;
-						display: flex;
-						align-items: center;
-						padding: 0 24rpx;
-						font-size: 24rpx;
-						color: #000;
-						font-weight: bold;
-						text-align: left;
+		// 	.payment-table {
+		// 		background: #ffffff;
+		// 		border: 1rpx solid #ddd;
+		// 		border-bottom: none;
+		// 		min-width: 720rpx;
+		// 	}
 
-						&.payment-header-cell-left {
-							box-sizing: border-box;
-							width: 468rpx;
-						}
+		// 	// 两列固定：列宽需与下方一致
+		// 	$col1-w: 274rpx; // 分类名
+		// 	$col2-w: 194rpx; // 科目名
+		// 	$amount-w: 220rpx; // 每个金额列宽
+		// 	$row-h: 60rpx;
 
-						&.amount-header {
-							flex: 1;
-							justify-content: flex-end;
-							border-left: 1rpx solid #ddd;
-						}
-					}
-				}
+		// 	// .sticky-col-1 {
+		// 	// 	position: sticky;
+		// 	// 	left: 0;
+		// 	// 	z-index: 3;
+		// 	// 	background: #f6f8fc;
+		// 	// }
+		// 	// .sticky-col-2 {
+		// 	// 	position: sticky;
+		// 	// 	left: $col1-w;
+		// 	// 	z-index: 2;
+		// 	// 	background: #f6f8fc;
+		// 	// }
 
-				.payment-category {
-					display: flex;
-					box-sizing: border-box;
+		// 	/* 表头 */
+		// 	.payment-header {
+		// 		display: flex;
+		// 		align-items: stretch;
+		// 		border-bottom: 1rpx solid #ddd;
+		// 		background: #f6f8fc;
+		// 		height: $row-h;
 
-					.payment-category-header {
-						box-sizing: border-box;
-						width: 274rpx;
-						background: #f6f8fc;
-						padding: 16rpx 10rpx 16rpx 24rpx;
-						border-bottom: 1rpx solid #ddd;
-						display: flex;
-						align-items: center;
+		// 		.payment-header-cell {
+		// 			display: flex;
+		// 			align-items: center;
+		// 			padding: 0 24rpx;
+		// 			font-size: 24rpx;
+		// 			color: #000;
+		// 			font-weight: bold;
+		// 			white-space: nowrap;
+		// 			height: $row-h;
+		// 			border-right: 1rpx solid #ddd;
+		// 			box-sizing: border-box;
+		// 		}
+		// 		.sticky-col-1 { 
+		// 			min-width: 139px; 
+		// 			position: sticky;
+		// 		    left: 0;
+		// 		    z-index: 3;
+		// 		    background: #f6f8fc;
+		// 		}
+		// 		.sticky-col-2 { 
+		// 			min-width: 97px; 
+		// 		    position: sticky;
+		// 			left: 139px;
+		// 			z-index: 2;
+		// 			background: #f6f8fc;
+		// 		}
 
-						.payment-category-name {
-							font-size: 24rpx;
-							color: #000;
-						}
+		// 		.amount-headers {
+		// 			display: flex;
+		// 			flex: 1;
+		// 			.amount-header {
+		// 				flex: 0 0 $amount-w;
+		// 				justify-content: flex-end;
+		// 				text-align: right;
+		// 				border-right: 1rpx solid #ddd;
+		// 				display: flex;
+		// 				align-items: center;
+		// 				padding: 0 16rpx;
+		// 			}
+		// 		}
+		// 	}
 
-					}
+		// 	.payment-category {
+		// 		position: relative; // 让覆盖层参照本区块
+		// 		.sticky-col-1 {
+		// 			min-width: 139px; 
+		// 			position: sticky;
+		// 		    left: 0;
+		// 		    z-index: 3;
+		// 		    background: #f6f8fc;
+		// 		}
+			
+		// 	}
 
-					.payment-items {
-						box-sizing: border-box;
-						flex: 1;
+		// 	/* 覆盖层：分类名（视觉合并单元格，不占垂直高度） */
+		// 	.cat-merge {
+		// 		width: $col1-w;
+		// 		background: #f6f8fc;
+		// 		border-right: 1rpx solid #ddd;
+		// 		padding: 0 16rpx;
+		// 		box-sizing: border-box;
+		// 		white-space: nowrap;
+		// 		color: #000;
+		// 		font-size: 24rpx;
+		// 		z-index: 3;
+		// 		// sticky 横向固定
+		// 	}
+		// 	.cat-items{
+		// 		width: $col1-w;
+		// 		display: flex;
+		// 		flex-direction: column;
+		// 		// gap: 10rpx;
+		// 		position: sticky;
+		// 		left: 139px;
+		// 		z-index: 2;
+		// 		.cat-item{
+		// 			min-width: 97px;
+		// 			height: $row-h;
+		// 			// position: -webkit-sticky;
+		// 			// position: sticky;
+		// 			// left: 8.5625rem;
+		// 			border-bottom: 1rpx solid #ddd;
+		// 			border-right: 1rpx solid #ddd;
+		// 			z-index: 2;
+		// 			background: #f6f8fc;
+		// 		}
+		// 	}
 
-						.payment-item-row {
-							box-sizing: border-box;
-							// width: 100%;
-							display: flex;
-							border-bottom: 1rpx solid #ddd;
-							align-items: center;
-							// background: #ffffff;
+		// 	.payment-row {
+		// 		display: flex;
+		// 		align-items: stretch;
+		// 		border-bottom: 1rpx solid #ddd;
+        //          /* 每行的占位列：仅占宽度，保持网格对齐 */
+		// 		.col1-spacer {
+		// 			width: $col1-w;
+		// 			height: $row-h;
+		// 			line-height: $row-h;
+		// 			background: #f6f8fc;
+		// 			border-right: 1rpx solid #ddd;
+		// 			box-sizing: border-box;
+		// 		}
+		// 		.cell {
+		// 			font-size: 24rpx;
+		// 			box-sizing: border-box;
+		// 			border-right: 1rpx solid #ddd;
+		// 			white-space: nowrap;
+		// 			color: #000;
+		// 			background: #fff;
+		// 		}
+		// 		.sticky-col-2 {
+		// 			position: sticky;
+		// 			left: $col1-w;
+		// 			z-index: 2;
+		// 			background: #f6f8fc;
+		// 		}
 
-							//  &:last-child {
-							//      border-bottom: none;
-							//  }
+		// 		.cat-cell {
+		// 			width: $col1-w;
+		// 			text-align: left;
+		// 			padding: 0 16rpx;
+		// 			background: #f6f8fc;
+		// 		}
+		// 		.name-cell {
+		// 			width: $col2-w;
+		// 			text-align: left;
+		// 			padding: 16rpx;
+		// 			background: #f6f8fc;
+		// 			line-height: $row-h;
+		// 			height: $row-h;
+		// 		}
 
-							.payment-item-name {
-								box-sizing: border-box;
-								width: 194rpx;
-								font-size: 24rpx;
-								color: #000;
+		// 		.amount-cells {
+		// 			display: flex;
+		// 			flex: 1;
 
-								text-align: left;
-								background: #f6f8fc;
+		// 			.amount-cell {
+		// 				flex: 0 0 $amount-w;
+		// 				text-align: right;
+		// 				color: #666;
+		// 				padding: 16rpx;
+		// 				height: $row-h;
+		// 				line-height: $row-h;
+		// 				background: #fff;
+		// 			}
+		// 		}
+		// 	}
 
-								border-left: 1rpx solid #ddd;
-								padding: 16rpx;
-							}
+		// 	/* 表尾 */
+		// 	.payment-footer {
+		// 		display: flex;
+		// 		align-items: stretch;
+		// 		border-bottom: 1rpx solid #ddd;
+		// 		height: $row-h;
+		// 		background: #f6f8fc;
 
-							.payment-item-amount {
-								flex: 1;
-								font-size: 24rpx;
-								color: #666;
-								text-align: right;
-								padding: 16rpx;
-								border-left: 1rpx solid #ddd;
-							}
-						}
-					}
-				}
+		// 		.payment-footer-cell {
+		// 			font-size: 24rpx;
+		// 			white-space: nowrap;
+		// 			border-right: 1rpx solid #ddd;
+		// 			display: flex;
+		// 			align-items: center;
+		// 			padding: 0 16rpx;
+		// 			height: $row-h;
+		// 			box-sizing: border-box;
+		// 		}
 
-				.payment-footer {
-					height: 60rpx;
-					box-sizing: border-box;
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					border-bottom: 1rpx solid #ddd;
+		// 		.sticky-col-1 { 
+		// 			width: $col1-w; 
+		// 			position: sticky;
+		// 		    left: 0;
+		// 		    z-index: 3;
+		// 		    background: #f6f8fc;
+		// 		}
 
-					.payment-footer-cell {
-						box-sizing: border-box;
-						height: 100%;
-						display: flex;
-						align-items: center;
-						font-size: 24rpx;
+		// 		.sticky-col-2 { 
+		// 			width: $col2-w; 
+		// 		    position: sticky;
+		// 			left: $col1-w;
+		// 			z-index: 2;
+		// 			background: #f6f8fc;
+		// 		}
 
-						text-align: left;
+		// 		.amount-cells {
+		// 			display: flex;
+		// 			flex: 1;
+		// 			.amount-footer {
+		// 				flex: 0 0 $amount-w;
+		// 				color: #666;
+		// 				justify-content: flex-end;
+		// 				padding: 16rpx;
+		// 				text-align: right;
+		// 				border-right: 1rpx solid #ddd;
+		// 				display: flex;
+		// 				align-items: center;
+		// 			}
+		// 		}
+		// 	}
+		// }
 
-						&.payment-footer-cell-left {
-							box-sizing: border-box;
-							padding: 0 24rpx;
-							color: #000;
-							background: #f6f8fc;
-							width: 468rpx
-						}
-
-						&.amount-footer {
-							color: #666;
-							flex: 1;
-							justify-content: flex-end;
-							border-left: 1rpx solid #ddd;
-							padding: 16rpx;
-						}
-					}
-				}
-			}
-		}
-
+	
+	 
 		// 付款账户信息独立样式 - 不与其他样式共用
 		.account-info-section {
 			// padding: 20rpx 30rpx 30rpx;
@@ -1342,4 +1526,84 @@
 			margin: 0 auto;
 		}
 	}
+
+
+
+
+
+
+
+
+
+	.margin_1 {
+		margin-top: 20px;
+	}
+	.table1 {
+		box-sizing: border-box;
+		width: 100%;
+		// border-left: 1px #a83737 solid;
+		// border-top: 1px #ddd solid;
+		// border: 1px #a83737 solid;
+		// padding: 20rpx;	
+		border-bottom: 1rpx #ddd solid;
+			border-right: 1rpx #ddd solid;
+	}
+	.table1 .type {
+			background: #f6f8fc;
+			color: #000;
+		}
+		.table1 td {
+			box-sizing: border-box;
+			border-left: 1rpx #ddd solid;
+		    border-top: 1rpx #ddd solid;
+		
+			padding: 8px;
+			font-size: 12px;
+		}
+		.table1 .info {
+			text-align: right;
+			color: #666;
+		}
+		.table1 .text {
+			// text-align: lef;
+			color: #666;
+			white-space: nowrap;
+		}
+		// .table1 td{
+		// 	text-align: right;
+		// 	color: #666;
+		// }
+		.font_w {
+			font-weight: bold;
+		}
+		.text_right {
+			text-align: right;
+		}
+
+
+
+		// .table-scroll-x {
+		// 	box-sizing: border-box;
+		// 	overflow-x: auto;
+		// 	-webkit-overflow-scrolling: touch; /* 移动端流畅滑动 */
+		// }
+
+		// /* 让表格按内容宽度撑开，超过容器时才出现横向滚动 */
+		// .table-scroll-x .table1 {
+		// 	box-sizing: border-box;
+		// 	min-width: 100%;
+		// 	width: max-content;
+		// 	table-layout: auto;
+		// }
+
+/* 防止单元格换行挤压变形，可按需保留或去掉 */
+.table1 .info,
+.table1 .type {
+	white-space: nowrap;
+}
+
+/* 需要给表格的前几列设置 sticky 和 left 偏移，按你的列宽自行调整 */
+// .table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3; }
+// .table1 td.sticky-2 { position: sticky; left: 109.02px;  z-index: 4; }
+// .table1 td.sticky-3 { position: sticky; left: 220px;  z-index: 2; }
 </style>

@@ -98,11 +98,9 @@
             }
         },
         "router" : {
-            "mode" : "history"
+            "base" : "./"
         }
     },
     // "https" : false
     "vueVersion" : "3"
 }
-
-

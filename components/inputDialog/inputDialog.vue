@@ -1,5 +1,5 @@
 <template>
-	<uni-popup ref="popupRef" type="center" :mask-click="false" @change="onPopupChange">
+	<uni-popup ref="popupRef" type="center" :mask-click="false">
 		<view class="idlg">
 			<text class="idlg-title">{{ title }}</text>
 			<view class="idlg-input-wrap">
@@ -17,7 +17,7 @@
 
 <script setup>
 import { throttle } from '@/utils/h5Bribge'
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed,reactive } from 'vue'
 
 	const handleConfirm = throttle(() => {
 		doConfirm()
@@ -50,7 +50,7 @@ import { ref, watch, computed } from 'vue'
 		}
 	})
 
-	const emit = defineEmits(['update:modelValue', 'confirm', 'cancel'])
+	const emit = defineEmits(['confirm', 'cancel'])
 
 	const popupRef = ref(null)
 	const innerValue = ref('')
@@ -59,7 +59,7 @@ import { ref, watch, computed } from 'vue'
 	const placeholder = computed(() => props.placeholder ?? '请输入内容')
 	const inputType = computed(() => props.inputType ?? 'text')
 	const maxlength = computed(() => props.maxlength ?? 140)
-
+    const dialogTypeObj = reactive({'打回原因': false, '通过原因': true})
 	const confirmDisabled = computed(() => {
 		if (props.required && !innerValue.value) return true
 		const r = props.validator ? props.validator(innerValue.value) : true
@@ -82,19 +82,13 @@ import { ref, watch, computed } from 'vue'
 
 	function doConfirm() {
 		if (confirmDisabled.value) return
-		emit('confirm', innerValue.value)
+		let dialogType = dialogTypeObj[props.title]
+		emit('confirm', innerValue.value, dialogType)
 		innerValue.value = ''
 		close()
 	}
 
-	function onPopupChange(e) {
-		if (e?.show === false) emit('update:modelValue', false)
-	}
 
-	watch(() => props.modelValue, v => {
-		if (v) open()
-		else close()
-	})
 
 	defineExpose({
 		open,

@@ -7,7 +7,7 @@
 				<text class="welcome-text">您好, 欢迎使用</text>
 				<text class="app-name">公路业财通!</text>
 			</view> -->
-			<image class="login-image" src="/static/images/login.png" mode=""></image>
+			<image class="login-image" src="../../static/images/login.png" mode=""></image>
 		</view>
 
 		<!-- 登录表单区域 -->

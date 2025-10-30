@@ -1,5 +1,5 @@
 <template>
-	<uni-popup ref="popupRef" type="bottom" :safe-area="true" :mask-click="true" @change="onPopupChange">
+	<uni-popup ref="popupRef" type="bottom" :safe-area="true" :mask-click="true">
 		<view class="filter-popup">
 			<view class="filter-title">
 				选择筛选条件
@@ -60,10 +60,6 @@
         onConfirm()
     }, 1000)
 	const props = defineProps({
-		modelValue: {
-			type: Boolean,
-			default: false
-		},
 		category1Options: {
 			type: Array,
 			default: () => []
@@ -74,7 +70,7 @@
 		}
 	})
 
-	const emit = defineEmits(['update:modelValue', 'confirm', 'reset'])
+	const emit = defineEmits(['confirm', 'reset'])
 
 	const popupRef = ref(null)
 
@@ -146,20 +142,11 @@
 		popupRef.value?.close?.()
 	}
 	
-	defineExpose({ open, close, state })
+	defineExpose({ open, close })
 
-	// v-model 同步
-	watch(
-		() => props.modelValue,
-		v => {
-			if (v) open()
-			else close()
-		}
-	)
+
 	
-	function onPopupChange(e) {
-		if (e?.show === false) emit('update:modelValue', false)
-	}
+
 </script>
 
 <style lang="scss" scoped>

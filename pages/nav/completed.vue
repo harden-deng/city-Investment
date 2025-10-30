@@ -70,7 +70,7 @@
 				</view>
 			</z-paging>
 		</view>
-		<FilterPopup ref="filterRef" v-model="show" :confirmCount="1400" @confirm="onConfirm" @reset="onReset" />
+		<FilterPopup ref="filterRef" @confirm="onConfirm" @reset="onReset" />
 		<!-- 底部导航栏 -->
 		<BottomNavBar ref="bottomNavRef" :modelValueFlag="2"/>
 	</view>
@@ -129,12 +129,10 @@
 	const wfstatusArr = ref(tabs.map(t => t.wf));
 	const tabValues = ref(tabs.map(t => t.label));
 	//弹窗筛选--------start
-	const show = ref(false)
 	const filterRef = ref(null)
 
 	function openFilter() {
-		show.value = true
-		// 或 filterRef.value?.open()
+		filterRef.value?.open()
 	}
 
 	function onConfirm(payload) {
