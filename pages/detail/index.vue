@@ -19,10 +19,10 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ itemDatas.companyName }}
+							{{ itemDatas.projectName }}
 						</view>
 						<view class="project-name-1">
-							{{ itemDetail.taskName }} {{ (itemDatas.projectCategory ? '(' + itemDatas.projectCategory + ')' : '') }}
+							{{ itemDatas.budgetContent }}
 						</view>
 					</view>
 					<view class="amount-box">
@@ -33,7 +33,7 @@
 					</view>
 				</view>
 				<view class="hero-tags">
-					<view class="tag" v-for="(t, i) in detail.stageTags" :key="i">{{ t }}</view>
+					<view class="tag" v-for="(t, i) in stageTags" :key="i">{{ t }}</view>
 				</view>
 				<view class="hero-actions" v-show="currentType === 'pending'">
 					<view class="btn outline" @click="onReject">打回</view>
@@ -80,8 +80,8 @@
 							<view class="contract-details">
 								<view class="detail-row">
 									<text class="detail-label">合同价/审定价</text>
-									<text class="detail-value">{{  formatNumber(itemDatas.contractPrice) }}</text>
-								</view>  
+									<text class="detail-value">{{ formatNumber(itemDatas.contractPrice) }}</text>
+								</view>
 								<view class="detail-row">
 									<text class="detail-label">累计付款 含本次</text>
 									<text
@@ -131,10 +131,10 @@
 						<!-- 整体合同 -->
 						<view class="contract-section">
 							<!-- 用款性质 -->
-							<view class="contract-header">
+							<view class="contract-header" v-if="roadSectionList.length === 0">
 								用款性质
 							</view>
-							<view class="contract-details">
+							<view class="contract-details" v-if="roadSectionList.length === 0">
 								<view class="detail-row">
 									<text class="detail-label">确定性</text>
 									<text class="detail-value">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</text>
@@ -144,11 +144,34 @@
 									<text class="detail-value">{{ formatNumber(itemDatas.planToPayEstimatedPr) }}</text>
 								</view>
 							</view>
+							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0">
+								<table cellspacing="0" cellpadding="0" class="table1 table2">
+									<tbody>
+										<tr>
+											<td colspan="2" class="type font_w sticky-1">用款性质</td>
+											<td class="type font_w text_right" v-for="value in roadSectionList"
+												:key="value.id">{{ value.roadName }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-2">确定性</td>
+											<td class="info">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</td>
+											<td class="info" v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.confirmed) }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-2">预估性</td>
+											<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
+											<td class="info" v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.estimated) }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</scroll-view>
 							<!-- 款项类型 -->
-							<view class="contract-header">
+							<view class="contract-header" v-if="roadSectionList.length === 0">
 								款项类型
 							</view>
-							<view class="contract-details">
+							<view class="contract-details" v-if="roadSectionList.length === 0">
 								<view class="detail-row">
 									<text class="detail-label">工程费用</text>
 									<text
@@ -161,15 +184,18 @@
 								</view>
 								<view class="detail-row">
 									<text class="detail-label">材料款</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.planToPayMaterialAmountPr) }}</text>
+									<text
+										class="detail-value">{{ formatNumber(itemDatas.planToPayMaterialAmountPr) }}</text>
 								</view>
 								<view class="detail-row">
 									<text class="detail-label">前期费用</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.planToPayProphaseAmountPr) }}</text>
+									<text
+										class="detail-value">{{ formatNumber(itemDatas.planToPayProphaseAmountPr) }}</text>
 								</view>
 								<view class="detail-row">
 									<text class="detail-label">其他</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.planToPayOtherAmountPr) }}</text>
+									<text
+										class="detail-value">{{ formatNumber(itemDatas.planToPayOtherAmountPr) }}</text>
 								</view>
 								<view class="detail-row summary-row">
 									<text class="detail-label summary-label">本次用款小计</text>
@@ -177,148 +203,172 @@
 										class="detail-value summary-value">{{ formatNumber(itemDatas.planToPayTotalPr) }}</text>
 								</view>
 							</view>
+							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0">
+								<table cellspacing="0" cellpadding="0" class="table1 table2">
+									<tbody>
+										<tr>
+											<td colspan="2" class="type font_w sticky-1">款项类型</td>
+											<td class="type font_w text_right" v-for="value in roadSectionList"
+												:key="value.id">{{ value.roadName }}</td>
+										</tr>
+
+										<tr>
+											<td class="text sticky-2">工程费用</td>
+											<td class="info">{{ formatNumber(itemDatas.planToPayConstructionAmountPr) }}
+											</td>
+											<td class="info" v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.constructionAmount) }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-2">农民工工资</td>
+											<td class="info">{{ formatNumber(itemDatas.planToPayRuralLaborsSalaryPr)  }}
+											</td>
+											<td class="info" v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.ruralLaborsSalary) }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-2">材料款</td>
+											<td class="info">{{ formatNumber(itemDatas.planToPayMaterialAmountPr)  }}
+											</td>
+											<td class="info" v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.materialAmount) }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-2">前期费用</td>
+											<td class="info">{{ formatNumber(itemDatas.planToPayProphaseAmountPr)  }}
+											</td>
+											<td class="info" v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.prophaseAmount) }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-2">其他</td>
+											<td class="info">{{ formatNumber(itemDatas.planToPayOtherAmountPr)  }}</td>
+											<td class="info" v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.otherAmount) }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</scroll-view>
+							<view class="detail-row summary-row" v-if="roadSectionList.length > 0">
+								<text class="detail-label summary-label">本次用款小计</text>
+								<text
+									class="detail-value summary-value">{{ formatNumber(itemDatas.planToPayTotalPr) }}</text>
+							</view>
 						</view>
 
-						<scroll-view scroll-x class="table-scroll-x">
-							<table cellspacing="0" cellpadding="0" class="table1 margin_1" >
-								<tbody>
-									<tr>
-									<td colspan="2" class="type font_w sticky-1">用款性质</td>
-									<td class="type font_w text_right" v-for="value in roadSectionList" :key="value.id">{{ value.roadName }}</td>
-									</tr>
-									<tr>
-									<td class="text sticky-2">确定性</td>
-									<td class="info">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</td>
-									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.confirmed) }}</td>
-									</tr>
-									<tr>
-									<td class="text sticky-2">预估性</td>
-									<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
-									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.estimated) }}</td>
-									</tr>
-								</tbody>
-							</table>
-					   </scroll-view>
 
-					   <scroll-view scroll-x class="table-scroll-x">
-							<table cellspacing="0" cellpadding="0" class="table1 margin_1" >
+
+
+
+						<scroll-view scroll-x class="table-scroll-x">
+							<table cellspacing="0" cellpadding="0" class="table1 margin_1"
+								style="border-right: 1px #ddd solid;">
 								<tbody>
 									<tr>
-									<td colspan="2" class="type font_w sticky-1">款项类型</td>
-									<td class="type font_w text_right" v-for="value in roadSectionList" :key="value.id">{{ value.roadName }}</td>
-									</tr>
-								
-									<tr>
-									<td class="text sticky-2">工程费用</td>
-									<td class="info">{{ formatNumber(itemDatas.planToPayConstructionAmountPr) }}</td>
-									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.confirmed) }}</td>
+										<td colspan="2" class="type font_w sticky-1">支付渠道</td>
+										<td class="type font_w text_right">总金额</td>
+										<td class="type font_w text_right" v-for="value in roadSectionList"
+											:key="value.id">{{ value.roadName }}</td>
 									</tr>
 									<tr>
-									<td class="text sticky-2">农民工工资</td>
-									<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
-									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.estimated) }}</td>
+										<td rowspan="5" class="type td_w1 sticky-1">城投拨付资金</td>
+										<td class="type td_w2 sticky-2">市财力</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCityPr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCity) }}</td>
 									</tr>
 									<tr>
-									<td class="text sticky-2">材料款</td>
-									<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
-									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.estimated) }}</td>
+										<td class="type sticky-2">土地出让金</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundLandTransferFeePr) }}
+										</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundLandTransferFee) }}
+										</td>
 									</tr>
 									<tr>
-									<td class="text sticky-2">前期费用</td>
-									<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
-									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.estimated) }}</td>
+										<td class="type sticky-2">专项债</td>
+										<td class="info">
+											{{ formatNumber(itemDatas.planToPayCtfundSpecialPurposeBondPr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundSpecialPurposeBond) }}
+										</td>
 									</tr>
 									<tr>
-									<td class="text sticky-2">其他</td>
-									<td class="info">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
-									<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.estimated) }}</td>
+										<td class="type sticky-2">城投其他资金</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundOtherPr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundOther) }}</td>
+									</tr>
+									<tr>
+										<td class="type sticky-2">资本金</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCapitalPr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCapital) }}
+										</td>
+									</tr>
+									<tr>
+										<td rowspan="4" class="type sticky-1">城投拨付资金</td>
+										<td class="type sticky-2">市财力</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundCityPr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundCity) }}
+										</td>
+									</tr>
+									<tr>
+										<td class="type sticky-2">区县财力</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundDistrictPr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundDistrict) }}
+										</td>
+									</tr>
+									<tr>
+										<td class="type sticky-2">自筹资金</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundSelfPr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundSelf) }}
+										</td>
+									</tr>
+									<tr>
+										<td class="type sticky-2">其他</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundOtherPr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundOther) }}
+										</td>
+									</tr>
+									<tr>
+										<td rowspan="3" class="type sticky-1">直拨(无资金流入)</td>
+										<td class="type sticky-2">交通专项</td>
+										<td class="info">
+											{{ formatNumber(itemDatas.planToPayDirectFundTransportationSpecialPr) }}
+										</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundTransportationSpecial) }}
+										</td>
+									</tr>
+									<tr>
+										<td class="type sticky-2">超长期国债</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundUltraTbpr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundUltraTb) }}
+										</td>
+									</tr>
+									<tr>
+										<td class="type sticky-2">其他</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundOtherPr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundOther) }}
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" class="type sticky-1">开具银票(无资金流出)</td>
+										<td class="info">{{ formatNumber(itemDatas.planToPayBankNotePr) }}</td>
+										<td class="info" v-for="value in roadSectionList" :key="value.id">
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayBankNote) }}</td>
 									</tr>
 								</tbody>
 							</table>
-					   </scroll-view>
-					
-					
-					 
-						<scroll-view scroll-x class="table-scroll-x">
-						<table cellspacing="0" cellpadding="0" class="table1 margin_1" >
-							<tbody>
-								<tr>
-								<td colspan="2" class="type font_w sticky-1">支付渠道</td>
-								<td class="type font_w text_right">总金额</td>
-								<td class="type font_w text_right" v-for="value in roadSectionList" :key="value.id">{{ value.roadName }}</td>
-								</tr>
-								<tr>
-								<td rowspan="5" class="type td_w1 sticky-1">城投拨付资金</td>
-								<td class="type td_w2 sticky-2">市财力</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCityPr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCity) }}</td>
-								</tr>
-								<tr>
-								<td class="type sticky-2">土地出让金</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayCtfundLandTransferFeePr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundLandTransferFee) }}</td>
-								</tr>
-								<tr>
-								<td class="type sticky-2">专项债</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayCtfundSpecialPurposeBondPr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundSpecialPurposeBond) }}</td>
-								</tr>
-								<tr>
-								<td class="type sticky-2">城投其他资金</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayCtfundOtherPr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundOther) }}</td>
-								</tr>
-								<tr>
-								<td class="type sticky-2">资本金</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCapitalPr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCapital) }}</td>
-								</tr>
-								<tr>
-								<td rowspan="4" class="type sticky-1">城投拨付资金</td>
-								<td class="type sticky-2">市财力</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundCityPr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundCity) }}</td>
-								</tr>
-								<tr>
-								<td class="type sticky-2">区县财力</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundDistrictPr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundDistrict) }}</td>
-								</tr>
-								<tr>
-								<td class="type sticky-2">自筹资金</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundSelfPr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundSelf) }}</td>
-								</tr>
-								<tr>
-								<td class="type sticky-2">其他</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundOtherPr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundOther) }}</td>
-								</tr>
-								<tr>
-								<td rowspan="3" class="type sticky-1">直拨(无资金流入)</td>
-								<td class="type sticky-2">交通专项</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundTransportationSpecialPr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundTransportationSpecial) }}</td>
-								</tr>
-								<tr>
-								<td class="type sticky-2">超长期国债</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundUltraTbpr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundUltraTb) }}</td>
-								</tr>
-								<tr>
-								<td class="type sticky-2">其他</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundOtherPr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundOther) }}</td>
-								</tr>
-								<tr>
-								<td colspan="2" class="type sticky-1">开具银票(无资金流出)</td>
-								<td class="info">{{ formatNumber(itemDatas.planToPayBankNotePr) }}</td>
-								<td class="info" v-for="value in roadSectionList" :key="value.id">{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayBankNote) }}</td>
-								</tr>
-							</tbody>
-						</table>
-					</scroll-view>
-												
+						</scroll-view>
+
 					</view>
 				</transition>
 			</view>
@@ -338,8 +388,8 @@
 				<transition name="collapse">
 					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
 						<view style="height: 10rpx;"></view>
-					    <!-- 多个公司账户信息 -->
-						 <template v-if="itemDatas?.roadSectionList?.length > 0">
+						<!-- 多个公司账户信息 -->
+						<template v-if="itemDatas?.roadSectionList?.length > 0">
 							<view class="account-card" v-for="item in itemDatas.roadSectionList" :key="item.id">
 								<view class="account-company-title">{{ item.roadName || '' }}</view>
 								<view class="account-info-block">
@@ -360,8 +410,8 @@
 										<text class="account-info-value">{{ item.paymentAccountNote || '' }}</text>
 									</view>
 								</view>
-							</view>	
-					    </template>
+							</view>
+						</template>
 						<!-- 单个公司账户信息 -->
 						<view class="account-card" v-else>
 							<view class="account-company-title">{{ itemDatas.companyName || '' }}</view>
@@ -448,10 +498,94 @@
 					</view>
 				</transition>
 			</view>
+			<!-- 审批记录 -->
+			<view class="section">
+				<view class="section-title-2" @click="setOptions(APPROVAL_RECORD)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">审批记录</text>
+					</view>
+					<view class="section-title-2-right" :class="{ 'active': getOptions(APPROVAL_RECORD) }">
+					</view>
+				</view>
+				<!-- 审批记录卡片 -->
+				<transition name="collapse">
+					<view class="approval-record-section" v-if="getOptions(APPROVAL_RECORD)">
+						<view class="approval-timeline">
+							<!-- 整体左侧时间线 -->
+							<!-- <view class="timeline-line-main"></view> -->
+
+							<view class="approval-item" v-for="(item, index) in approvalRecordList" :key="index">
+								<!-- 状态指示器 -->
+								<view class="timeline-indicator-container">
+									<view class="timeline-indicator" :class="{
+									'status-pending': item.approvalActionType === 'vmPending',
+									'status-approved': item.approvalActionType === '已审批',
+									'status-submitted': item.approvalActionType === '提交'
+								}">
+										<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批'">
+											<uni-icons type="checkmarkempty" size="10" color="#07c160"></uni-icons>
+										</view>
+										<view class="indicator-loading"
+											v-else-if="item.approvalActionType === 'vmPending'"></view>
+										<view class="indicator-empty" v-else-if="item.approvalActionType === '提交'">
+										</view>
+									</view>
+								</view>
+
+
+								<!-- 审批记录内容 -->
+								<view class="approval-content">
+									<view class="approval-header">
+										<view class="approval-title">
+											<text class="title-text">{{ item.stepName }}</text>
+											<text class="title-status" :class="{
+												'status-text-green': item.approvalActionType === '已审批' || item.approvalActionType === 'vmPending' || item.approvalActionType === '提交',
+											}">
+												{{ item.approvalActionType == 'vmPending' ? '审批中' : item.approvalActionType }}
+											</text>
+										</view>
+									</view>
+
+									<view class="approval-body">
+										<view class="approval-info"
+											style="display: flex; justify-content: flex-start;gap: 10rpx;">
+											<!-- <view class="approval-info"> -->
+											<text class="approver-name">{{ item.approverDisplayName }}</text>
+											<!-- </view> -->
+
+											<!-- <view class="approval-action"> -->
+											<view class="action-btn" :class="{
+													'btn-approved': item.approvalResult == '批准' || item.approvalResult == '提交',
+													'btn-pending': item.approvalResult == '待审批',
+													'btn-rejected': item.approvalResult == '驳回',
+												}">
+												{{ item.approvalResult }}
+											</view>
+											<!-- </view> -->
+											<text
+												class="approval-time">{{ formatDateTime(item.approvalResult == "待审批" ? item.approvalTime : item.createdDate) }}</text>
+										</view>
+										<view class="approval-remark" v-if="item.approvalComment">
+											<text class="remark-label">备注:</text>
+											<text class="remark-text">{{ item.approvalComment }}</text>
+										</view>
+
+									</view>
+
+									<!-- <view class="approval-footer">
+										<text class="approval-time">{{ item.approvalResult == "待审批" ? item.approvalTime : item.createdDate }}</text>
+									</view> -->
+								</view>
+							</view>
+						</view>
+					</view>
+				</transition>
+			</view>
 		</scroll-view>
-		<InputDialog ref="inputDialogRef" :required="inputDialogRequired"
-			:title="inputDialogTitle" :placeholder="inputDialogPlaceholder" @confirm="handleInputConfirm"
-			@cancel="handleInputCancel"></InputDialog>
+		<InputDialog ref="inputDialogRef" :required="inputDialogRequired" :title="inputDialogTitle"
+			:placeholder="inputDialogPlaceholder" @confirm="handleInputConfirm" @cancel="handleInputCancel">
+		</InputDialog>
 	</view>
 </template>
 
@@ -473,10 +607,14 @@
 	import {
 		FUND_USAGE_STATUS,
 		PAYMENT_ACCOUNT_INFORMATION,
-		COLLECTION_ACCOUNT_INFORMATION
+		COLLECTION_ACCOUNT_INFORMATION,
+		APPROVAL_RECORD
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
-	import { formatNumber } from '@/utils/h5Bribge'
+	import {
+		formatNumber,
+		formatDateTime
+	} from '@/utils/h5Bribge'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	const statusBarHeight = ref(0)
 	let eventChannel
@@ -505,42 +643,70 @@
 	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	// const formDetail = ref({})
-	const detail = ref({
-		projectName: '军工路快速路新建工程(政府性)',
-		amount: '3,200,000.00',
-		stageTags: ['勘察设计招标', '第一审批', '过程款'],
-	})
-    const amountColumns = ref(['总金额', '总金额']);
+	const stageTags = ref([])
+	const amountColumns = ref(['总金额', '总金额']);
 	// 每行高度（与样式保持一致）
 	const ROW_H = 60
 
 	// 分类-科目映射（key 对应你现有 itemDatas 字段）
-	const categories = computed(() => ([
-		{
+	const categories = computed(() => ([{
 			name: '城投拨付资金',
-			items: [
-				{ label: '市财力', key: 'planToPayCtfundCityPr' },
-				{ label: '土地出让金', key: 'planToPayCtfundLandTransferFeePr' },
-				{ label: '专项债', key: 'planToPayCtfundSpecialPurposeBondPr' },
-				{ label: '城投其他资金', key: 'planToPayCtfundOtherPr' },
-				{ label: '资本金', key: 'planToPayCtfundCapitalPr' },
+			items: [{
+					label: '市财力',
+					key: 'planToPayCtfundCityPr'
+				},
+				{
+					label: '土地出让金',
+					key: 'planToPayCtfundLandTransferFeePr'
+				},
+				{
+					label: '专项债',
+					key: 'planToPayCtfundSpecialPurposeBondPr'
+				},
+				{
+					label: '城投其他资金',
+					key: 'planToPayCtfundOtherPr'
+				},
+				{
+					label: '资本金',
+					key: 'planToPayCtfundCapitalPr'
+				},
 			],
 		},
 		{
 			name: '非城投拨付资金',
-			items: [
-				{ label: '市级财力', key: 'planToPayNonCtfundCityPr' },
-				{ label: '区县财力', key: 'planToPayNonCtfundDistrictPr' },
-				{ label: '自筹资金', key: 'planToPayNonCtfundSelfPr' },
-				{ label: '其他', key: 'planToPayNonCtfundOtherPr' },
+			items: [{
+					label: '市级财力',
+					key: 'planToPayNonCtfundCityPr'
+				},
+				{
+					label: '区县财力',
+					key: 'planToPayNonCtfundDistrictPr'
+				},
+				{
+					label: '自筹资金',
+					key: 'planToPayNonCtfundSelfPr'
+				},
+				{
+					label: '其他',
+					key: 'planToPayNonCtfundOtherPr'
+				},
 			],
 		},
 		{
 			name: '直拨(无资金流入)',
-			items: [
-				{ label: '交通专项', key: 'planToPayDirectFundTransportationSpecialPr' },
-				{ label: '超长期国债', key: 'planToPayDirectFundUltraTbpr' },
-				{ label: '其他', key: 'planToPayDirectFundOtherPr' },
+			items: [{
+					label: '交通专项',
+					key: 'planToPayDirectFundTransportationSpecialPr'
+				},
+				{
+					label: '超长期国债',
+					key: 'planToPayDirectFundUltraTbpr'
+				},
+				{
+					label: '其他',
+					key: 'planToPayDirectFundOtherPr'
+				},
 			],
 		},
 	]))
@@ -549,6 +715,7 @@
 		[FUND_USAGE_STATUS]: true,
 		[PAYMENT_ACCOUNT_INFORMATION]: true,
 		[COLLECTION_ACCOUNT_INFORMATION]: true,
+		[APPROVAL_RECORD]: true,
 	})
 	const setOptions = (name) => {
 		pullDownObj[name] = pullDownObj[name] ? false : true
@@ -561,11 +728,11 @@
 		let params = {
 			pending: {
 				procCode: itemDetail.value.procDefCode,
-			    workitemid: itemDetail.value.workItemId
+				workitemid: itemDetail.value.workItemId
 			},
 			completed: {
-			   procCode: itemDetail.value.procDefCode,
-			   wfInstanceId: itemDetail.value.wfinstanceId
+				procCode: itemDetail.value.procDefCode,
+				wfInstanceId: itemDetail.value.wfinstanceId
 			}
 		}
 		return params[currentType.value]
@@ -655,6 +822,15 @@
 			infoRows.value.forEach(item => {
 				item.value = itemDatas.value[item.key] || ''
 			})
+			if(itemDatas.value.businessCategory){
+				 stageTags.value.push(itemDatas.value.businessCategory)
+			}
+			if(itemDatas.value.businessUnitName){
+				 stageTags.value.push(itemDatas.value.businessUnitName)
+			}
+			if(itemDatas.value.budgetCategoryName){
+				 stageTags.value.push(itemDatas.value.budgetCategoryName)
+			}
 			roadSectionList.value = itemDatas.value.roadSectionList || []
 		})
 	}
@@ -692,12 +868,13 @@
 	}
 	const doSubmitApproval = (dialogType) => {
 		let params = {
-			procDefCod: itemDetail.value.procDefCode,  //ZC01和GC01两个类型的可以了
+            wfInstanceId: itemDetail.value.wfinstanceId,
 			workItemId: itemDetail.value.workItemId,
 			approvalComment: inputDialogValue.value,
 			annotationComment: '',
 			pictureBaseData: '',
 			isApproval: dialogType,
+			procDefCode: itemDetail.value.procDefCode, //ZC01和GC01两个类型的可以了
 		}
 		http.post('/WF/SubmitApproval', params).then(res => {
 			if (res.code === 0) {
@@ -706,7 +883,7 @@
 					icon: 'success'
 				})
 				setTimeout(() => {
-					if(currentType.value === 'pending'){
+					if (currentType.value === 'pending') {
 						uni.$emit('refresh-pending')
 						uni.$emit('refresh-completed')
 					};
@@ -721,11 +898,14 @@
 		})
 	}
 	//获取审批记录接口 start
+	const approvalRecordList = ref([])
 	const getApprovalRecord = () => {
 		http.get('/WF/GetApprovalHistory?', {
 			wfinstanceId: itemDetail.value.wfinstanceId,
 		}).then(res => {
 			console.log(res)
+			// 假设接口返回的数据在res.data中，需要根据实际接口调整
+			approvalRecordList.value = res.data || []
 		})
 	}
 	//获取审批记录接口 end
@@ -887,6 +1067,7 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: flex-start;
+				margin-bottom: 16rpx;
 			}
 
 			.project-name {
@@ -901,7 +1082,8 @@
 					word-break: break-all;
 					white-space: normal;
 					line-height: 1.4;
-					min-height: 72rpx; /* 如果需要最小高度，使用 min-height */
+					min-height: 72rpx;
+					/* 如果需要最小高度，使用 min-height */
 				}
 			}
 
@@ -910,16 +1092,16 @@
 				// border: 1px solid red;
 
 				.amount-label {
-					height: 72rpx;
-					line-height: 72rpx;
+					height: 70rpx;
+					line-height: 70rpx;
 					font-size: 24rpx;
 					color: #99ccff;
 					text-align: right;
 				}
 
 				.amount-value {
-					height: 72rpx;
-					line-height: 72rpx;
+					height: 70rpx;
+					line-height: 70rpx;
 
 					.amount-value-symbol {
 						font-size: 28rpx;
@@ -967,7 +1149,7 @@
 				position: absolute;
 				bottom: 0;
 				right: 0;
-				width: 343rpx;
+				width: 350rpx;
 				height: 72rpx;
 				background: url('../../static/images/bg_1@2x.jpg') no-repeat center center;
 				background-size: 100% 100%;
@@ -1315,7 +1497,7 @@
 		// 		    z-index: 3;
 		// 		    background: #f6f8fc;
 		// 		}
-			
+
 		// 	}
 
 		// 	/* 覆盖层：分类名（视觉合并单元格，不占垂直高度） */
@@ -1356,7 +1538,7 @@
 		// 		display: flex;
 		// 		align-items: stretch;
 		// 		border-bottom: 1rpx solid #ddd;
-        //          /* 每行的占位列：仅占宽度，保持网格对齐 */
+		//          /* 每行的占位列：仅占宽度，保持网格对齐 */
 		// 		.col1-spacer {
 		// 			width: $col1-w;
 		// 			height: $row-h;
@@ -1463,8 +1645,8 @@
 		// 	}
 		// }
 
-	
-	 
+
+
 		// 付款账户信息独立样式 - 不与其他样式共用
 		.account-info-section {
 			// padding: 20rpx 30rpx 30rpx;
@@ -1538,6 +1720,7 @@
 	.margin_1 {
 		margin-top: 20px;
 	}
+
 	.table1 {
 		box-sizing: border-box;
 		width: 100%;
@@ -1546,64 +1729,335 @@
 		// border: 1px #a83737 solid;
 		// padding: 20rpx;	
 		border-bottom: 1rpx #ddd solid;
-			border-right: 1rpx #ddd solid;
+		border-right: 1rpx #ddd solid;
 	}
+
+	.table2 {
+		box-sizing: border-box;
+		width: 100%;
+		border: none !important;
+
+		td {
+			border: none !important;
+		}
+	}
+
 	.table1 .type {
-			background: #f6f8fc;
-			color: #000;
-		}
-		.table1 td {
-			box-sizing: border-box;
-			border-left: 1rpx #ddd solid;
-		    border-top: 1rpx #ddd solid;
-		
-			padding: 8px;
-			font-size: 12px;
-		}
-		.table1 .info {
-			text-align: right;
-			color: #666;
-		}
-		.table1 .text {
-			// text-align: lef;
-			color: #666;
-			white-space: nowrap;
-		}
-		// .table1 td{
-		// 	text-align: right;
-		// 	color: #666;
-		// }
-		.font_w {
-			font-weight: bold;
-		}
-		.text_right {
-			text-align: right;
-		}
+		background: #f6f8fc;
+		color: #000;
+	}
+
+	.table1 td {
+		box-sizing: border-box;
+		border-left: 1rpx #ddd solid;
+		border-top: 1rpx #ddd solid;
+
+		padding: 8px;
+		font-size: 12px;
+	}
+
+	.table1 .info {
+		text-align: right;
+		color: #666;
+	}
+
+	.table1 .text {
+		// text-align: lef;
+		color: #666;
+		white-space: nowrap;
+	}
+
+	// .table1 td{
+	// 	text-align: right;
+	// 	color: #666;
+	// }
+	.font_w {
+		font-weight: bold;
+	}
+
+	.text_right {
+		text-align: right;
+	}
 
 
 
-		// .table-scroll-x {
-		// 	box-sizing: border-box;
-		// 	overflow-x: auto;
-		// 	-webkit-overflow-scrolling: touch; /* 移动端流畅滑动 */
-		// }
+	// .table-scroll-x {
+	// 	box-sizing: border-box;
+	// 	overflow-x: auto;
+	// 	-webkit-overflow-scrolling: touch; /* 移动端流畅滑动 */
+	// }
 
-		// /* 让表格按内容宽度撑开，超过容器时才出现横向滚动 */
-		// .table-scroll-x .table1 {
-		// 	box-sizing: border-box;
-		// 	min-width: 100%;
-		// 	width: max-content;
-		// 	table-layout: auto;
-		// }
+	// /* 让表格按内容宽度撑开，超过容器时才出现横向滚动 */
+	// .table-scroll-x .table1 {
+	// 	box-sizing: border-box;
+	// 	min-width: 100%;
+	// 	width: max-content;
+	// 	table-layout: auto;
+	// }
 
-/* 防止单元格换行挤压变形，可按需保留或去掉 */
-.table1 .info,
-.table1 .type {
-	white-space: nowrap;
-}
+	/* 防止单元格换行挤压变形，可按需保留或去掉 */
+	.table1 .info,
+	.table1 .type {
+		white-space: nowrap;
+	}
 
-/* 需要给表格的前几列设置 sticky 和 left 偏移，按你的列宽自行调整 */
-// .table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3; }
-// .table1 td.sticky-2 { position: sticky; left: 109.02px;  z-index: 4; }
-// .table1 td.sticky-3 { position: sticky; left: 220px;  z-index: 2; }
+	/* 需要给表格的前几列设置 sticky 和 left 偏移，按你的列宽自行调整 */
+	// .table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3; }
+	// .table1 td.sticky-2 { position: sticky; left: 109.02px;  z-index: 4; }
+	// .table1 td.sticky-3 { position: sticky; left: 220px;  z-index: 2; }
+
+	/* 审批记录独立样式区域 */
+	.approval-record-section {
+		padding: 20rpx 32rpx 40rpx;
+		position: relative;
+
+		.approval-timeline {
+			position: relative;
+
+			/* 整体左侧时间线 */
+			.timeline-line-main {
+				position: absolute;
+				left: 24rpx;
+				top: 48rpx;
+				bottom: 0;
+				width: 2rpx;
+				background: #ddd;
+				z-index: 1;
+			}
+		}
+
+		.approval-item:not(:last-child)::before {
+			content: "";
+			position: absolute;
+			left: 16rpx;
+			top: 0;
+			z-index: 0;
+			width: 2rpx;
+			height: 100%;
+			background: #ddd;
+		}
+
+		.approval-item {
+			position: relative;
+			display: flex;
+			align-items: flex-start;
+			padding-bottom: 20rpx;
+
+			border-radius: 12rpx;
+			// padding: 24rpx 20rpx 24rpx 16rpx;
+			min-height: 140rpx;
+
+			.timeline-indicator-container {
+				position: absolute;
+				width: 30rpx;
+				height: 80rpx;
+				background: #fff;
+			}
+
+			.timeline-indicator {
+				// position: relative;
+				width: 30rpx;
+				height: 30rpx;
+				border-radius: 50%;
+				// margin-right: 16rpx;
+				margin-top: 22rpx;
+				z-index: 2;
+				flex-shrink: 0;
+
+				&.status-approved {
+					background: #fff;
+					border: 2rpx solid #07c160;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+
+				&.status-pending {
+					// background: transparent;
+					// border: none;
+					background: #fff;
+					// border: 2rpx solid #07c160;
+				}
+
+				&.status-submitted {
+					background: #fff;
+					border: 2rpx solid #07c160;
+				}
+
+				.indicator-checkmark {
+					color: #fff;
+					font-size: 32rpx;
+					font-weight: bold;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+
+				.indicator-empty {
+					width: 100%;
+					height: 100%;
+				}
+
+				// 添加加载动画样式（在第1797行后面添加）
+				.indicator-loading {
+					width: 100%;
+					height: 100%;
+					border: 2rpx solid transparent;
+					border-top: 2rpx solid #7b93a6;
+					border-right: 2rpx solid #7b93a6;
+					border-radius: 50%;
+					animation: rotate 1s linear infinite;
+				}
+
+				@keyframes rotate {
+					from {
+						transform: rotate(0deg);
+					}
+
+					to {
+						transform: rotate(360deg);
+					}
+				}
+
+			}
+
+			.approval-content {
+				flex: 1;
+				min-width: 0;
+				background: #f6f8fc;
+				padding: 20rpx;
+				margin-left: 27px;
+
+				.approval-header {
+					margin-bottom: 16rpx;
+				}
+
+				.approval-title {
+					display: flex;
+					align-items: center;
+					gap: 16rpx;
+					flex-wrap: wrap;
+
+					.title-text {
+						font-size: 28rpx;
+						font-weight: bold;
+						color: #000;
+					}
+
+					.title-status {
+						font-size: 24rpx;
+
+						&.status-text-green {
+							color: #07c160;
+						}
+
+						// &.status-text-grey {
+						// 	color: #999;
+						// }
+					}
+				}
+
+				.approval-body {
+					// .approval-info {
+					// 	margin-bottom: 12rpx;
+
+					// 	.approver-name {
+					// 		font-size: 24rpx;
+					// 		color: #333;
+					// 	}
+					// }
+
+					// .approval-action {
+					// 	margin-bottom: 12rpx;
+
+					// 	.action-btn {
+					// 		display: inline-block;
+					// 		padding: 6rpx 10rpx;
+					// 		border-radius: 6rpx;
+					// 		font-size: 24rpx;
+					// 		color: #fff;
+
+					// 		&.btn-approved {
+					// 			background: #07c160;
+					// 		}
+
+					// 		&.btn-pending {
+					// 			background: #ffd615;
+					// 		}
+					// 	}
+					// }
+					.approval-info {
+						display: flex;
+						justify-content: flex-start;
+						align-items: center;
+						gap: 10rpx;
+						flex-wrap: wrap;
+
+						.approver-name {
+							font-size: 24rpx;
+							color: #000;
+						}
+
+						.approval-time {
+							font-size: 24rpx;
+							color: #999;
+							text-align: right;
+							flex: 1;
+							white-space: nowrap;
+						}
+
+						.action-btn {
+							display: block;
+							padding: 4rpx 10rpx;
+							border-radius: 6rpx;
+							font-size: 24rpx;
+							color: #fff;
+
+							&.btn-approved {
+								background: #07c160;
+							}
+
+							&.btn-pending {
+								background: #ffd615;
+							}
+
+							&.btn-rejected {
+								background: #ff0000;
+							}
+						}
+					}
+
+					.approval-remark {
+						margin-top: 12rpx;
+						// padding-left: 16rpx;
+
+						.remark-label {
+							font-size: 24rpx;
+							color: #666;
+							margin-right: 8rpx;
+						}
+
+						.remark-text {
+							font-size: 24rpx;
+							color: #666;
+							line-height: 1.6;
+						}
+					}
+				}
+
+				// .approval-footer {
+				// 	display: flex;
+				// 	justify-content: flex-end;
+				// 	margin-top: 12rpx;
+
+				// 	.approval-time {
+				// 		font-size: 24rpx;
+				// 		color: #999;
+				// 	}
+				// }
+			}
+
+
+		}
+	}
 </style>
