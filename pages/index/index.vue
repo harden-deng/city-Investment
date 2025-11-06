@@ -41,6 +41,7 @@
 	// const phoneNumber = ref('sybjbr1');  //经办人事业部
 	// const phoneNumber = ref('sybzgo');  //您好，业务主管（运管中心）
 	const phoneNumber = ref('sybzg1');  //业务主管（一事业部）
+	// const phoneNumber = ref('cwzg');  //业务主管（一事业部）  cwzg财务主管
 	const password = ref(123);
 	onLoad(() => {
 		const statusBarHeightNew = getStorage('statusBarHeight');

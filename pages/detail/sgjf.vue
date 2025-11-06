@@ -19,17 +19,17 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ itemDatas.projectName }}
+							{{ infoRows[1].value }}
 						</view>
 						<view class="project-name-1">
-							{{ itemDatas.budgetContent }}
+							{{ itemDetail.taskName }}
 						</view>
 					</view>
 					<view class="amount-box">
 						<view class="amount-label">申请支付总金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{ formatNumber(itemDatas.planToPayTotalPr) }}</text></view>
+								{{ formatNumber(itemDatas.paymentAmount) }}</text></view>
 					</view>
 				</view>
 				<view class="hero-tags">
@@ -52,13 +52,36 @@
 				<view class="info-list">
 					<view class="info-item" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value">{{ row.value || '--' }}</text>
+						<text class="info-value">{{ row.value || '--'}}</text>
+					</view>
+					<view class="info-item" v-if="itemDatas.requestType === 'Travel' || itemDatas.requestType === 'GnE'">
+						<text class="info-label">预算栏目</text>
+						<text class="info-value">{{ itemDatas.budgetCategoryName || '--' }}</text>
+					</view>
+					
+					<view class="info-item" v-if="itemDatas.requestType === 'GnE'">
+						<text class="info-label">招待方式</text>
+						<text class="info-value">{{ vehiclePaymentContentList[0].gnEtype.replace('|',',') || '--' }}</text>
+					</view>
+					<view class="info-item" v-if="itemDatas.requestType === 'GnE'">
+						<text class="info-label">内容</text>
+						<text class="info-value">{{ vehiclePaymentContentList[0].content || '--' }}</text>
+					</view>
+					<view class="info-item" v-if="itemDatas.requestType === 'Vehicle'">
+						<text class="info-label">内容</text>
+						<text class="info-value">{{ itemDatas.content || '--' }}</text>
+					</view>
+					<view class="usage-details" v-if="itemDatas.requestType === 'GnE'" style="padding: 0;">
+					     <view class="detail-row summary-row" style="padding: 20rpx 0 20rpx;">
+								<text class="detail-label summary-label">本次用款小计</text>
+								<text class="detail-value summary-value">{{ formatNumber(itemDatas.paymentAmount) }}</text>
+						 </view>
 					</view>
 				</view>
 			</view>
 
 			<!-- 用款情况 -->
-			<view class="section">
+			<view class="section" v-if="vehiclePaymentContentList.length > 0 &&itemDatas.requestType != 'GnE'">
 				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
@@ -74,297 +97,246 @@
 					<view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
 						<!-- 整体合同 -->
 						<view class="contract-section">
-							<view class="contract-header">
-								整体合同
+							<!-- 支付内容 -->
+							<!-- <view class="contract-header" v-if="vehiclePaymentContentList.length == 0">
+								支付内容
 							</view>
-							<view class="contract-details">
+							<view class="contract-details" v-if="vehiclePaymentContentList.length == 0">
 								<view class="detail-row">
-									<text class="detail-label">合同价/审定价</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.contractPrice) }}</text>
+									<text class="detail-label">ETC充值</text>
+									<text class="detail-value">{{ formatNumber(vehiclePaymentContentList[0].etc) }}</text>
 								</view>
 								<view class="detail-row">
-									<text class="detail-label">累计付款 含本次</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.contractPaymentTotalIncludeCurrentPr) }}</text>
+									<text class="detail-label">停车费</text>
+									<text class="detail-value">{{ formatNumber(vehiclePaymentContentList[0].parking) }}</text>
 								</view>
-								<view class="detail-row">
-									<text class="detail-label">累计付款 不含本次</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.contractPaymentTotalExcludeCurrentPr) }}</text>
+                                <view class="detail-row">
+									<text class="detail-label">过路费</text>
+									<text class="detail-value">{{ formatNumber(vehiclePaymentContentList[0].toll) }}</text>
 								</view>
-							</view>
-							<view class="contract-header">
-								其中{{ itemDatas.highlightPartName || '' }}
-							</view>
-							<view class="contract-details">
-								<view class="detail-row">
-									<text class="detail-label">合同价/审定价</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.highlightPartPrice) }}</text>
+                                <view class="detail-row">
+									<text class="detail-label">加油费</text>
+									<text class="detail-value">{{ formatNumber(vehiclePaymentContentList[0].fuel) }}</text>
 								</view>
-								<view class="detail-row">
-									<text class="detail-label">累计付款 含本次</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.highlightPaymentTotalIncludeCurrent2Pr) }}</text>
+                                <view class="detail-row">
+									<text class="detail-label">修理费</text>
+									<text class="detail-value">{{ formatNumber(vehiclePaymentContentList[0].repair) }}</text>
 								</view>
-								<view class="detail-row">
-									<text class="detail-label">累计付款 不含本次</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.highlightPaymentTotalExcludeCurrent2Pr) }}</text>
+                                <view class="detail-row">
+									<text class="detail-label">保险费</text>
+									<text class="detail-value">{{ formatNumber(vehiclePaymentContentList[0].insurance) }}</text>
 								</view>
-							</view>
-						</view>
-						<!-- 其他信息 -->
-						<view class="other-info">
-							<view class="detail-row">
-								<text class="detail-label">验工计价年月</text>
-								<text class="detail-value">{{ itemDatas.settlementYearMonth || '0.00' }}</text>
-							</view>
-							<view class="detail-row">
-								<text class="detail-label">验工计价期数</text>
-								<text class="detail-value">{{ itemDatas.settlementPhase || '0.00' }}</text>
-							</view>
-							<view class="detail-row">
-								<text class="detail-label">对应工作量</text>
-								<text class="detail-value">{{ formatNumber(itemDatas.settlementWorkload) }}</text>
-							</view>
-						</view>
-						<!-- 整体合同 -->
-						<view class="contract-section">
-							<!-- 用款性质 -->
-							<view class="contract-header" v-if="roadSectionList.length === 0">
-								用款性质
-							</view>
-							<view class="contract-details" v-if="roadSectionList.length === 0">
-								<view class="detail-row">
-									<text class="detail-label">确定性</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</text>
+                                <view class="detail-row">
+									<text class="detail-label">租车费</text>
+									<text class="detail-value">{{ formatNumber(vehiclePaymentContentList[0].renting) }}</text>
 								</view>
-								<view class="detail-row">
-									<text class="detail-label">预估性</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.planToPayEstimatedPr) }}</text>
+                                <view class="detail-row">
+									<text class="detail-label">洗车费</text>
+									<text class="detail-value">{{ formatNumber(vehiclePaymentContentList[0].wash) }}</text>
 								</view>
-							</view>
-							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0">
-								<table cellspacing="0" cellpadding="0" class="table1 table2">
-									<tbody>
-										<tr>
-											<td colspan="2" class="type font_w sticky-xz-1">用款性质</td>
-											<td class="type font_w text_right" v-for="value in roadSectionList"
-												:key="value.id">{{ value.roadName }}</td>
-										</tr>
-										<tr>
-											<td class="text sticky-xz-1">确定性</td>
-											<td class="info sticky-xz-2">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.confirmed) }}</td>
-										</tr>
-										<tr>
-											<td class="text sticky-xz-1">预估性</td>
-											<td class="info sticky-xz-2">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.estimated) }}</td>
-										</tr>
-									</tbody>
-								</table>
-							</scroll-view>
-							<!-- 款项类型 -->
-							<view class="contract-header" v-if="roadSectionList.length === 0">
-								款项类型
-							</view>
-							<view class="contract-details" v-if="roadSectionList.length === 0">
-								<view class="detail-row">
-									<text class="detail-label">工程费用</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.planToPayConstructionAmountPr) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">农民工工资</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.planToPayRuralLaborsSalaryPr) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">材料款</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.planToPayMaterialAmountPr) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">前期费用</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.planToPayProphaseAmountPr) }}</text>
-								</view>
-								<view class="detail-row">
+                                <view class="detail-row">
 									<text class="detail-label">其他</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.planToPayOtherAmountPr) }}</text>
+									<text class="detail-value">{{ formatNumber(vehiclePaymentContentList[0].others) }}</text>
 								</view>
-								<view class="detail-row summary-row">
-									<text class="detail-label summary-label">本次用款小计</text>
-									<text
-										class="detail-value summary-value">{{ formatNumber(itemDatas.planToPayTotalPr) }}</text>
-								</view>
-							</view>
-							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0">
+							</view> -->
+							<!-- <scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 0">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
-											<td colspan="2" class="type font_w sticky-lx-1">款项类型</td>
-											<td class="type font_w text_right" v-for="value in roadSectionList"
-												:key="value.id">{{ value.roadName }}</td>
-										</tr>
-
-										<tr>
-											<td class="text sticky-lx-1">工程费用</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayConstructionAmountPr) }}
-											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.constructionAmount) }}</td>
+											<td class="type font_w sticky-xz-1">支付内容</td>
+                                            <td class="type font_w text_right">
+												</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1">农民工工资</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayRuralLaborsSalaryPr)  }}
-											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.ruralLaborsSalary) }}</td>
+											<td class="text sticky-xz-1">ETC充值</td>
+											<td class="info">
+												{{ formatNumber(vehiclePaymentContentObj.etc) }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1">材料款</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayMaterialAmountPr)  }}
-											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.materialAmount) }}</td>
+											<td class="text sticky-xz-1">停车费</td>
+											<td class="info">
+												{{ formatNumber(vehiclePaymentContentObj.parking) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">过路费</td>
+											<td class="info">
+												{{ formatNumber(vehiclePaymentContentObj.toll) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">加油费</td>
+											<td class="info">
+												{{ formatNumber(vehiclePaymentContentObj.fuel) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">修理费</td>
+											<td class="info">
+												{{ formatNumber(vehiclePaymentContentObj.repair) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">保险费</td>
+											<td class="info">
+												{{ formatNumber(vehiclePaymentContentObj.insurance) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">租车费</td>
+											<td class="info">
+												{{ formatNumber(vehiclePaymentContentObj.renting) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">洗车费</td>
+											<td class="info">
+												{{ formatNumber(vehiclePaymentContentObj.wash) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">其他</td>
+											<td class="info">
+												{{ formatNumber(vehiclePaymentContentObj.others) }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</scroll-view> -->
+							<!-- 明细 -->
+							<scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 1&&itemDatas.requestType === 'Vehicle'">
+								<table cellspacing="0" cellpadding="0" class="table1 table2">
+									<tbody>
+										<tr>
+										   <td class="type font_w sticky-xz-1">{{ infoRows[0].value.slice(0,-3)}}明细</td>
+                                           <td class="type font_w text_right">合计</td> 
+										   <td class="type font_w text_right" v-for="(value,index) in itemDatas.vehiclePlateNo.split(';')" :key="index">
+												{{ value || '' }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1">前期费用</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayProphaseAmountPr)  }}
-											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.prophaseAmount) }}</td>
+											<td class="text sticky-xz-1">ETC充值</td>
+											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+												{{ formatNumber(value.etc) }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1">其他</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayOtherAmountPr)  }}</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.otherAmount) }}</td>
+											<td class="text sticky-xz-1">停车费</td>
+											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+												{{ formatNumber(value.parking) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">过路费</td>
+											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+												{{ formatNumber(value.toll) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">加油费</td>
+											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+												{{ formatNumber(value.fuel) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">修理费</td>
+											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+												{{ formatNumber(value.repair) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">保险费</td>
+											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+												{{ formatNumber(value.insurance) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">租车费</td>
+											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+												{{ formatNumber(value.renting) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">洗车费</td>
+											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+												{{ formatNumber(value.wash) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">其他</td>
+											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+												{{ formatNumber(value.others) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">合计</td>
+											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+												{{ formatNumber(value.total) }}</td>
 										</tr>
 									</tbody>
 								</table>
 							</scroll-view>
-							<view class="detail-row summary-row" v-if="roadSectionList.length > 0">
+							<scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 0&&itemDatas.requestType === 'Travel'">
+								<table cellspacing="0" cellpadding="0" class="table1 table2">
+									<tbody>
+										<tr>
+										   <td class="type font_w sticky-xz-1">{{ infoRows[0].value.slice(0,-3)}}明细</td>
+                                           <!-- <td class="type font_w text_right">合计</td>  -->
+										   <td class="type font_w text_right" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												</td>
+										</tr>
+										<tr>
+											<td class="text sticky-xz-1">交通费</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.travelExpense) }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-xz-1">住宿费</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.accommodationFee) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">误餐费</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.missedMealFee) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">会务费</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.meetingExpense) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">出差人数</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.travelPeopleCount) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">出差天数</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.travelDays) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">交通方式</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ value.transportationMethod.replace('|',',') }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">内容</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ value.content }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</scroll-view>
+							<!-- <scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 0&&itemDatas.requestType === 'GnE'">
+								<table cellspacing="0" cellpadding="0" class="table1 table2">
+									<tbody>
+										<tr>
+										   <td class="type font_w sticky-xz-1">{{ infoRows[0].value.slice(0,-3)}}明细</td>
+										   <td class="type font_w text_right" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">招待方式</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ value.gnEtype.replace('|',',') }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">内容</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ value.content }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</scroll-view> -->
+							<view class="detail-row summary-row" v-if="vehiclePaymentContentList.length > 0 &&itemDatas.requestType != 'GnE'">
 								<text class="detail-label summary-label">本次用款小计</text>
 								<text
-									class="detail-value summary-value">{{ formatNumber(itemDatas.planToPayTotalPr) }}</text>
+									class="detail-value summary-value">{{ formatNumber(itemDatas.paymentAmount) }}</text>
 							</view>
 						</view>
-
-						<scroll-view scroll-x class="table-scroll-x">
-							<table cellspacing="0" cellpadding="0" class="table1 margin_1"
-								style="border-right: 1px #ddd solid;">
-								<tbody>
-									<tr>
-										<td colspan="2" class="type font_w sticky-1">支付渠道</td>
-										<td class="type font_w text_right">总金额</td>
-										<td class="type font_w text_right" v-for="value in roadSectionList"
-											:key="value.id">{{ value.roadName }}</td>
-									</tr>
-									<tr>
-										<td rowspan="5" class="type td_w1 sticky-1">城投拨付资金</td>
-										<td class="type td_w2 sticky-2">市财力</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCityPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCity) }}</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">土地出让金</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundLandTransferFeePr) }}
-										</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundLandTransferFee) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">专项债</td>
-										<td class="info">
-											{{ formatNumber(itemDatas.planToPayCtfundSpecialPurposeBondPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundSpecialPurposeBond) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">城投其他资金</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundOtherPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundOther) }}</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">资本金</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCapitalPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCapital) }}
-										</td>
-									</tr>
-									<tr>
-										<td rowspan="4" class="type sticky-1">城投拨付资金</td>
-										<td class="type sticky-2">市财力</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundCityPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundCity) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">区县财力</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundDistrictPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundDistrict) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">自筹资金</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundSelfPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundSelf) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">其他</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundOtherPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundOther) }}
-										</td>
-									</tr>
-									<tr>
-										<td rowspan="3" class="type sticky-1">直拨(无资金流入)</td>
-										<td class="type sticky-2">交通专项</td>
-										<td class="info">
-											{{ formatNumber(itemDatas.planToPayDirectFundTransportationSpecialPr) }}
-										</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundTransportationSpecial) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">超长期国债</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundUltraTbpr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundUltraTb) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">其他</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundOtherPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundOther) }}
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2" class="type sticky-1">开具银票(无资金流出)</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayBankNotePr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayBankNote) }}</td>
-									</tr>
-								</tbody>
-							</table>
-						</scroll-view>
-
 					</view>
 				</transition>
 			</view>
@@ -374,7 +346,7 @@
 				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
-						<text class="section-title-text">付款账户信息</text>
+						<text class="section-title-text">补充信息</text>
 					</view>
 					<view class="section-title-2-right" :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
 
@@ -383,50 +355,25 @@
 				<!-- 付款账户信息卡片 -->
 				<transition name="collapse">
 					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
-						<view style="height: 10rpx;"></view>
-						<!-- 多个公司账户信息 -->
-						<template v-if="itemDatas?.roadSectionList?.length > 0">
-							<view class="account-card" v-for="item in itemDatas.roadSectionList" :key="item.id">
-								<view class="account-company-title">{{ item.roadName || '' }}</view>
-								<view class="account-info-block">
-									<view class="account-info-row">
-										<text class="account-info-label">付款银行(资金)</text>
-										<text class="account-info-value">{{ item.paymentBank || '' }}</text>
-									</view>
-									<view class="account-info-row">
-										<text class="account-info-label">付款账号(资金)</text>
-										<text class="account-info-value">{{ item.paymentAccount || '' }}</text>
-									</view>
-									<view class="account-info-row">
-										<text class="account-info-label">付款银行(银票)</text>
-										<text class="account-info-value"> {{ item.paymentBankNote || '' }} </text>
-									</view>
-									<view class="account-info-row">
-										<text class="account-info-label">付款账号(银票)</text>
-										<text class="account-info-value">{{ item.paymentAccountNote || '' }}</text>
-									</view>
-								</view>
-							</view>
-						</template>
 						<!-- 单个公司账户信息 -->
-						<view class="account-card" v-else>
-							<view class="account-company-title">{{ itemDatas.companyName || '' }}</view>
+						<view class="account-card">
+							<!-- <view class="account-company-title">{{ itemDatas.companyName || '' }}</view> -->
 							<view class="account-info-block">
 								<view class="account-info-row">
-									<text class="account-info-label">付款银行(资金)</text>
-									<text class="account-info-value">{{ itemDatas.paymentBank || '' }}</text>
+									<text class="account-info-label">发票系统编号</text>
+									<text class="account-info-value">{{ itemDatas.invoiceCloudId || '' }}</text>
 								</view>
 								<view class="account-info-row">
-									<text class="account-info-label">付款账号(资金)</text>
-									<text class="account-info-value">{{ itemDatas.paymentAccount || '' }}</text>
+									<text class="account-info-label">普票金额</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vatoamount) || '' }}</text>
 								</view>
 								<view class="account-info-row">
-									<text class="account-info-label">付款银行(银票)</text>
-									<text class="account-info-value"> {{ itemDatas.paymentBankNote || '' }} </text>
+									<text class="account-info-label">可抵扣票据</text>
+									<text class="account-info-value"> {{ formatNumber(itemDatas.vatamountNet) || '' }} </text>
 								</view>
 								<view class="account-info-row">
-									<text class="account-info-label">付款账号(银票)</text>
-									<text class="account-info-value">{{ itemDatas.paymentAccountBankNote || '' }}</text>
+									<text class="account-info-label">进项税额</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vattaxAmount) || '' }}</text>
 								</view>
 							</view>
 						</view>
@@ -434,66 +381,6 @@
 				</transition>
 			</view>
 
-			<!-- 收款账户信息 -->
-			<view class="section">
-				<view class="section-title-2" @click="setOptions(COLLECTION_ACCOUNT_INFORMATION)">
-					<view class="section-title-2-left">
-						<text class="section-title-vertical"></text>
-						<text class="section-title-text">收款账户信息</text>
-					</view>
-					<view class="section-title-2-right"
-						:class="{ 'active': getOptions(COLLECTION_ACCOUNT_INFORMATION) }">
-					</view>
-				</view>
-				<!-- 收款账户信息卡片 -->
-				<transition name="collapse">
-					<view class="account-info-section" v-if="getOptions(COLLECTION_ACCOUNT_INFORMATION)">
-						<view style="height: 10rpx;"></view>
-						<!-- 第一个公司账户信息 -->
-						<view class="account-card">
-							<view class="account-company-title">农民工工资</view>
-							<view class="account-info-block">
-								<view class="account-info-row">
-									<text class="account-info-label">收款单位</text>
-									<text
-										class="account-info-value">{{ itemDatas.receiverAccountNameRuralLaborPr || ''}}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">开户行</text>
-									<text
-										class="account-info-value">{{ itemDatas.receiverBankNameRuralLaborPr  || ''}}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">账号</text>
-									<text
-										class="account-info-value">{{ itemDatas.receiverAccountNumberRuralLaborPr  || ''}}</text>
-								</view>
-							</view>
-						</view>
-
-						<!-- 第二个公司账户信息 -->
-						<view class="account-card">
-							<view class="account-company-title">材料款、其他工程款</view>
-							<view class="account-info-block">
-								<view class="account-info-row">
-									<text class="account-info-label">收款单位</text>
-									<text
-										class="account-info-value">{{ itemDatas.receiverAccountNameMncpr  || ''}}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">开户行</text>
-									<text class="account-info-value">{{ itemDatas.receiverBankNameMncpr  || ''}}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">帐号</text>
-									<text class="account-info-value"> {{ itemDatas.receiverAccountNumberMncpr  || ''}}
-									</text>
-								</view>
-							</view>
-						</view>
-					</view>
-				</transition>
-			</view>
 			<!-- 审批记录 -->
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(APPROVAL_RECORD)">
@@ -507,66 +394,7 @@
 				<!-- 审批记录卡片 -->
 				<transition name="collapse">
 					<view class="approval-record-section" v-if="getOptions(APPROVAL_RECORD)">
-						<!-- <view class="approval-timeline">
-							<view class="approval-item" v-for="(item, index) in approvalRecordList" :key="index">
-								<view class="timeline-indicator-container">
-									<view class="timeline-indicator" :class="{
-									'status-pending': item.approvalActionType === 'vmPending',
-									'status-approved': item.approvalActionType === '已审批'&&item.approvalResult == '批准',
-									'status-rejected': item.approvalActionType === '已审批'&&item.approvalResult == '驳回',
-									'status-successed': item.approvalResult == '完成',
-									'status-submitted': item.approvalActionType === '提交'
-								}">
-										<view class="indicator-checkmark" v-if="item.approvalResult == '完成'">
-											<uni-icons type="smallcircle-filled" size="12" color="#07c160"></uni-icons>
-										</view>
-										<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批'&&item.approvalResult == '批准'">
-											<uni-icons type="checkmarkempty" size="10" color="#07c160"></uni-icons>
-										</view>
-										<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批'&&item.approvalResult == '驳回'">
-											<uni-icons type="checkmarkempty" size="10" color="#ffb800"></uni-icons>
-										</view>
-										<view class="indicator-loading"
-											v-else-if="item.approvalActionType === 'vmPending'"></view>
-										<view class="indicator-empty" v-else-if="item.approvalActionType === '提交'">
-										</view>
-									</view>
-								</view>
-								<view class="approval-content">
-									<view class="approval-header">
-										<view class="approval-title">
-											<text class="title-text">{{ item.stepName }}</text>
-											<text class="title-status" :class="{
-												'status-text-green': item.approvalActionType === '已审批' || item.approvalActionType === 'vmPending' || item.approvalActionType === '提交',
-											}">
-												{{ item.approvalActionType == 'vmPending' ? '审批中' : item.approvalActionType }}
-											</text>
-										</view>
-									</view>
-
-									<view class="approval-body">
-										<view class="approval-info"
-											style="display: flex; justify-content: flex-start;gap: 10rpx;">
-											<text class="approver-name">{{ item.approverDisplayName }}</text>
-											<view class="action-btn" :class="{
-													'btn-approved': item.approvalResult == '批准' || item.approvalResult == '提交',
-													'btn-pending': item.approvalResult == '待审批',
-													'btn-rejected': item.approvalResult == '驳回',
-												}">
-												{{ item.approvalResult }}
-											</view>
-											<text
-												class="approval-time">{{ formatDateTime(item.approvalResult == "待审批" ? item.approvalTime : item.createdDate) }}</text>
-										</view>
-										<view class="approval-remark" v-if="item.approvalComment">
-											<text class="remark-label">备注:</text>
-											<text class="remark-text">{{ item.approvalComment }}</text>
-										</view>
-									</view>
-								</view>
-							</view>
-						</view> -->
-                        <approvalTimeline :list="approvalRecordList"></approvalTimeline>
+						<approvalTimeline :list="approvalRecordList"></approvalTimeline>
 					</view>
 				</transition>
 			</view>
@@ -623,6 +451,16 @@
 	const currentUrlObj = reactive({
 		pending: '/WF/GetFormDataApproval',
 		completed: '/WF/GetFormDataView'
+	})
+	const requestTypeObj = reactive({
+		'Vehicle': '公务用车报销单',
+		'GnE': '业务招待报销单',
+		'Travel': '差旅报销单',
+	})
+	const requestTypeSel = reactive({
+		'Vehicle': ['etc', 'parking', 'toll', 'fuel', 'repair', 'insurance', 'renting', 'wash', 'others'],
+		'GnE': ['gnEtype','content'],
+		'Travel': ['travelExpense', 'accommodationFee', 'missedMealFee', 'meetingExpense', 'travelPeopleCount', 'travelDays','transportationMethod','content'],
 	})
 	const inputDialogRef = ref(null)
 	const inputDialogRequired = ref(false)
@@ -728,101 +566,102 @@
 	})
 
 	const infoRows = ref([{
-			label: '项目名称',
+			label: '报销类型',
 			value: '',
-			key: 'projectName'
-		},
-		{
-			label: '项目阶段/预算事项',
-			value: '',
-			key: 'budgetContent'
-		},
-		{
+			key: 'requestType'
+		},{
 			label: '付款单位',
+			value: '',
+			key: 'paymentCompanyName'
+		},{
+			label: '报销金额',
+			value: '',
+			key: 'claimAmount' 
+		},{
+			label: '支付金额',
+			value: '',
+			key: 'paymentAmount'
+		},
+		{
+			label: '用款部门',
 			value: '',
 			key: 'companyName'
 		},
+		
 		{
-			label: '合同名称',
+			label: '收款名称',
 			value: '',
-			key: 'contractName'
+			key: 'receivingBankName'
+		},
+		
+		{
+			label: '收款开户银行',
+			value: '',
+			key: 'receivingBankAccountName'
 		},
 		{
-			label: '收款单位',
+			label: '收款账号',
 			value: '',
-			key: 'payToCompany' //deng
+			key: 'receivingBankAccountNumber'
 		},
-		{
-			label: '具体事项',
-			value: '',
-			key: 'detailedDescription'
-		},
-		{
-			label: '业务类别',
-			value: '',
-			key: 'businessCategory'
-		},
-		{
-			label: '付款内容',
-			value: '',
-			key: 'contentDescription'
-		},
-		{
-			label: '预算事项',
-			value: '',
-			key: 'AccountName'
-		},
-		{
-			label: '支付节点',
-			value: '',
-			// key: 'budgetCategoryId'
-			key: 'budgetCategoryName'
-		},
-		// {
-		// 	label: '业务备注',
-		// 	value: '',
-		// 	key: '' //deng
-		// },
-		// {
-		// 	label: '备注',
-		// 	value: '',
-		// 	key: '' //deng
-		// },
-		{
-			label: '保函有效期',
-			value: '',
-			key: 'guaranteeLetterValidTo'
-		},
-		{
-			label: '业务摘要',
-			value: '',
-			key: 'businessRemarkPr'
-		},
+		
 	])
 
 	function goBack() {
 		uni.navigateBack()
 	}
 	const itemDatas = ref({});
-	const roadSectionList = ref([]);
+	const vehiclePaymentContentList = ref([]);
+    const vehiclePaymentContentObj = reactive({});
+	// const GnEPaymentContent = ref([]);
+	// const TravelPaymentContent = ref([]);
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
-			itemDatas.value = res.data?.itemdata || {}
+			itemDatas.value = res.data?.data?.wfrequestexpenseclaim || {}
 			infoRows.value.forEach(item => {
-				item.value = itemDatas.value[item.key] || ''
+				item.value = (typeof itemDatas.value[item.key] === 'number' || item.key === 'claimAmount' || item.key === 'paymentAmount') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
-			if(itemDatas.value.businessCategory){
-				 stageTags.value.push(itemDatas.value.businessCategory)
+            if(infoRows.value[0].value) {
+                infoRows.value[0].value = requestTypeObj[infoRows.value[0].value] || ''
+            }
+            let arr = requestTypeSel[itemDatas.value.requestType] || []
+			if(res.data?.data?.wfrequestexpenseclaimvehicleitems){
+				 vehiclePaymentContentList.value = res.data?.data?.wfrequestexpenseclaimvehicleitems || []
+				 vehiclePaymentContentList.value.forEach(item => {
+					item.total = sumNestedProperties(item, arr);
+				 }) 
+				arr.forEach(item => {
+                  vehiclePaymentContentObj[item] = totalNestedValue(vehiclePaymentContentList.value, item)
+                })
 			}
-			if(itemDatas.value.businessUnitName){
-				 stageTags.value.push(itemDatas.value.businessUnitName)
+			if(itemDatas.value.requestType === 'Travel'){
+				arr.forEach(item => {
+                  vehiclePaymentContentObj[item] = itemDatas.value[item] || 0
+                })
 			}
-			if(itemDatas.value.budgetCategoryName){
-				 stageTags.value.push(itemDatas.value.budgetCategoryName)
+			if(itemDatas.value.requestType === 'GnE'){
+				arr.forEach(item => {
+                  vehiclePaymentContentObj[item] = itemDatas.value[item] || 0
+                })
 			}
-			roadSectionList.value = itemDatas.value.roadSectionList || []
+           
+          
+			vehiclePaymentContentObj['total'] = itemDatas.value.paymentAmount || 0;
+			vehiclePaymentContentList.value.unshift({...vehiclePaymentContentObj})
+			if(itemDatas.value.receivingBankName){
+				 stageTags.value.push(itemDatas.value.receivingBankName)
+			}
 		})
 	}
+
+    const sumNestedProperties = (obj, properties) => {
+        return properties.reduce((sum, prop) => sum + (obj[prop] || 0), 0);
+    }
+    const totalNestedValue = (array,properties) => {
+        return array.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue[properties];
+        }, 0);
+    }
 
 	const onReject = () => {
 		// uni.showToast({
@@ -1111,7 +950,7 @@
 			.hero-tags {
 				width: calc(100% - 320rpx);
 				height: 72rpx;
-				overflow: hidden;
+				overflow-x: hidden;
 				display: flex;
 				align-items: center;
 				gap: 8rpx;
@@ -1639,10 +1478,10 @@
 		// 付款账户信息独立样式 - 不与其他样式共用
 		.account-info-section {
 			// padding: 20rpx 30rpx 30rpx;
-			padding: 0 32rpx 20rpx;
+			padding: 0 32rpx 40rpx;
 
 			.account-card {
-				margin-bottom: 40rpx;
+				// margin-bottom: 40rpx;
 
 				.account-company-title {
 					font-size: 24rpx;

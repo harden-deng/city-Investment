@@ -126,6 +126,12 @@
 		{ label: '流转中', wf: 'Running' },
 		{ label: '已审核', wf: 'Completed' },
 	];
+	const procDefCodeUrlObj = ref({
+		'GC01': '/pages/detail/index',
+		'SG01': '/pages/detail/sgjf',
+		'KY01': '/pages/detail/kyjf',
+		'DB01': '/pages/detail/zjdb'
+	})
 	const wfstatusArr = ref(tabs.map(t => t.wf));
 	const tabValues = ref(tabs.map(t => t.label));
 	//弹窗筛选--------start
@@ -204,12 +210,11 @@
 
 	const toDetail = (order) => {
 		uni.navigateTo({
-			url: '/pages/detail/index',
+			url: procDefCodeUrlObj.value[order.procDefCode],
 			success(res) {
-				console.log('res', res)
 				res.eventChannel.emit('open-detail', {
-					type: 'completed',
-					order: order // 也可直接传整条数据
+				   type: 'completed',
+				   order: order // 也可直接传整条数据
 				})
 			}
 		})

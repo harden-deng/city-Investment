@@ -51,6 +51,24 @@
 				"navigationStyle": "custom",
 				"disableScroll": true
 			}
+		},	{
+			"path": "pages/detail/sgjf",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
+		}, {
+			"path": "pages/detail/kyjf",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
+		},{
+			"path": "pages/detail/zjdb",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
 		}, {
 			"path": "uni_modules/rn-signature/pages/rn-canvas",
 			"style": {

@@ -19,17 +19,17 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ itemDatas.projectName }}
+							{{ infoRows[0].value }}
 						</view>
 						<view class="project-name-1">
-							{{ itemDatas.budgetContent }}
+							{{ infoRows[1].value }}
 						</view>
 					</view>
 					<view class="amount-box">
 						<view class="amount-label">申请支付总金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{ formatNumber(itemDatas.planToPayTotalPr) }}</text></view>
+								{{ formatNumber(itemDatas.claimAmount) }}</text></view>
 					</view>
 				</view>
 				<view class="hero-tags">
@@ -57,12 +57,12 @@
 				</view>
 			</view>
 
-			<!-- 用款情况 -->
+			<!-- 课题信息 -->
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
-						<text class="section-title-text">用款情况</text>
+						<text class="section-title-text">课题信息</text>
 					</view>
 					<!-- <image class="section-title-2-right" src="../../static/images/c2.png" mode="scaleToFill"
 						style=" width: 28rpx;height: 16rpx;" /> -->
@@ -71,429 +71,19 @@
 					</view>
 				</view>
 				<transition name="collapse">
-					<view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
-						<!-- 整体合同 -->
-						<view class="contract-section">
-							<view class="contract-header">
-								整体合同
-							</view>
-							<view class="contract-details">
-								<view class="detail-row">
-									<text class="detail-label">合同价/审定价</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.contractPrice) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">累计付款 含本次</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.contractPaymentTotalIncludeCurrentPr) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">累计付款 不含本次</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.contractPaymentTotalExcludeCurrentPr) }}</text>
-								</view>
-							</view>
-							<view class="contract-header">
-								其中{{ itemDatas.highlightPartName || '' }}
-							</view>
-							<view class="contract-details">
-								<view class="detail-row">
-									<text class="detail-label">合同价/审定价</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.highlightPartPrice) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">累计付款 含本次</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.highlightPaymentTotalIncludeCurrent2Pr) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">累计付款 不含本次</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.highlightPaymentTotalExcludeCurrent2Pr) }}</text>
-								</view>
-							</view>
-						</view>
-						<!-- 其他信息 -->
-						<view class="other-info">
-							<view class="detail-row">
-								<text class="detail-label">验工计价年月</text>
-								<text class="detail-value">{{ itemDatas.settlementYearMonth || '0.00' }}</text>
-							</view>
-							<view class="detail-row">
-								<text class="detail-label">验工计价期数</text>
-								<text class="detail-value">{{ itemDatas.settlementPhase || '0.00' }}</text>
-							</view>
-							<view class="detail-row">
-								<text class="detail-label">对应工作量</text>
-								<text class="detail-value">{{ formatNumber(itemDatas.settlementWorkload) }}</text>
-							</view>
-						</view>
-						<!-- 整体合同 -->
-						<view class="contract-section">
-							<!-- 用款性质 -->
-							<view class="contract-header" v-if="roadSectionList.length === 0">
-								用款性质
-							</view>
-							<view class="contract-details" v-if="roadSectionList.length === 0">
-								<view class="detail-row">
-									<text class="detail-label">确定性</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">预估性</text>
-									<text class="detail-value">{{ formatNumber(itemDatas.planToPayEstimatedPr) }}</text>
-								</view>
-							</view>
-							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0">
-								<table cellspacing="0" cellpadding="0" class="table1 table2">
-									<tbody>
-										<tr>
-											<td colspan="2" class="type font_w sticky-xz-1">用款性质</td>
-											<td class="type font_w text_right" v-for="value in roadSectionList"
-												:key="value.id">{{ value.roadName }}</td>
-										</tr>
-										<tr>
-											<td class="text sticky-xz-1">确定性</td>
-											<td class="info sticky-xz-2">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.confirmed) }}</td>
-										</tr>
-										<tr>
-											<td class="text sticky-xz-1">预估性</td>
-											<td class="info sticky-xz-2">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.estimated) }}</td>
-										</tr>
-									</tbody>
-								</table>
-							</scroll-view>
-							<!-- 款项类型 -->
-							<view class="contract-header" v-if="roadSectionList.length === 0">
-								款项类型
-							</view>
-							<view class="contract-details" v-if="roadSectionList.length === 0">
-								<view class="detail-row">
-									<text class="detail-label">工程费用</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.planToPayConstructionAmountPr) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">农民工工资</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.planToPayRuralLaborsSalaryPr) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">材料款</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.planToPayMaterialAmountPr) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">前期费用</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.planToPayProphaseAmountPr) }}</text>
-								</view>
-								<view class="detail-row">
-									<text class="detail-label">其他</text>
-									<text
-										class="detail-value">{{ formatNumber(itemDatas.planToPayOtherAmountPr) }}</text>
-								</view>
-								<view class="detail-row summary-row">
-									<text class="detail-label summary-label">本次用款小计</text>
-									<text
-										class="detail-value summary-value">{{ formatNumber(itemDatas.planToPayTotalPr) }}</text>
-								</view>
-							</view>
-							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0">
-								<table cellspacing="0" cellpadding="0" class="table1 table2">
-									<tbody>
-										<tr>
-											<td colspan="2" class="type font_w sticky-lx-1">款项类型</td>
-											<td class="type font_w text_right" v-for="value in roadSectionList"
-												:key="value.id">{{ value.roadName }}</td>
-										</tr>
-
-										<tr>
-											<td class="text sticky-lx-1">工程费用</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayConstructionAmountPr) }}
-											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.constructionAmount) }}</td>
-										</tr>
-										<tr>
-											<td class="text sticky-lx-1">农民工工资</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayRuralLaborsSalaryPr)  }}
-											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.ruralLaborsSalary) }}</td>
-										</tr>
-										<tr>
-											<td class="text sticky-lx-1">材料款</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayMaterialAmountPr)  }}
-											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.materialAmount) }}</td>
-										</tr>
-										<tr>
-											<td class="text sticky-lx-1">前期费用</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayProphaseAmountPr)  }}
-											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.prophaseAmount) }}</td>
-										</tr>
-										<tr>
-											<td class="text sticky-lx-1">其他</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayOtherAmountPr)  }}</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.otherAmount) }}</td>
-										</tr>
-									</tbody>
-								</table>
-							</scroll-view>
-							<view class="detail-row summary-row" v-if="roadSectionList.length > 0">
-								<text class="detail-label summary-label">本次用款小计</text>
-								<text
-									class="detail-value summary-value">{{ formatNumber(itemDatas.planToPayTotalPr) }}</text>
-							</view>
-						</view>
-
-						<scroll-view scroll-x class="table-scroll-x">
-							<table cellspacing="0" cellpadding="0" class="table1 margin_1"
-								style="border-right: 1px #ddd solid;">
-								<tbody>
-									<tr>
-										<td colspan="2" class="type font_w sticky-1">支付渠道</td>
-										<td class="type font_w text_right">总金额</td>
-										<td class="type font_w text_right" v-for="value in roadSectionList"
-											:key="value.id">{{ value.roadName }}</td>
-									</tr>
-									<tr>
-										<td rowspan="5" class="type td_w1 sticky-1">城投拨付资金</td>
-										<td class="type td_w2 sticky-2">市财力</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCityPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCity) }}</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">土地出让金</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundLandTransferFeePr) }}
-										</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundLandTransferFee) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">专项债</td>
-										<td class="info">
-											{{ formatNumber(itemDatas.planToPayCtfundSpecialPurposeBondPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundSpecialPurposeBond) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">城投其他资金</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundOtherPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundOther) }}</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">资本金</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCapitalPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCapital) }}
-										</td>
-									</tr>
-									<tr>
-										<td rowspan="4" class="type sticky-1">城投拨付资金</td>
-										<td class="type sticky-2">市财力</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundCityPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundCity) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">区县财力</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundDistrictPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundDistrict) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">自筹资金</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundSelfPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundSelf) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">其他</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundOtherPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundOther) }}
-										</td>
-									</tr>
-									<tr>
-										<td rowspan="3" class="type sticky-1">直拨(无资金流入)</td>
-										<td class="type sticky-2">交通专项</td>
-										<td class="info">
-											{{ formatNumber(itemDatas.planToPayDirectFundTransportationSpecialPr) }}
-										</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundTransportationSpecial) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">超长期国债</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundUltraTbpr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundUltraTb) }}
-										</td>
-									</tr>
-									<tr>
-										<td class="type sticky-2">其他</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundOtherPr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundOther) }}
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2" class="type sticky-1">开具银票(无资金流出)</td>
-										<td class="info">{{ formatNumber(itemDatas.planToPayBankNotePr) }}</td>
-										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayBankNote) }}</td>
-									</tr>
-								</tbody>
-							</table>
-						</scroll-view>
-
-					</view>
+					<!-- <view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
+						 <view class="contract-section">
+						</view> 
+					</view> -->
+                    <view class="info-list" v-if="getOptions(FUND_USAGE_STATUS)">
+                        <view class="info-item" v-for="(row, idx) in infoRows2" :key="idx">
+                            <text class="info-label">{{ row.label }}</text>
+                            <text class="info-value">{{ row.value || '--' }}</text>
+                        </view>
+				    </view>
 				</transition>
 			</view>
 
-			<!-- 付款账户信息 -->
-			<view class="section">
-				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
-					<view class="section-title-2-left">
-						<text class="section-title-vertical"></text>
-						<text class="section-title-text">付款账户信息</text>
-					</view>
-					<view class="section-title-2-right" :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
-
-					</view>
-				</view>
-				<!-- 付款账户信息卡片 -->
-				<transition name="collapse">
-					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
-						<view style="height: 10rpx;"></view>
-						<!-- 多个公司账户信息 -->
-						<template v-if="itemDatas?.roadSectionList?.length > 0">
-							<view class="account-card" v-for="item in itemDatas.roadSectionList" :key="item.id">
-								<view class="account-company-title">{{ item.roadName || '' }}</view>
-								<view class="account-info-block">
-									<view class="account-info-row">
-										<text class="account-info-label">付款银行(资金)</text>
-										<text class="account-info-value">{{ item.paymentBank || '' }}</text>
-									</view>
-									<view class="account-info-row">
-										<text class="account-info-label">付款账号(资金)</text>
-										<text class="account-info-value">{{ item.paymentAccount || '' }}</text>
-									</view>
-									<view class="account-info-row">
-										<text class="account-info-label">付款银行(银票)</text>
-										<text class="account-info-value"> {{ item.paymentBankNote || '' }} </text>
-									</view>
-									<view class="account-info-row">
-										<text class="account-info-label">付款账号(银票)</text>
-										<text class="account-info-value">{{ item.paymentAccountNote || '' }}</text>
-									</view>
-								</view>
-							</view>
-						</template>
-						<!-- 单个公司账户信息 -->
-						<view class="account-card" v-else>
-							<view class="account-company-title">{{ itemDatas.companyName || '' }}</view>
-							<view class="account-info-block">
-								<view class="account-info-row">
-									<text class="account-info-label">付款银行(资金)</text>
-									<text class="account-info-value">{{ itemDatas.paymentBank || '' }}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">付款账号(资金)</text>
-									<text class="account-info-value">{{ itemDatas.paymentAccount || '' }}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">付款银行(银票)</text>
-									<text class="account-info-value"> {{ itemDatas.paymentBankNote || '' }} </text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">付款账号(银票)</text>
-									<text class="account-info-value">{{ itemDatas.paymentAccountBankNote || '' }}</text>
-								</view>
-							</view>
-						</view>
-					</view>
-				</transition>
-			</view>
-
-			<!-- 收款账户信息 -->
-			<view class="section">
-				<view class="section-title-2" @click="setOptions(COLLECTION_ACCOUNT_INFORMATION)">
-					<view class="section-title-2-left">
-						<text class="section-title-vertical"></text>
-						<text class="section-title-text">收款账户信息</text>
-					</view>
-					<view class="section-title-2-right"
-						:class="{ 'active': getOptions(COLLECTION_ACCOUNT_INFORMATION) }">
-					</view>
-				</view>
-				<!-- 收款账户信息卡片 -->
-				<transition name="collapse">
-					<view class="account-info-section" v-if="getOptions(COLLECTION_ACCOUNT_INFORMATION)">
-						<view style="height: 10rpx;"></view>
-						<!-- 第一个公司账户信息 -->
-						<view class="account-card">
-							<view class="account-company-title">农民工工资</view>
-							<view class="account-info-block">
-								<view class="account-info-row">
-									<text class="account-info-label">收款单位</text>
-									<text
-										class="account-info-value">{{ itemDatas.receiverAccountNameRuralLaborPr || ''}}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">开户行</text>
-									<text
-										class="account-info-value">{{ itemDatas.receiverBankNameRuralLaborPr  || ''}}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">账号</text>
-									<text
-										class="account-info-value">{{ itemDatas.receiverAccountNumberRuralLaborPr  || ''}}</text>
-								</view>
-							</view>
-						</view>
-
-						<!-- 第二个公司账户信息 -->
-						<view class="account-card">
-							<view class="account-company-title">材料款、其他工程款</view>
-							<view class="account-info-block">
-								<view class="account-info-row">
-									<text class="account-info-label">收款单位</text>
-									<text
-										class="account-info-value">{{ itemDatas.receiverAccountNameMncpr  || ''}}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">开户行</text>
-									<text class="account-info-value">{{ itemDatas.receiverBankNameMncpr  || ''}}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">帐号</text>
-									<text class="account-info-value"> {{ itemDatas.receiverAccountNumberMncpr  || ''}}
-									</text>
-								</view>
-							</view>
-						</view>
-					</view>
-				</transition>
-			</view>
 			<!-- 审批记录 -->
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(APPROVAL_RECORD)">
@@ -507,66 +97,7 @@
 				<!-- 审批记录卡片 -->
 				<transition name="collapse">
 					<view class="approval-record-section" v-if="getOptions(APPROVAL_RECORD)">
-						<!-- <view class="approval-timeline">
-							<view class="approval-item" v-for="(item, index) in approvalRecordList" :key="index">
-								<view class="timeline-indicator-container">
-									<view class="timeline-indicator" :class="{
-									'status-pending': item.approvalActionType === 'vmPending',
-									'status-approved': item.approvalActionType === '已审批'&&item.approvalResult == '批准',
-									'status-rejected': item.approvalActionType === '已审批'&&item.approvalResult == '驳回',
-									'status-successed': item.approvalResult == '完成',
-									'status-submitted': item.approvalActionType === '提交'
-								}">
-										<view class="indicator-checkmark" v-if="item.approvalResult == '完成'">
-											<uni-icons type="smallcircle-filled" size="12" color="#07c160"></uni-icons>
-										</view>
-										<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批'&&item.approvalResult == '批准'">
-											<uni-icons type="checkmarkempty" size="10" color="#07c160"></uni-icons>
-										</view>
-										<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批'&&item.approvalResult == '驳回'">
-											<uni-icons type="checkmarkempty" size="10" color="#ffb800"></uni-icons>
-										</view>
-										<view class="indicator-loading"
-											v-else-if="item.approvalActionType === 'vmPending'"></view>
-										<view class="indicator-empty" v-else-if="item.approvalActionType === '提交'">
-										</view>
-									</view>
-								</view>
-								<view class="approval-content">
-									<view class="approval-header">
-										<view class="approval-title">
-											<text class="title-text">{{ item.stepName }}</text>
-											<text class="title-status" :class="{
-												'status-text-green': item.approvalActionType === '已审批' || item.approvalActionType === 'vmPending' || item.approvalActionType === '提交',
-											}">
-												{{ item.approvalActionType == 'vmPending' ? '审批中' : item.approvalActionType }}
-											</text>
-										</view>
-									</view>
-
-									<view class="approval-body">
-										<view class="approval-info"
-											style="display: flex; justify-content: flex-start;gap: 10rpx;">
-											<text class="approver-name">{{ item.approverDisplayName }}</text>
-											<view class="action-btn" :class="{
-													'btn-approved': item.approvalResult == '批准' || item.approvalResult == '提交',
-													'btn-pending': item.approvalResult == '待审批',
-													'btn-rejected': item.approvalResult == '驳回',
-												}">
-												{{ item.approvalResult }}
-											</view>
-											<text
-												class="approval-time">{{ formatDateTime(item.approvalResult == "待审批" ? item.approvalTime : item.createdDate) }}</text>
-										</view>
-										<view class="approval-remark" v-if="item.approvalComment">
-											<text class="remark-label">备注:</text>
-											<text class="remark-text">{{ item.approvalComment }}</text>
-										</view>
-									</view>
-								</view>
-							</view>
-						</view> -->
-                        <approvalTimeline :list="approvalRecordList"></approvalTimeline>
+						<approvalTimeline :list="approvalRecordList"></approvalTimeline>
 					</view>
 				</transition>
 			</view>
@@ -623,6 +154,11 @@
 	const currentUrlObj = reactive({
 		pending: '/WF/GetFormDataApproval',
 		completed: '/WF/GetFormDataView'
+	})
+	const requestTypeObj = reactive({
+		'Vehicle': '公务用车报销单',
+		'GnE': '业务招待报销单',
+		'Travel': '差旅报销单',
 	})
 	const inputDialogRef = ref(null)
 	const inputDialogRequired = ref(false)
@@ -728,99 +264,122 @@
 	})
 
 	const infoRows = ref([{
-			label: '项目名称',
+			label: '用款部门',
 			value: '',
-			key: 'projectName'
+			key: 'BusinessUnitName'
 		},
 		{
-			label: '项目阶段/预算事项',
+			label: '申请人',
 			value: '',
-			key: 'budgetContent'
+			key: 'Applicant'
 		},
 		{
 			label: '付款单位',
 			value: '',
-			key: 'companyName'
-		},
-		{
-			label: '合同名称',
-			value: '',
-			key: 'contractName'
+			key: 'ProjecCompany'
 		},
 		{
 			label: '收款单位',
 			value: '',
-			key: 'payToCompany' //deng
+			key: 'ReceiverCompany'
 		},
 		{
-			label: '具体事项',
+			label: '付款帐号',
 			value: '',
-			key: 'detailedDescription'
+			key: 'PaymentAccount' 
 		},
 		{
-			label: '业务类别',
+			label: '收款帐号',
 			value: '',
-			key: 'businessCategory'
+			key: 'ReceiverAccountNumber'
 		},
 		{
-			label: '付款内容',
+			label: '付款银行',
 			value: '',
-			key: 'contentDescription'
+			key: 'PaymentBank'
 		},
 		{
-			label: '预算事项',
+			label: '收款银行',
 			value: '',
-			key: 'AccountName'
+			key: 'ReceiverBankName'
+		}
+	])
+
+    
+	const infoRows2 = ref([{
+			label: '课题名称',
+			value: '',
+			key: 'BusinessUnitName'
 		},
 		{
-			label: '支付节点',
+			label: '立项预算科目名称',
 			value: '',
-			// key: 'budgetCategoryId'
-			key: 'budgetCategoryName'
-		},
-		// {
-		// 	label: '业务备注',
-		// 	value: '',
-		// 	key: '' //deng
-		// },
-		// {
-		// 	label: '备注',
-		// 	value: '',
-		// 	key: '' //deng
-		// },
-		{
-			label: '保函有效期',
-			value: '',
-			key: 'guaranteeLetterValidTo'
+			key: 'Applicant'
 		},
 		{
-			label: '业务摘要',
+			label: '立项单位',
 			value: '',
-			key: 'businessRemarkPr'
+			key: 'ProjecCompany'
 		},
+		{
+			label: '资金来源',
+			value: '',
+			key: 'ReceiverCompany'
+		},
+		{
+			label: '经费余额（不含本次支付）',
+			value: '',
+			key: 'PaymentAccount' 
+		},
+		{
+			label: '预算科目经费余额（不含本次支付）',
+			value: '',
+			key: 'ReceiverAccountNumber'
+		},
+		{
+			label: '计划支付金额',
+			value: '',
+			key: 'PaymentBank'
+		},
+		{
+			label: '预算金额',
+			value: '',
+			key: 'ReceiverBankName'
+		},
+		{
+			label: '已使用/占用金额',
+			value: '',
+			key: 'PaymentBank'
+		},
+		{
+			label: '可用预算金额',
+			value: '',
+			key: 'ReceiverBankName'
+		}
 	])
 
 	function goBack() {
 		uni.navigateBack()
 	}
 	const itemDatas = ref({});
-	const roadSectionList = ref([]);
+	const vehiclePaymentContentList = ref([]);
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
-			itemDatas.value = res.data?.itemdata || {}
+			itemDatas.value = res.data?.data?.wfrequestexpenseclaim || {}
 			infoRows.value.forEach(item => {
-				item.value = itemDatas.value[item.key] || ''
+				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
-			if(itemDatas.value.businessCategory){
-				 stageTags.value.push(itemDatas.value.businessCategory)
+            
+            if(infoRows.value[0].value){
+                infoRows.value[0].value = requestTypeObj[infoRows.value[0].value] || ''
+            }
+            vehiclePaymentContentList.value = res.data?.data?.wfrequestexpenseclaimvehicleitems || []
+			if(itemDatas.value.receivingBankName){
+				 stageTags.value.push(itemDatas.value.receivingBankName)
 			}
-			if(itemDatas.value.businessUnitName){
-				 stageTags.value.push(itemDatas.value.businessUnitName)
+			if(itemDatas.value.vehiclePlateNo){
+				 stageTags.value.push(itemDatas.value.vehiclePlateNo)
 			}
-			if(itemDatas.value.budgetCategoryName){
-				 stageTags.value.push(itemDatas.value.budgetCategoryName)
-			}
-			roadSectionList.value = itemDatas.value.roadSectionList || []
 		})
 	}
 
@@ -887,7 +446,7 @@
 		})
 	}
 	//获取审批记录接口 start
-	const approvalRecordList = ref([])
+	const approvalRecordList = ref([]);
 	const getApprovalRecord = () => {
 		http.get('/WF/GetApprovalHistory?', {
 			wfinstanceId: itemDetail.value.wfinstanceId,
@@ -1639,10 +1198,10 @@
 		// 付款账户信息独立样式 - 不与其他样式共用
 		.account-info-section {
 			// padding: 20rpx 30rpx 30rpx;
-			padding: 0 32rpx 20rpx;
+			padding: 0 32rpx 40rpx;
 
 			.account-card {
-				margin-bottom: 40rpx;
+				// margin-bottom: 40rpx;
 
 				.account-company-title {
 					font-size: 24rpx;
@@ -1659,12 +1218,11 @@
 
 					.account-info-row {
 						box-sizing: border-box;
-						min-height: 94rpx;
-						height: auto;
+						height: 94rpx;
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
-						padding: 16rpx;
+						padding: 0 16rpx;
 						border-bottom: 1rpx solid #dddddd;
 						background: #f6f8fc;
 

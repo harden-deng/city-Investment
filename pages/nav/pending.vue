@@ -126,6 +126,12 @@
 		{ label: '工程类款项', wf: 'GC01' },
 		{ label: '其他类', wf: 'QT01' },
 	];
+	const procDefCodeUrlObj = ref({
+		'GC01': '/pages/detail/index',
+		'SG01': '/pages/detail/sgjf',
+		'KY01': '/pages/detail/kyjf',
+		'DB01': '/pages/detail/zjdb'
+	})
 	const wfstatusArr = ref(tabs.map(t => t.wf));
 	const tabValues = ref(tabs.map(t => t.label));
 	//弹窗筛选--------start
@@ -203,12 +209,12 @@
 	//分页加载--------end
 	const toDetail = (order) => {
 		uni.navigateTo({
-			url: '/pages/detail/index',
+			url: procDefCodeUrlObj.value[order.procDefCode],
 			success(res) {
-				res.eventChannel.emit('open-detail', {
-				   type: 'pending',
-				   order: order // 也可直接传整条数据
-				})
+					res.eventChannel.emit('open-detail', {
+						type: 'pending',
+						order: order // 也可直接传整条数据
+					})
 			}
 		})
 	}
