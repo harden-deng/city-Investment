@@ -19,17 +19,17 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ infoRows[0].value }}
+							{{ infoRows[1].value }}
 						</view>
 						<view class="project-name-1">
-							{{ infoRows[1].value }}
+							{{ itemDetail.taskName }}
 						</view>
 					</view>
 					<view class="amount-box">
 						<view class="amount-label">申请支付总金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{ formatNumber(itemDatas.claimAmount) }}</text></view>
+								{{ formatNumber(itemDatas.paymentAmount) }}</text></view>
 					</view>
 				</view>
 				<view class="hero-tags">
@@ -52,17 +52,21 @@
 				<view class="info-list">
 					<view class="info-item" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value">{{ row.value || '--' }}</text>
+						<text class="info-value">{{ row.value || '--'}}</text>
+					</view>
+					<view class="info-item">
+						<text class="info-label">内容</text>
+						<text class="info-value">{{ itemDatas.content || '--' }}</text>
 					</view>
 				</view>
 			</view>
 
-			<!-- 课题信息 -->
-			<view class="section">
+			<!-- 用款情况 -->
+			<view class="section" v-if="vehiclePaymentContentList.length > 0 &&itemDatas.requestType != 'GnE'">
 				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
-						<text class="section-title-text">课题信息</text>
+						<text class="section-title-text">用款情况</text>
 					</view>
 					<!-- <image class="section-title-2-right" src="../../static/images/c2.png" mode="scaleToFill"
 						style=" width: 28rpx;height: 16rpx;" /> -->
@@ -71,16 +75,111 @@
 					</view>
 				</view>
 				<transition name="collapse">
-					<!-- <view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
-						 <view class="contract-section">
-						</view> 
-					</view> -->
-                    <view class="info-list" v-if="getOptions(FUND_USAGE_STATUS)">
-                        <view class="info-item" v-for="(row, idx) in infoRows2" :key="idx">
-                            <text class="info-label">{{ row.label }}</text>
-                            <text class="info-value">{{ row.value || '--' }}</text>
-                        </view>
-				    </view>
+					<view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
+						<!-- 整体合同 -->
+						<view class="contract-section">
+							<!-- 明细 -->
+							<scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 0&&itemDatas.requestType === 'Travel'">
+								<table cellspacing="0" cellpadding="0" class="table1 table2">
+									<tbody>
+										<tr>
+										   <td class="type font_w sticky-xz-1">{{ infoRows[0].value.slice(0,-3)}}明细</td>
+										   <td class="type font_w text_right" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+                                               {{ index == 0 ? '合计' : '' }}     
+											</td>
+										</tr>
+										<tr>
+											<td class="text sticky-xz-1">报销类目</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ value.claimCategoryNameLv1 + value.claimCategoryNameLv2 + value.claimCategoryNameLv3 || '' }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-xz-1">报销内容</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ value.claimName || '' }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">不含税金额</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.claimItemAmountNet) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">可抵扣税额</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.claimItemTaxAmount) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">含税金额</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.claimItemAmountVat) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1">备注</td>
+											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ value.remark || '' }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</scroll-view>
+							<view class="detail-row summary-row" v-if="vehiclePaymentContentList.length > 0 &&itemDatas.requestType != 'GnE'">
+								<text class="detail-label summary-label">本次用款小计</text>
+								<text
+									class="detail-value summary-value">{{ formatNumber(itemDatas.paymentAmount) }}</text>
+							</view>
+						</view>
+					</view>
+				</transition>
+			</view>
+
+			<!-- 付款账户信息 -->
+			<view class="section">
+				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">补充信息</text>
+					</view>
+					<view class="section-title-2-right" :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
+
+					</view>
+				</view>
+				<!-- 付款账户信息卡片 -->
+				<transition name="collapse">
+					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
+						<!-- 单个公司账户信息 -->
+						<view class="account-card">
+							<!-- <view class="account-company-title">{{ itemDatas.companyName || '' }}</view> -->
+							<view class="account-info-block">
+								<view class="account-info-row">
+									<text class="account-info-label">合同名称</text>
+									<text class="account-info-value">{{ itemDatas.relateContractId || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">合同价/审定价</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.contractAmountVat) || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">合同累计已付款</text>
+									<text class="account-info-value"> {{ formatNumber(itemDatas.contractAccumulatedPaid) || '' }} </text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">发票系统编号</text>
+									<text class="account-info-value">{{ itemDatas.invoiceCloudID || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">普票金额</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vatoamount) || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">可抵扣票据</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.invoiceAmountNet) || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">进项税额</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.invoiceAmountVat) || '' }}</text>
+								</view>
+							</view>
+						</view>
+					</view>
 				</transition>
 			</view>
 
@@ -125,11 +224,12 @@
 	} from '@/utils/storage'
 	import {
 		FUND_USAGE_STATUS,
+		PAYMENT_ACCOUNT_INFORMATION,
 		APPROVAL_RECORD
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,
+		formatNumber
 	} from '@/utils/h5Bribge'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
@@ -152,10 +252,8 @@
 		pending: '/WF/GetFormDataApproval',
 		completed: '/WF/GetFormDataView'
 	})
-	const requestTypeObj = reactive({
-		'Vehicle': '公务用车报销单',
-		'GnE': '业务招待报销单',
-		'Travel': '差旅报销单',
+	const requestTypeSel = reactive({
+		'QT01': ['claimCategoryName','claimCategoryNameLv1','claimCategoryNameLv2','claimCategoryNameLv3', 'claimName', 'claimItemAmountNet', 'claimItemTaxAmount', 'claimItemAmountVat', 'remark'],
 	})
 	const inputDialogRef = ref(null)
 	const inputDialogRequired = ref(false)
@@ -165,9 +263,9 @@
 	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	const stageTags = ref([])
-
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
+		[PAYMENT_ACCOUNT_INFORMATION]: true,
 		[APPROVAL_RECORD]: true,
 	})
 	const setOptions = (name) => {
@@ -194,127 +292,74 @@
 	const infoRows = ref([{
 			label: '用款部门',
 			value: '',
-			key: 'BusinessUnitName'
-		},
-		{
-			label: '申请人',
-			value: '',
-			key: 'Applicant'
-		},
-		{
+			key: 'companyName'
+		},{
 			label: '付款单位',
 			value: '',
-			key: 'ProjecCompany'
+			key: 'paymentCompanyName'
+		},{
+			label: '付款名称',
+			value: '',
+			key: 'receivingBankName' 
+		},{
+			label: '支付金额',
+			value: '',
+			key: 'paymentAmount'
 		},
 		{
 			label: '收款单位',
 			value: '',
-			key: 'ReceiverCompany'
+			key: 'receivingCompanyName'
 		},
 		{
-			label: '付款帐号',
+			label: '收款开户银行',
 			value: '',
-			key: 'PaymentAccount' 
+			key: 'receivingBankAccountName'
 		},
 		{
-			label: '收款帐号',
+			label: '收款账号',
 			value: '',
-			key: 'ReceiverAccountNumber'
+			key: 'receivingBankAccountNumber'
 		},
-		{
-			label: '付款银行',
-			value: '',
-			key: 'PaymentBank'
-		},
-		{
-			label: '收款银行',
-			value: '',
-			key: 'ReceiverBankName'
-		}
-	])
-
-    
-	const infoRows2 = ref([{
-			label: '课题名称',
-			value: '',
-			key: 'BusinessUnitName'
-		},
-		{
-			label: '立项预算科目名称',
-			value: '',
-			key: 'Applicant'
-		},
-		{
-			label: '立项单位',
-			value: '',
-			key: 'ProjecCompany'
-		},
-		{
-			label: '资金来源',
-			value: '',
-			key: 'ReceiverCompany'
-		},
-		{
-			label: '经费余额（不含本次支付）',
-			value: '',
-			key: 'PaymentAccount' 
-		},
-		{
-			label: '预算科目经费余额（不含本次支付）',
-			value: '',
-			key: 'ReceiverAccountNumber'
-		},
-		{
-			label: '计划支付金额',
-			value: '',
-			key: 'PaymentBank'
-		},
-		{
-			label: '预算金额',
-			value: '',
-			key: 'ReceiverBankName'
-		},
-		{
-			label: '已使用/占用金额',
-			value: '',
-			key: 'PaymentBank'
-		},
-		{
-			label: '可用预算金额',
-			value: '',
-			key: 'ReceiverBankName'
-		},
-		{
-			label: '支付内容',
-			value: '',
-			key: 'paymentContent'
-		}
-	])
-
-	function goBack() {
+	]);
+	const goBack = () =>{
 		uni.navigateBack()
-	}
+	};
 	const itemDatas = ref({});
-	// const vehiclePaymentContentList = ref([]);
+	const vehiclePaymentContentList = ref([]);
+    const vehiclePaymentContentObj = reactive({});
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			itemDatas.value = res.data?.data?.wfrequestexpenseclaim || {}
 			infoRows.value.forEach(item => {
-				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
+				item.value = (typeof itemDatas.value[item.key] === 'number' || item.key === 'claimAmount' || item.key === 'paymentAmount') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
-            
-            if(infoRows.value[0].value){
-                infoRows.value[0].value = requestTypeObj[infoRows.value[0].value] || ''
-            }
-            // vehiclePaymentContentList.value = res.data?.data?.wfrequestexpenseclaimvehicleitems || []
+            let arr = requestTypeSel[itemDatas.value.requestType] || []
+			if(res.data?.data?.wfrequestexpenseclaimvehicleitems){
+				 vehiclePaymentContentList.value = res.data?.data?.wfrequestexpenseclaimvehicleitems || []
+				 vehiclePaymentContentList.value.forEach(item => {
+					item.total = sumNestedProperties(item, arr);
+				 }) 
+				arr.forEach(item => {
+                  vehiclePaymentContentObj[item] = totalNestedValue(vehiclePaymentContentList.value, item)
+                })
+			}
+			vehiclePaymentContentObj['total'] = itemDatas.value.paymentAmount || 0;
+			vehiclePaymentContentList.value.unshift({...vehiclePaymentContentObj})
 			if(itemDatas.value.receivingBankName){
 				 stageTags.value.push(itemDatas.value.receivingBankName)
 			}
-			if(itemDatas.value.vehiclePlateNo){
-				 stageTags.value.push(itemDatas.value.vehiclePlateNo)
-			}
 		})
 	}
+
+    const sumNestedProperties = (obj, properties) => {
+        return properties.reduce((sum, prop) => sum + (obj[prop] || 0), 0);
+    }
+    const totalNestedValue = (array,properties) => {
+        return array.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue[properties];
+        }, 0);
+    }
 
 	const onReject = () => {
 		inputDialogRequired.value = true
@@ -325,6 +370,7 @@
 		inputDialogRequired.value = false
 		openInputDialog('通过原因', '请输入通过原因')
 	}
+
 	const openInputDialog = (title, placeholder) => {
 		inputDialogTitle.value = title
 		inputDialogPlaceholder.value = placeholder
@@ -371,7 +417,7 @@
 		})
 	}
 	//获取审批记录接口 start
-	const approvalRecordList = ref([]);
+	const approvalRecordList = ref([])
 	const getApprovalRecord = () => {
 		http.get('/WF/GetApprovalHistory?', {
 			wfinstanceId: itemDetail.value.wfinstanceId,
@@ -409,11 +455,9 @@
 		const systemInfo = uni.getSystemInfoSync()
 		const isIOS = systemInfo.platform === 'ios'
 		const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
-
 		// 只在 iOS H5 环境下添加滚动修复
 		if (isIOS && isH5) {
 			console.log('检测到 iOS H5 环境，添加滚动修复')
-
 			// 添加失焦滚动修复
 			document.addEventListener('focusout', () => {
 				setTimeout(() => {
@@ -424,7 +468,6 @@
 					})
 				}, 20)
 			})
-
 			// // 可选：添加其他 iOS H5 特有的修复
 			// document.addEventListener('touchstart', () => {
 			// // iOS H5 触摸开始时的处理
@@ -433,8 +476,6 @@
 			window.visualViewport?.addEventListener('resize', onResize)
 			window.addEventListener('resize', onResize) // 部分浏览器兼容
 		}
-
-
 	})
 
 	function onResize() {
@@ -458,6 +499,8 @@
 		display: none !important;
 		height: 0 !important;
 	}
+
+
 
 	.detail-page {
 		width: 100%;
@@ -531,13 +574,11 @@
 					white-space: normal;
 					line-height: 1.4;
 					min-height: 72rpx;
-					/* 如果需要最小高度，使用 min-height */
 				}
 			}
 
 			.amount-box {
 				text-align: right;
-				// border: 1px solid red;
 
 				.amount-label {
 					height: 70rpx;
@@ -570,7 +611,7 @@
 			.hero-tags {
 				width: calc(100% - 320rpx);
 				height: 72rpx;
-				overflow: hidden;
+				overflow-x: hidden;
 				display: flex;
 				align-items: center;
 				gap: 8rpx;
@@ -848,12 +889,12 @@
 		
 
 
+
 		// 付款账户信息独立样式 - 不与其他样式共用
 		.account-info-section {
 			padding: 0 32rpx 40rpx;
 
 			.account-card {
-
 				.account-company-title {
 					font-size: 24rpx;
 					color: #000;
@@ -869,11 +910,12 @@
 
 					.account-info-row {
 						box-sizing: border-box;
-						height: 94rpx;
+						min-height: 94rpx;
+						height: auto;
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
-						padding: 0 16rpx;
+						padding: 16rpx;
 						border-bottom: 1rpx solid #dddddd;
 						background: #f6f8fc;
 
@@ -958,7 +1000,6 @@
 		color: #666;
 		white-space: nowrap;
 	}
-
 	.font_w {
 		font-weight: bold;
 	}
@@ -966,6 +1007,7 @@
 	.text_right {
 		text-align: right;
 	}
+
 
 
 	/* 防止单元格换行挤压变形，可按需保留或去掉 */

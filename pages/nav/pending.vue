@@ -127,10 +127,11 @@
 		{ label: '其他类', wf: 'QT01' },
 	];
 	const procDefCodeUrlObj = ref({
-		'GC01': '/pages/detail/index',
+		'GC01': '/pages/detail/gcfk',
 		'SG01': '/pages/detail/sgjf',
 		'KY01': '/pages/detail/kyjf',
-		'DB01': '/pages/detail/zjdb'
+		'DB01': '/pages/detail/zjdb',
+		'QT01': '/pages/detail/qtjf'
 	})
 	const wfstatusArr = ref(tabs.map(t => t.wf));
 	const tabValues = ref(tabs.map(t => t.label));

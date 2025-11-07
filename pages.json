@@ -46,7 +46,7 @@
 			}
 		},
 		{
-			"path": "pages/detail/index",
+			"path": "pages/detail/gcfk",
 			"style": {
 				"navigationStyle": "custom",
 				"disableScroll": true
@@ -63,8 +63,14 @@
 				"navigationStyle": "custom",
 				"disableScroll": true
 			}
-		},{
+		}, {
 			"path": "pages/detail/zjdb",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
+		}, {
+			"path": "pages/detail/qtjf",
 			"style": {
 				"navigationStyle": "custom",
 				"disableScroll": true

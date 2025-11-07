@@ -225,6 +225,7 @@
 						background-size: contain;
 						background-repeat: no-repeat;
 						background-position: center;
+						margin-right: 30rpx;
 					}
 
 					.notification-text {
