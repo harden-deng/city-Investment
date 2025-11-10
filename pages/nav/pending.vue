@@ -127,11 +127,12 @@
 		{ label: '其他类', wf: 'QT01' },
 	];
 	const procDefCodeUrlObj = ref({
-		'GC01': '/pages/detail/gcfk',
-		'SG01': '/pages/detail/sgjf',
-		'KY01': '/pages/detail/kyjf',
-		'DB01': '/pages/detail/zjdb',
-		'QT01': '/pages/detail/qtjf'
+		'GC01': '/pages/detail/gcfk', //工程类款项
+		'SG01': '/pages/detail/sgjf', //三公经费
+		'KY01': '/pages/detail/kyjf', //科研经费
+		'DB01': '/pages/detail/zjdb', //资金调拨
+		'QT01': '/pages/detail/qtjf', //其他
+		'ZC01': '/pages/detail/zcys'  //支出预算
 	})
 	const wfstatusArr = ref(tabs.map(t => t.wf));
 	const tabValues = ref(tabs.map(t => t.label));

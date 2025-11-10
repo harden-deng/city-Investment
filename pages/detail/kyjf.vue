@@ -19,17 +19,17 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ infoRows[0].value }}
+							{{ itemDetail.taskName  }}
 						</view>
 						<view class="project-name-1">
-							{{ infoRows[1].value }}
+							{{ itemDatas.projecCompany }}
 						</view>
 					</view>
 					<view class="amount-box">
 						<view class="amount-label">申请支付总金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{ formatNumber(itemDatas.claimAmount) }}</text></view>
+								{{ formatNumber(itemDatas.planToPay) }}</text></view>
 					</view>
 				</view>
 				<view class="hero-tags">
@@ -49,10 +49,57 @@
 					<text class="section-title-vertical"></text>
 					<text class="section-title-text">基本信息</text>
 				</view>
-				<view class="info-list">
+				<!-- <view class="info-list">
 					<view class="info-item" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
 						<text class="info-value">{{ row.value || '--' }}</text>
+					</view>
+				</view> -->
+				<view class="account-info-section">
+					<view style="height: 10rpx;"></view>
+					<view class="account-card">
+						<view class="account-info-block">
+							<view class="account-info-row">
+								<text class="account-info-label">{{ infoRows[0].label }}</text>
+								<text class="account-info-value">{{ infoRows[0].value }}</text>
+							</view>
+							<view class="account-info-row">
+								<text class="account-info-label">{{ infoRows[1].label }}</text>
+								<text class="account-info-value">{{ infoRows[1].value }}</text>
+							</view>
+						</view>
+					</view>
+					<view class="account-card margin_1">
+						<view class="account-info-block">
+							<view class="account-info-row">
+								<text class="account-info-label">{{ infoRows[2].label }}</text>
+								<text class="account-info-value">{{ infoRows[2].value }}</text>
+							</view>
+							<view class="account-info-row">
+								<text class="account-info-label">{{ infoRows[3].label }}</text>
+								<text class="account-info-value">{{ infoRows[3].value }}</text>
+							</view>
+							<view class="account-info-row">
+								<text class="account-info-label">{{ infoRows[4].label }}</text>
+								<text class="account-info-value">{{ infoRows[4].value }} </text>
+							</view>
+						</view>
+					</view>
+					<view class="account-card margin_1">
+						<view class="account-info-block">
+							<view class="account-info-row">
+								<text class="account-info-label">{{ infoRows[5].label }}</text>
+								<text class="account-info-value">{{ infoRows[5].value }}</text>
+							</view>
+							<view class="account-info-row">
+								<text class="account-info-label">{{ infoRows[6].label }}</text>
+								<text class="account-info-value">{{ infoRows[6].value }}</text>
+							</view>
+							<view class="account-info-row">
+								<text class="account-info-label">{{ infoRows[7].label }}</text>
+								<text class="account-info-value">{{ infoRows[7].value }}</text>
+							</view>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -76,11 +123,47 @@
 						</view> 
 					</view> -->
                     <view class="info-list" v-if="getOptions(FUND_USAGE_STATUS)">
-                        <view class="info-item" v-for="(row, idx) in infoRows2" :key="idx">
-                            <text class="info-label">{{ row.label }}</text>
+                        <view class="info-item" :class="{ 'info-item-border': (row.key === 'remainAccountFundExcludeCurrent' || row.key === 'availableBudgetAmount') }" v-for="(row, idx) in infoRows2" :key="idx">
+                            <text class="info-label" :class="{ 'info-label-width': row.key === 'projectTopicName' }">{{ row.label }}</text>
                             <text class="info-value">{{ row.value || '--' }}</text>
                         </view>
 				    </view>
+				</transition>
+			</view>
+
+			
+			<view class="section">
+				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">补充信息</text>
+					</view>
+					<view class="section-title-2-right" :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
+					</view>
+				</view>
+				<transition name="collapse">
+					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
+						<view class="account-card">
+							<view class="account-info-block">
+								<view class="account-info-row">
+									<text class="account-info-label">发票系统编号</text>
+									<text class="account-info-value">{{ itemDatas.invoiceCloudId || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">普票金额</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vatoamount) || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">可抵扣票据</text>
+									<text class="account-info-value"> {{ formatNumber(itemDatas.vatamountNet) || '' }} </text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">进项税额</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vattaxAmount) || '' }}</text>
+								</view>
+							</view>
+						</view>
+					</view>
 				</transition>
 			</view>
 
@@ -125,7 +208,8 @@
 	} from '@/utils/storage'
 	import {
 		FUND_USAGE_STATUS,
-		APPROVAL_RECORD
+		APPROVAL_RECORD,
+		PAYMENT_ACCOUNT_INFORMATION
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
@@ -152,11 +236,7 @@
 		pending: '/WF/GetFormDataApproval',
 		completed: '/WF/GetFormDataView'
 	})
-	const requestTypeObj = reactive({
-		'Vehicle': '公务用车报销单',
-		'GnE': '业务招待报销单',
-		'Travel': '差旅报销单',
-	})
+	
 	const inputDialogRef = ref(null)
 	const inputDialogRequired = ref(false)
 	const inputDialogTitle = ref('')
@@ -169,6 +249,7 @@
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
 		[APPROVAL_RECORD]: true,
+		[PAYMENT_ACCOUNT_INFORMATION]: true,
 	})
 	const setOptions = (name) => {
 		pullDownObj[name] = pullDownObj[name] ? false : true
@@ -194,42 +275,42 @@
 	const infoRows = ref([{
 			label: '用款部门',
 			value: '',
-			key: 'BusinessUnitName'
+			key: 'businessUnitName'
 		},
 		{
 			label: '申请人',
 			value: '',
-			key: 'Applicant'
+			key: 'submittedByName'   //deng 潜在bug
 		},
 		{
 			label: '付款单位',
 			value: '',
-			key: 'ProjecCompany'
+			key: 'projecCompany'
+		},{
+			label: '付款帐号',
+			value: '',
+			key: 'paymentAccount' 
+		},{
+			label: '付款银行',
+			value: '',
+			key: 'paymentBank'
 		},
 		{
 			label: '收款单位',
 			value: '',
-			key: 'ReceiverCompany'
+			key: 'receiverCompany'
 		},
-		{
-			label: '付款帐号',
-			value: '',
-			key: 'PaymentAccount' 
-		},
+		
 		{
 			label: '收款帐号',
 			value: '',
-			key: 'ReceiverAccountNumber'
+			key: 'receiverAccountNumber'
 		},
-		{
-			label: '付款银行',
-			value: '',
-			key: 'PaymentBank'
-		},
+		
 		{
 			label: '收款银行',
 			value: '',
-			key: 'ReceiverBankName'
+			key: 'receiverBankName'
 		}
 	])
 
@@ -237,52 +318,51 @@
 	const infoRows2 = ref([{
 			label: '课题名称',
 			value: '',
-			key: 'BusinessUnitName'
-		},
-		{
-			label: '立项预算科目名称',
-			value: '',
-			key: 'Applicant'
+			key: 'projectTopicName'
 		},
 		{
 			label: '立项单位',
 			value: '',
-			key: 'ProjecCompany'
+			key: 'projectApprovalUnit'
+		},
+		{
+			label: '立项预算科目名称',
+			value: '',
+			key: 'budgetAccountName'
 		},
 		{
 			label: '资金来源',
 			value: '',
-			key: 'ReceiverCompany'
+			key: 'fundSource'
 		},
 		{
-			label: '经费余额（不含本次支付）',
+			label: '总经费余额（不含本次）',
 			value: '',
-			key: 'PaymentAccount' 
+			key: 'remainFundExcludeCurrent' 
 		},
 		{
-			label: '预算科目经费余额（不含本次支付）',
+			label: '科目余额（不含本次）',
 			value: '',
-			key: 'ReceiverAccountNumber'
-		},
-		{
-			label: '计划支付金额',
-			value: '',
-			key: 'PaymentBank'
-		},
-		{
+			key: 'remainAccountFundExcludeCurrent'
+		},	{
 			label: '预算金额',
 			value: '',
-			key: 'ReceiverBankName'
+			key: 'planToPayTotal'
 		},
 		{
 			label: '已使用/占用金额',
 			value: '',
-			key: 'PaymentBank'
+			key: 'occBudgetAmount'
 		},
 		{
 			label: '可用预算金额',
 			value: '',
-			key: 'ReceiverBankName'
+			key: 'availableBudgetAmount'
+		},
+		{
+			label: '计划支付金额',
+			value: '',
+			key: 'planToPay'
 		},
 		{
 			label: '支付内容',
@@ -290,7 +370,7 @@
 			key: 'paymentContent'
 		}
 	])
-
+    const infoRows2Flag = ref(['remainFundExcludeCurrent','remainAccountFundExcludeCurrent','planToPay','planToPayTotal','occBudgetAmount','availableBudgetAmount']);
 	function goBack() {
 		uni.navigateBack()
 	}
@@ -298,20 +378,19 @@
 	// const vehiclePaymentContentList = ref([]);
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
-			itemDatas.value = res.data?.data?.wfrequestexpenseclaim || {}
+			itemDatas.value = res.data?.data || {}
 			infoRows.value.forEach(item => {
 				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
-            
-            if(infoRows.value[0].value){
-                infoRows.value[0].value = requestTypeObj[infoRows.value[0].value] || ''
-            }
+			infoRows2.value.forEach(item => {
+				item.value = (typeof itemDatas.value[item.key] === 'number' || infoRows2Flag.value.includes(item.key)) ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
+			})
             // vehiclePaymentContentList.value = res.data?.data?.wfrequestexpenseclaimvehicleitems || []
-			if(itemDatas.value.receivingBankName){
-				 stageTags.value.push(itemDatas.value.receivingBankName)
+			if(itemDatas.value.projectApprovalUnit){
+				 stageTags.value.push(itemDatas.value.projectApprovalUnit)
 			}
-			if(itemDatas.value.vehiclePlateNo){
-				 stageTags.value.push(itemDatas.value.vehiclePlateNo)
+			if(itemDatas.value.budgetAccountName){
+				 stageTags.value.push(itemDatas.value.budgetAccountName)
 			}
 		})
 	}
@@ -732,6 +811,11 @@
 			display: flex;
 			align-items: flex-start;
 			padding: 8rpx 0;
+			&.info-item-border {
+				border-bottom: 1rpx solid #ddd;
+				padding-bottom: 22rpx !important;
+				margin-bottom: 12rpx;
+			}
 		}
 
 		.info-item:last-child {
@@ -746,6 +830,10 @@
 			font-size: 24rpx;
 			color: #000;
 			white-space: nowrap;
+			&.info-label-width {
+				min-width: 100rpx;
+				max-width: 240rpx;
+			}
 		}
 
 		.info-value {
@@ -893,6 +981,10 @@
 							color: #666;
 							text-align: right;
 							flex: 0.72;
+							//文字自动换行
+							white-space: normal;
+							word-break: break-all;
+							word-wrap: break-word;
 						}
 					}
 				}

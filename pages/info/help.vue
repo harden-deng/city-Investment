@@ -55,81 +55,82 @@
 </template>
 <script setup>
 import { ref, onMounted,getCurrentInstance,nextTick } from 'vue'
-
+import http from '@/utils/request.js'
 // 消息列表数据
-const dataList = ref([
-    {
-        id: 1,
-        title: '关于近期贵金属业务市场风险提示',
-        qaList: [
-            {
-                question: '为什么需要更新技术简历？',
-                answer: '技术简历是技术岗位授权流程中的必要要求。其内容应包含在TMT中注册的所有学习、经验和技术发展的证据。'
-            },
-            {
-                question: '技术简历需要包含哪些内容？',
-                answer: '技术简历应包含您的教育背景、工作经验、技能证书、项目经验等与技术岗位相关的所有信息。'
-            },
-            {
-                question: '如何更新技术简历？',
-                answer: '您可以通过登录系统，在个人资料页面找到技术简历选项，按照提示填写相关信息并提交审核。'
-            }
-        ],
-        time: '2024-01-15 10:30',
-        read: false,
-        expanded: false
-    },
-    {
-        id: 2,
-        title: '识诈反诈揭秘手机远程操控诈骗新远程操控诈骗新.远程操控诈骗新.远程操控诈骗新....',
-        qaList: [
-            {
-                question: '如何保护自己免受手机远程操控诈骗？',
-                answer: '要谨慎对待可疑应用，不要与陌生人分享屏幕，定期检查设备权限，发现任何可疑活动立即向银行报告。'
-            },
-            {
-                question: '什么是手机远程操控诈骗？',
-                answer: '手机远程操控诈骗是指诈骗分子通过各种手段获取您的手机控制权，进而盗取您的个人信息和资金。'
-            },
-            {
-                question: '如何识别可疑的远程操控请求？',
-                answer: '注意不要接受来自陌生人的屏幕共享请求，不要下载来源不明的应用，定期检查手机权限设置。'
-            }
-        ],
-        time: '2024-01-14 15:20',
-        read: false,
-        expanded: false
-    },
-    {
-        id: 3,
-        title: '关于第二批"西藏自治区成立60周年"纪念币发行',
-        qaList: [
-            {
-                question: '纪念币收藏是什么？',
-                answer: '西藏自治区成立60周年金银纪念币由中国人民银行发行，用于庆祝西藏自治区成立60周年。'
-            },
-            {
-                question: '如何购买这些纪念币？',
-                answer: '您可以通过授权银行和官方渠道购买这些纪念币。请联系您当地的分行了解供应情况和价格信息。'
-            },
-            {
-                question: '这些纪念币的投资价值如何？',
-                answer: '纪念币可能具有收藏价值，但不保证投资回报。购买前请考虑您的财务状况和投资目标。'
-            },
-            {
-                question: '是否有身份验证要求？',
-                answer: '是的，您可能需要提供有效身份证明并满足某些资格标准。请向您的银行咨询具体要求。'
-            },
-            {
-                question: '如果对订单有疑问应该怎么办？',
-                answer: '通过官方渠道联系我们的客服团队或访问最近的分行。我们的工作人员很乐意为您解答任何疑问。'
-            }
-        ],
-        time: '2024-01-13 09:15',
-        read: true,
-        expanded: false
-    }
-]);
+const dataList = ref([]);
+// const dataList = ref([
+//     {
+//         id: 1,
+//         title: '关于近期贵金属业务市场风险提示',
+//         qaList: [
+//             {
+//                 question: '为什么需要更新技术简历？',
+//                 answer: '技术简历是技术岗位授权流程中的必要要求。其内容应包含在TMT中注册的所有学习、经验和技术发展的证据。'
+//             },
+//             {
+//                 question: '技术简历需要包含哪些内容？',
+//                 answer: '技术简历应包含您的教育背景、工作经验、技能证书、项目经验等与技术岗位相关的所有信息。'
+//             },
+//             {
+//                 question: '如何更新技术简历？',
+//                 answer: '您可以通过登录系统，在个人资料页面找到技术简历选项，按照提示填写相关信息并提交审核。'
+//             }
+//         ],
+//         time: '2024-01-15 10:30',
+//         read: false,
+//         expanded: false
+//     },
+//     {
+//         id: 2,
+//         title: '识诈反诈揭秘手机远程操控诈骗新远程操控诈骗新.远程操控诈骗新.远程操控诈骗新....',
+//         qaList: [
+//             {
+//                 question: '如何保护自己免受手机远程操控诈骗？',
+//                 answer: '要谨慎对待可疑应用，不要与陌生人分享屏幕，定期检查设备权限，发现任何可疑活动立即向银行报告。'
+//             },
+//             {
+//                 question: '什么是手机远程操控诈骗？',
+//                 answer: '手机远程操控诈骗是指诈骗分子通过各种手段获取您的手机控制权，进而盗取您的个人信息和资金。'
+//             },
+//             {
+//                 question: '如何识别可疑的远程操控请求？',
+//                 answer: '注意不要接受来自陌生人的屏幕共享请求，不要下载来源不明的应用，定期检查手机权限设置。'
+//             }
+//         ],
+//         time: '2024-01-14 15:20',
+//         read: false,
+//         expanded: false
+//     },
+//     {
+//         id: 3,
+//         title: '关于第二批"西藏自治区成立60周年"纪念币发行',
+//         qaList: [
+//             {
+//                 question: '纪念币收藏是什么？',
+//                 answer: '西藏自治区成立60周年金银纪念币由中国人民银行发行，用于庆祝西藏自治区成立60周年。'
+//             },
+//             {
+//                 question: '如何购买这些纪念币？',
+//                 answer: '您可以通过授权银行和官方渠道购买这些纪念币。请联系您当地的分行了解供应情况和价格信息。'
+//             },
+//             {
+//                 question: '这些纪念币的投资价值如何？',
+//                 answer: '纪念币可能具有收藏价值，但不保证投资回报。购买前请考虑您的财务状况和投资目标。'
+//             },
+//             {
+//                 question: '是否有身份验证要求？',
+//                 answer: '是的，您可能需要提供有效身份证明并满足某些资格标准。请向您的银行咨询具体要求。'
+//             },
+//             {
+//                 question: '如果对订单有疑问应该怎么办？',
+//                 answer: '通过官方渠道联系我们的客服团队或访问最近的分行。我们的工作人员很乐意为您解答任何疑问。'
+//             }
+//         ],
+//         time: '2024-01-13 09:15',
+//         read: true,
+//         expanded: false
+//     }
+// ]);
 
 const paging = ref(null)
 const onRefresh =() => {
@@ -143,19 +144,15 @@ const onRefresh =() => {
 	//分页加载
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
 	const queryList = (pageNo, pageSize) => {
-		console.log("pageNo-->", pageNo, "pageSize---->", pageSize)
-		paging.value.complete(dataList.value);
-		// let cc = pageNo + pageSize
-		// 此处请求仅为演示，请替换为自己项目中的请求
-		//       request.queryList({ pageNo,pageSize }).then(res => {
-		// 	// 将请求结果通过complete传给z-paging处理，同时也代表请求结束，这一行必须调用
-		//           paging.value.complete(res.data.list);
-		//       }).catch(res => {
-		// 	// 如果请求失败写paging.value.complete(false);
-		// 	// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-		// 	// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
-		// 	paging.value.complete(false);
-		// })
+        http.get('/Users/GetOnlineHelp', {
+			Page: pageNo,
+			Limit: pageSize,
+		}).then(res => {
+			paging.value.complete(res.data || [])
+		}).catch(() => {
+			paging.value.complete(false)
+			uni.showToast({ title: '加载失败', icon: 'none' });
+		})
 	}
 const goBack = () => {
     uni.navigateBack({

@@ -16,10 +16,10 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ infoRows[1].value }}
+							{{ itemDetail.taskName }}
 						</view>
 						<view class="project-name-1">
-							{{ itemDetail.taskName }}
+							{{ itemDatas.companyName }}
 						</view>
 					</view>
 					<view class="amount-box">
@@ -29,7 +29,7 @@
 								{{ formatNumber(itemDatas.paymentAmount) }}</text></view>
 					</view>
 				</view>
-				<view class="hero-tags">
+				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
 					<view class="tag" v-for="(t, i) in stageTags" :key="i">{{ t }}</view>
 				</view>
 				<view class="hero-actions" v-show="currentType === 'pending'">
@@ -50,17 +50,17 @@
 						<text class="info-value">{{ row.value || '--'}}</text>
 					</view>
 					<view class="info-item" v-if="itemDatas.requestType === 'Travel' || itemDatas.requestType === 'GnE'">
-						<text class="info-label">预算栏目</text>
+						<text class="info-label info-label-width">预算栏目</text>
 						<text class="info-value">{{ itemDatas.budgetCategoryName || '--' }}</text>
 					</view>
 					
 					<view class="info-item" v-if="itemDatas.requestType === 'GnE'">
 						<text class="info-label">招待方式</text>
-						<text class="info-value">{{ vehiclePaymentContentList[0].gnEtype.replace('|',',') || '--' }}</text>
+						<text class="info-value">{{ vehiclePaymentContentList[0]?.gnEtype?.replace('|',',') || '--' }}</text>
 					</view>
 					<view class="info-item" v-if="itemDatas.requestType === 'GnE'">
 						<text class="info-label">内容</text>
-						<text class="info-value">{{ vehiclePaymentContentList[0].content || '--' }}</text>
+						<text class="info-value">{{ vehiclePaymentContentList[0]?.content || '--' }}</text>
 					</view>
 					<view class="info-item" v-if="itemDatas.requestType === 'Vehicle'">
 						<text class="info-label">内容</text>
@@ -91,58 +91,71 @@
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
-										   <td class="type font_w sticky-xz-1">{{ infoRows[0].value.slice(0,-3)}}明细</td>
-                                           <td class="type font_w text_right">合计</td> 
-										   <td class="type font_w text_right" v-for="(value,index) in itemDatas.vehiclePlateNo.split(';')" :key="index">
+										   <td class="type font_w sticky-xz-1 bordr-none">{{ infoRows[0].value.slice(0,-3)}}明细</td>
+                                           <td class="type font_w text_right sticky-xz-2 bordr-none" >合计</td> 
+										   <td class="type font_w text_right bordr-none" >合1计</td> 
+										   <td class="type font_w text_right bordr-none" >合2计</td> 
+										   <td class="type font_w text_right bordr-none" >合3计</td> 
+										   <td class="type font_w text_right bordr-none" v-for="(value,index) in itemDatas.vehiclePlateNo.split(';')" :key="index">
 												{{ value || '' }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-xz-1">ETC充值</td>
-											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
+											<td class="text sticky-xz-1 bordr-none">ETC充值</td>
+											<td class="info sticky-xz-2 bordr-none" >{{ formatNumber(vehiclePaymentContentObj.etc) }}</td> 
+											<td class="info bordr-none" v-for="value in vehiclePaymentContentList" :key="value.id">
 												{{ formatNumber(value.etc) }}</td>
 										</tr>
 										<tr>
 											<td class="text sticky-xz-1">停车费</td>
+											<td class="info sticky-xz-2" >{{ formatNumber(vehiclePaymentContentObj.parking) }}</td> 
 											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
 												{{ formatNumber(value.parking) }}</td>
 										</tr>
                                         <tr>
 											<td class="text sticky-xz-1">过路费</td>
+											<td class="info sticky-xz-2" >{{ formatNumber(vehiclePaymentContentObj.toll) }}</td> 
 											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
 												{{ formatNumber(value.toll) }}</td>
 										</tr>
                                         <tr>
 											<td class="text sticky-xz-1">加油费</td>
+											<td class="info sticky-xz-2" >{{ formatNumber(vehiclePaymentContentObj.fuel) }}</td> 
 											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
 												{{ formatNumber(value.fuel) }}</td>
 										</tr>
                                         <tr>
 											<td class="text sticky-xz-1">修理费</td>
+											<td class="info sticky-xz-2" >{{ formatNumber(vehiclePaymentContentObj.repair) }}</td> 
 											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
 												{{ formatNumber(value.repair) }}</td>
 										</tr>
                                         <tr>
 											<td class="text sticky-xz-1">保险费</td>
+											<td class="info sticky-xz-2" >{{ formatNumber(vehiclePaymentContentObj.insurance) }}</td> 
 											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
 												{{ formatNumber(value.insurance) }}</td>
 										</tr>
                                         <tr>
 											<td class="text sticky-xz-1">租车费</td>
+											<td class="info sticky-xz-2" >{{ formatNumber(vehiclePaymentContentObj.renting) }}</td> 
 											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
 												{{ formatNumber(value.renting) }}</td>
 										</tr>
                                         <tr>
 											<td class="text sticky-xz-1">洗车费</td>
+											<td class="info sticky-xz-2" >{{ formatNumber(vehiclePaymentContentObj.wash) }}</td> 
 											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
 												{{ formatNumber(value.wash) }}</td>
 										</tr>
                                         <tr>
 											<td class="text sticky-xz-1">其他</td>
+											<td class="info sticky-xz-2" >{{ formatNumber(vehiclePaymentContentObj.others) }}</td> 
 											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
 												{{ formatNumber(value.others) }}</td>
 										</tr>
                                         <tr>
 											<td class="text sticky-xz-1">合计</td>
+											<td class="info sticky-xz-2" >{{ formatNumber(vehiclePaymentContentObj.total) }}</td> 
 											<td class="info" v-for="value in vehiclePaymentContentList" :key="value.id">
 												{{ formatNumber(value.total) }}</td>
 										</tr>
@@ -153,50 +166,57 @@
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
-										   <td class="type font_w sticky-xz-1">{{ infoRows[0].value.slice(0,-3)}}明细</td>
-										   <td class="type font_w text_right" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+										   <td class="type font_w sticky-xz-1 bordr-none">{{ infoRows[0].value.slice(0,-3)}}明细</td>
+										   <td class="type font_w text_right bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
 												</td>
 										</tr>
 										<tr>
-											<td class="text sticky-xz-1">交通费</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ formatNumber(value.travelExpense) }}</td>
-										</tr>
-										<tr>
-											<td class="text sticky-xz-1">住宿费</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ formatNumber(value.accommodationFee) }}</td>
-										</tr>
-                                        <tr>
-											<td class="text sticky-xz-1">误餐费</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ formatNumber(value.missedMealFee) }}</td>
-										</tr>
-                                        <tr>
-											<td class="text sticky-xz-1">会务费</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ formatNumber(value.meetingExpense) }}</td>
-										</tr>
-                                        <tr>
-											<td class="text sticky-xz-1">出差人数</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+											<td class="text sticky-xz-1 bordr-none">出差人数</td>
+											<td class="info bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
 												{{ formatNumber(value.travelPeopleCount) }}</td>
 										</tr>
                                         <tr>
-											<td class="text sticky-xz-1">出差天数</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+											<td class="text sticky-xz-1 bordr-none">出差天数</td>
+											<td class="info bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
 												{{ formatNumber(value.travelDays) }}</td>
 										</tr>
                                         <tr>
-											<td class="text sticky-xz-1">交通方式</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ value.transportationMethod.replace('|',',') }}</td>
+											<td class="text sticky-xz-1 bordr-none">交通方式</td>
+											<td class="info bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ value.transportationMethod?.replace('|',',') || '--' }}</td>
 										</tr>
-                                        <tr>
-											<td class="text sticky-xz-1">内容</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+                              
+                                         <tr>
+											<td class="text sticky-xz-1 bordr-none">内容</td>
+											<td class="info bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
 												{{ value.content }}</td>
 										</tr>
+									</tbody>
+								</table>
+								<view style="width: 100%;border-bottom: 2rpx solid #ddd;margin: 10rpx 0;"></view>
+								<table cellspacing="0" cellpadding="0" class="table1 table2">
+									<tbody>
+										<tr>
+											<td class="text sticky-xz-1 bordr-none">交通费</td>
+											<td class="info bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.travelExpense) }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-xz-1 bordr-none">住宿费</td>
+											<td class="info bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.accommodationFee) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1 bordr-none">误餐费</td>
+											<td class="info bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.missedMealFee) }}</td>
+										</tr>
+                                        <tr>
+											<td class="text sticky-xz-1 bordr-none">会务费</td>
+											<td class="info bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
+												{{ formatNumber(value.meetingExpense) }}</td>
+										</tr>
+                               
 									</tbody>
 								</table>
 							</scroll-view>
@@ -402,7 +422,90 @@
 	function goBack() {
 		uni.navigateBack()
 	}
-	
+	let cccc = reactive({
+		createdBy:"super",
+		createdByName:"super",
+		createdDate:"2025-08-12 13:56:38",
+		etc:100,
+		fuel:100,
+		id:51,
+		insurance:0,
+		lastModifiedBy:"super",
+		lastModifiedByName:"super",
+		lastModifiedDate:"2025-08-12 13:56:38",
+		others:0,
+		parking:0,
+		renting:0,
+		repair:0,
+		requestId:"49fe229246214a05b3ae508dcc4568c4",
+		seqNo:1,
+		toll:0,
+		vehiclePlateNo:"沪AK741211",
+		wash:0
+	})
+	let cccc3 = reactive({
+		createdBy:"super",
+		createdByName:"super",
+		createdDate:"2025-08-12 13:56:38",
+		etc:100,
+		fuel:100,
+		id:53,
+		insurance:0,
+		lastModifiedBy:"super",
+		lastModifiedByName:"super",
+		lastModifiedDate:"2025-08-12 13:56:38",
+		others:0,
+		parking:0,
+		renting:0,
+		repair:0,
+		requestId:"49fe229246214a05b3ae508dcc4568c4",
+		seqNo:1,
+		toll:0,
+		vehiclePlateNo:"沪AK741211",
+		wash:0
+	})
+	let cccc4 = reactive({
+		createdBy:"super",
+		createdByName:"super",
+		createdDate:"2025-08-12 13:56:38",
+		etc:100,
+		fuel:100,
+		id:54,
+		insurance:0,
+		lastModifiedBy:"super",
+		lastModifiedByName:"super",
+		lastModifiedDate:"2025-08-12 13:56:38",
+		others:0,
+		parking:0,
+		renting:0,
+		repair:0,
+		requestId:"49fe229246214a05b3ae508dcc4568c4",
+		seqNo:1,
+		toll:0,
+		vehiclePlateNo:"沪AK741211",
+		wash:0
+	})
+	let cccc5 = reactive({
+		createdBy:"super",
+		createdByName:"super",
+		createdDate:"2025-08-12 13:56:38",
+		etc:100,
+		fuel:100,
+		id:55,
+		insurance:0,
+		lastModifiedBy:"super",
+		lastModifiedByName:"super",
+		lastModifiedDate:"2025-08-12 13:56:38",
+		others:0,
+		parking:0,
+		renting:0,
+		repair:0,
+		requestId:"49fe229246214a05b3ae508dcc4568c4",
+		seqNo:1,
+		toll:0,
+		vehiclePlateNo:"沪AK741211",
+		wash:0
+	})
 	const itemDatas = ref({});
 	const vehiclePaymentContentList = ref([]);
     const vehiclePaymentContentObj = reactive({});
@@ -418,6 +521,13 @@
             let arr = requestTypeSel[itemDatas.value.requestType] || []
 			if(res.data?.data?.wfrequestexpenseclaimvehicleitems){
 				 vehiclePaymentContentList.value = res.data?.data?.wfrequestexpenseclaimvehicleitems || []
+				 if(itemDatas.value.requestType === 'Vehicle'){
+					vehiclePaymentContentList.value.unshift({...cccc}) 
+				    vehiclePaymentContentList.value.unshift({...cccc3})
+				    vehiclePaymentContentList.value.unshift({...cccc4})
+				    vehiclePaymentContentList.value.unshift({...cccc5})
+				 }
+			
 				 vehiclePaymentContentList.value.forEach(item => {
 					item.total = sumNestedProperties(item, arr);
 				 }) 
@@ -437,7 +547,13 @@
 			}
           
 			vehiclePaymentContentObj['total'] = itemDatas.value.paymentAmount || 0;
-			vehiclePaymentContentList.value.unshift({...vehiclePaymentContentObj})
+			if(itemDatas.value.requestType != 'Vehicle'){
+				vehiclePaymentContentList.value.unshift({...vehiclePaymentContentObj})
+			}
+			
+			if(infoRows.value[0].value){
+				 stageTags.value.push(infoRows.value[0].value)
+			}
 			if(itemDatas.value.receivingBankName){
 				 stageTags.value.push(itemDatas.value.receivingBankName)
 			}
@@ -715,6 +831,9 @@
 					color: #66ccff;
 					white-space: nowrap;
 				}
+				&.hero-tags-width {
+					width: calc(100% - 10rpx);
+				}
 			}
 			
 			.hero-actions {
@@ -866,6 +985,10 @@
 			font-size: 24rpx;
 			color: #000;
 			white-space: nowrap;
+			&.info-label-width {
+				min-width: 100rpx;
+				max-width: 240rpx;
+			}
 		}
 		
 		.info-value {
@@ -881,7 +1004,7 @@
 			
 			.contract-section {
 				box-sizing: border-box;
-				border: 1rpx solid #ddd;
+				border: 2rpx solid #ddd;
 				padding: 16rpx;
 				overflow: hidden;
 			}
@@ -981,6 +1104,10 @@
 							color: #666;
 							text-align: right;
 							flex: 0.72;
+							//文字自动换行
+							white-space: normal;
+							word-break: break-all;
+							word-wrap: break-word;
 						}
 					}
 				}
@@ -998,16 +1125,16 @@
 	.table1 {
 		box-sizing: border-box;
 		width: 100%;
-		border-bottom: 1rpx #ddd solid;
+		// border-bottom: 2rpx #ddd solid;
 	}
 	
 	.table2 {
 		box-sizing: border-box;
 		width: 100%;
-		border: none !important;
+		// border: none !important;
 		
 		td {
-			border: none !important;
+			// border: none !important;
 		}
 	}
 	
@@ -1018,10 +1145,14 @@
 	
 	.table1 td {
 		box-sizing: border-box;
-		border-left: 1rpx #ddd solid;
-		border-top: 1rpx #ddd solid;
+		// border-left: 2rpx #ddd solid;
+		border-top: 2rpx #ddd solid;
 		padding: 8px;
 		font-size: 12px;
+	}
+	
+	.bordr-none{
+		border-top: none !important;
 	}
 	
 	.table1 .info {
@@ -1047,8 +1178,8 @@
 		white-space: nowrap;
 	}
 	
-	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 55.5px !important; ;background: #fff;}
-	.table1 td.sticky-xz-2 { position: sticky; left: 55.5px;  z-index: 4;;background: #fff; }
+	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 88px !important; ;background: #fff;}
+	.table1 td.sticky-xz-2 { position: sticky; left: 88px;  z-index: 4;;background: #fff;	border-right: 2rpx #ddd solid; }
 	.table1 td.sticky-xz-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
 	
 	.approval-record-section {

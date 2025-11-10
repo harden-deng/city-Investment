@@ -131,7 +131,8 @@
 		'SG01': '/pages/detail/sgjf',
 		'KY01': '/pages/detail/kyjf',
 		'DB01': '/pages/detail/zjdb',
-		'QT01': '/pages/detail/qtjf'
+		'QT01': '/pages/detail/qtjf',
+		'ZC01': '/pages/detail/zcys'
 	})
 	const wfstatusArr = ref(tabs.map(t => t.wf));
 	const tabValues = ref(tabs.map(t => t.label));

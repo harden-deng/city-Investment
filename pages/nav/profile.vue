@@ -4,8 +4,8 @@
 			<view class="card__header">
 				<text class="card__company">上海公路投资建设发展有限公司</text>
 				<view class="card__body">
-					<text class="card__name">张三</text>
-					<text class="card__dept">第一事业部</text>
+					<text class="card__name">{{ userInfo?.userFullName || '11' }}</text>
+					<text class="card__dept">{{ userInfo?.departmentName || '22' }}</text>
 				</view>
 			</view>
 			<image class="card__avatar" src="../../static/images/user.jpg" mode="aspectFill" loading="lazy"></image>
@@ -50,15 +50,40 @@
 
 <script setup>
 	import {
-		ref
+		ref,
+		onMounted
 	} from 'vue'
+	import http from '@/utils/request.js'
 	import confirmDialog from "@/components/confirmDialog/confirmDialog.vue"
 	import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
-	const confirmRef = ref(null)
-	const userName = ref('张三')
-	const department = ref('第一事业部')
-	const company = ref('上海公路投资建设发展有限公司')
-
+	const confirmRef = ref(null) 
+	const userInfo = ref({})
+	onMounted(() => {
+		const userInfos = uni.getStorageSync('userInfo')
+		if(userInfos){
+			userInfo.value = userInfos;
+		}else{
+		   getUserInfo();
+		}
+		getUserSignature();
+	})
+    //获取用户信息
+	const getUserInfo = () => {
+		http.get('/Users/GetUserInfo').then(res => {
+			if(res.code == 0){
+				userInfo.value = res.data;
+				uni.setStorageSync('userInfo', res.data)
+			}
+		})
+	}
+    //获取用户签名
+	const getUserSignature = () => {
+		http.get('/Users/GetUserSignature').then(res => {
+			if(res.code == 0){
+				uni.setStorageSync('userSignature', res.data)
+			}
+		})
+	}
 	const goMessage = () => {
 		// 这里可替换为实际业务页面
 		// uni.showToast({

@@ -75,6 +75,12 @@
 				"navigationStyle": "custom",
 				"disableScroll": true
 			}
+		},{
+			"path": "pages/detail/zcys",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
 		}, {
 			"path": "uni_modules/rn-signature/pages/rn-canvas",
 			"style": {

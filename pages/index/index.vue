@@ -54,7 +54,7 @@
 		//    uni.switchTab({
 		//    	url: "/pages/nav/home"
 		//    })
-		handleLogin();
+		// handleLogin();
 	})
 
 
@@ -82,12 +82,13 @@
 			if (res.code == 0) {
 				uni.setStorageSync('token', res.data.accessToken)
 				uni.setStorageSync('userFullName', res.data.userFullName)
+				getUserInfo()
 				uni.switchTab({
 					url: '/pages/nav/home'
 				})
 			} else {
 				uni.showToast({
-					title: res.message,
+					title: res.msg,
 					icon: 'none'
 				})
 			}
@@ -95,6 +96,15 @@
 			console.log('登录失败', err)
 		})
 	}
+    //获取用户信息
+	const getUserInfo = () => {
+		http.get('/Users/GetUserInfo').then(res => {
+			if(res.code == 0){
+				uni.setStorageSync('userInfo', res.data)
+			}
+		})
+	}
+	
 </script>
 
 <style lang="scss" scoped>

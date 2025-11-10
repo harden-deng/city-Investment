@@ -62,7 +62,7 @@
 			</view>
 
 			<!-- 用款情况 -->
-			<view class="section" v-if="vehiclePaymentContentList.length > 0 &&itemDatas.requestType != 'GnE'">
+			<view class="section" v-if="vehiclePaymentContentList.length > 0">
 				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
@@ -79,44 +79,24 @@
 						<!-- 整体合同 -->
 						<view class="contract-section">
 							<!-- 明细 -->
-							<scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 0&&itemDatas.requestType === 'Travel'">
+							<scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 0">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
-										   <td class="type font_w sticky-xz-1">{{ infoRows[0].value.slice(0,-3)}}明细</td>
+										   <td class="type font_w sticky-xz-1">费用组成</td>
 										   <td class="type font_w text_right" v-for="(value,index) in vehiclePaymentContentList" :key="index">
                                                {{ index == 0 ? '合计' : '' }}     
 										   </td>
 										</tr>
 										<tr>
-											<td class="text sticky-xz-1">报销类目</td>
+											<td class="text sticky-xz-1">费用类目</td>
 											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ value.claimCategoryNameLv1 + value.claimCategoryNameLv2 + value.claimCategoryNameLv3 || '' }}</td>
+												{{ value.itemName || '' }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-xz-1">报销内容</td>
+											<td class="text sticky-xz-1">金额</td>
 											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ value.claimName || '' }}</td>
-										</tr>
-                                        <tr>
-											<td class="text sticky-xz-1">不含税金额</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ formatNumber(value.claimItemAmountNet) }}</td>
-										</tr>
-                                        <tr>
-											<td class="text sticky-xz-1">可抵扣税额</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ formatNumber(value.claimItemTaxAmount) }}</td>
-										</tr>
-                                        <tr>
-											<td class="text sticky-xz-1">含税金额</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ formatNumber(value.claimItemAmountVat) }}</td>
-										</tr>
-                                        <tr>
-											<td class="text sticky-xz-1">备注</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ value.remark || '' }}</td>
+												{{ value.costVat || '' }}</td>
 										</tr>
 									</tbody>
 								</table>
@@ -125,58 +105,6 @@
 								<text class="detail-label summary-label">本次用款小计</text>
 								<text
 									class="detail-value summary-value">{{ formatNumber(itemDatas.paymentAmount) }}</text>
-							</view>
-						</view>
-					</view>
-				</transition>
-			</view>
-
-			<!-- 付款账户信息 -->
-			<view class="section">
-				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
-					<view class="section-title-2-left">
-						<text class="section-title-vertical"></text>
-						<text class="section-title-text">补充信息</text>
-					</view>
-					<view class="section-title-2-right" :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
-
-					</view>
-				</view>
-				<!-- 付款账户信息卡片 -->
-				<transition name="collapse">
-					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
-						<!-- 单个公司账户信息 -->
-						<view class="account-card">
-							<!-- <view class="account-company-title">{{ itemDatas.companyName || '' }}</view> -->
-							<view class="account-info-block">
-								<view class="account-info-row">
-									<text class="account-info-label">合同名称</text>
-									<text class="account-info-value">{{ itemDatas.relateContractId || '' }}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">合同价/审定价</text>
-									<text class="account-info-value">{{ formatNumber(itemDatas.contractAmountVat) || '' }}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">合同累计已付款</text>
-									<text class="account-info-value"> {{ formatNumber(itemDatas.contractAccumulatedPaid) || '' }} </text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">发票系统编号</text>
-									<text class="account-info-value">{{ itemDatas.invoiceCloudID || '' }}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">普票金额</text>
-									<text class="account-info-value">{{ formatNumber(itemDatas.vatoamount) || '' }}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">可抵扣票据</text>
-									<text class="account-info-value">{{ formatNumber(itemDatas.invoiceAmountNet) || '' }}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">进项税额</text>
-									<text class="account-info-value">{{ formatNumber(itemDatas.invoiceAmountVat) || '' }}</text>
-								</view>
 							</view>
 						</view>
 					</view>
@@ -253,8 +181,8 @@
 		completed: '/WF/GetFormDataView'
 	})
 	const requestTypeSel = reactive({
-		'QT01': ['claimCategoryName','claimCategoryNameLv1','claimCategoryNameLv2','claimCategoryNameLv3', 'claimName', 'claimItemAmountNet', 'claimItemTaxAmount', 'claimItemAmountVat', 'remark'],
-	})
+		'ZC01': ['itemName','costVat'],
+	});
 	const inputDialogRef = ref(null)
 	const inputDialogRequired = ref(false)
 	const inputDialogTitle = ref('')
@@ -290,36 +218,46 @@
 	})
 
 	const infoRows = ref([{
-			label: '用款部门',
+			label: '合同名称',
 			value: '',
-			key: 'companyName'
+			key: 'contractName'
 		},{
-			label: '付款单位',
+			label: '业务类型',
 			value: '',
-			key: 'paymentCompanyName'
+			key: 'contractTypeName'
 		},{
-			label: '付款名称',
+			label: '项目名称/资产名称',
 			value: '',
-			key: 'receivingBankName' 
+			key: 'contractObjectName' 
 		},{
-			label: '支付金额',
+			label: '我方单位',
 			value: '',
-			key: 'paymentAmount'
+			key: 'myCompanyID'
 		},
 		{
-			label: '收款单位',
+			label: '对方单位',
 			value: '',
-			key: 'receivingCompanyName'
+			key: 'contractRelevantParty'
 		},
 		{
-			label: '收款开户银行',
+			label: '预算事项',
 			value: '',
-			key: 'receivingBankAccountName'
+			key: 'budgetItemName'
 		},
 		{
-			label: '收款账号',
+			label: '本月预计支出',
 			value: '',
-			key: 'receivingBankAccountNumber'
+			key: 'PlanToPay'
+		},
+		{
+			label: '款项对应开始日期',
+			value: '',
+			key: 'RelatedPeriodFrom'
+		},
+        {
+			label: '款项对应结束日期',
+			value: '',
+			key: 'RelatedPeriodTo'
 		},
 	]);
 	const goBack = () =>{

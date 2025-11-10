@@ -16,14 +16,16 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ infoRows[0].value }}
+							<!-- {{ itemDatas.businessUnitName }} -->
+							{{ itemDetail.taskName }}
+						
 						</view>
 						<view class="project-name-1">
-							{{ infoRows[1].value }}
+							上海城投公路投资（集团）有限公司
 						</view>
 					</view>
 					<view class="amount-box">
-						<view class="amount-label">申请支付总金额</view>
+						<view class="amount-label">调拨金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
 								{{  infoRows[6].value }}</text></view>
@@ -246,6 +248,10 @@
 			infoRows.value.forEach(item => {
 				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
+			if(itemDatas.value.toCompanyName){
+				 stageTags.value.push(itemDatas.value.toCompanyName)
+			}
+			
 		})
 	}
 	
@@ -684,6 +690,10 @@
 							color: #666;
 							text-align: right;
 							flex: 0.72;
+							//文字自动换行
+							white-space: normal;
+							word-break: break-all;
+							word-wrap: break-word;
 						}
 					}
 				}

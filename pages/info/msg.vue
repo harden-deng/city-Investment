@@ -15,7 +15,6 @@
                 </template>
             </uni-nav-bar>
         </view>
-
         <!-- 消息列表 -->
         <view class="msg-list">
             <z-paging ref="paging" v-model="dataList" @onRefresh="onRefresh" @query="queryList"
@@ -44,91 +43,88 @@
 </template>
 <script setup>
 import { ref, onMounted,getCurrentInstance,nextTick } from 'vue'
-
+import http from '@/utils/request.js'
 // 消息列表数据
-const dataList = ref([
-    {
-        id: 1,
-        title: '关于近期贵金属业务市场风险提示',
-        content: '尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范',
-        time: '2024-01-15 10:30',
-        read: false
-    },
-    {
-        id: 2,
-        title: '识诈反诈揭秘手机远程操控诈骗',
-        content: '近期,多地发生利用手机远控APP实施资金盗用的案件,受害者众多。这类诈骗隐蔽性极强,犯...',
-        time: '2024-01-14 15:20',
-        read: false
-    },
-    {
-        id: 3,
-        title: '关于第二批"西藏自治区成立60周',
-        content: '尊敬的客户:根据中国人民银行贵金属纪念币发行安排,"西藏自治区成立60周年金银纪念币"...',
-        time: '2024-01-13 09:15',
-        read: true
-    },
-    {
-        id: 4,
-        title: '关于第二批"西藏自治区成立60周',
-        content: '尊敬的客户:根据中国人民银行贵金属纪念币发行安排,"西藏自治区成立60周年金银纪念币"...',
-        time: '2024-01-13 09:15',
-        read: true
-    },
-    {
-        id: 5,
-        title: '关于第二批"西藏自治区成立60周',
-        content: '尊敬的客户:根据中国人民银行贵金属纪念币发行安排,"西藏自治区成立60周年金银纪念币"...',
-        time: '2024-01-13 09:15',
-        read: true
-    },
-    {
-        id: 6,
-        title: '关于第二批"西藏自治区成立60周',
-        content: '尊敬的客户:根据中国人民银行贵金属纪念币发行安排,"西藏自治区成立60周年金银纪念币"...',
-        time: '2024-01-13 09:15',
-        read: true
-    },
-    {
-        id: 7,
-        title: '关于第二批"西藏自治区成立60周',
-        content: '尊敬的客户:根据中国人民银行贵金属纪念币发行安排,"西藏自治区成立60周年金银纪念币"...',
-        time: '2024-01-13 09:15',
-        read: true
-    }
-]);
+const dataList = ref([]);
+// const dataList = ref([
+//     {
+//         id: 1,
+//         title: '关于近期贵金属业务市场风险提示',
+//         content: '尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范尊敬的客户:近期国内外贵金属价格波动加剧,市场风险提升。请您提高贵金属业务的风险防范',
+//         time: '2024-01-15 10:30',
+//         read: false
+//     },
+//     {
+//         id: 2,
+//         title: '识诈反诈揭秘手机远程操控诈骗',
+//         content: '近期,多地发生利用手机远控APP实施资金盗用的案件,受害者众多。这类诈骗隐蔽性极强,犯...',
+//         time: '2024-01-14 15:20',
+//         read: false
+//     },
+//     {
+//         id: 3,
+//         title: '关于第二批"西藏自治区成立60周',
+//         content: '尊敬的客户:根据中国人民银行贵金属纪念币发行安排,"西藏自治区成立60周年金银纪念币"...',
+//         time: '2024-01-13 09:15',
+//         read: true
+//     },
+//     {
+//         id: 4,
+//         title: '关于第二批"西藏自治区成立60周',
+//         content: '尊敬的客户:根据中国人民银行贵金属纪念币发行安排,"西藏自治区成立60周年金银纪念币"...',
+//         time: '2024-01-13 09:15',
+//         read: true
+//     },
+//     {
+//         id: 5,
+//         title: '关于第二批"西藏自治区成立60周',
+//         content: '尊敬的客户:根据中国人民银行贵金属纪念币发行安排,"西藏自治区成立60周年金银纪念币"...',
+//         time: '2024-01-13 09:15',
+//         read: true
+//     },
+//     {
+//         id: 6,
+//         title: '关于第二批"西藏自治区成立60周',
+//         content: '尊敬的客户:根据中国人民银行贵金属纪念币发行安排,"西藏自治区成立60周年金银纪念币"...',
+//         time: '2024-01-13 09:15',
+//         read: true
+//     },
+//     {
+//         id: 7,
+//         title: '关于第二批"西藏自治区成立60周',
+//         content: '尊敬的客户:根据中国人民银行贵金属纪念币发行安排,"西藏自治区成立60周年金银纪念币"...',
+//         time: '2024-01-13 09:15',
+//         read: true
+//     }
+// ]);
 
-const paging = ref(null)
-const onRefresh =() => {
-		// 告知z-paging下拉刷新结束，这样才可以开始下一次的下拉刷新
-		setTimeout(() => {
-			// 1.5秒之后停止刷新动画
-			paging.value.complete();
-			paging.value.reload()
-		}, 10)
+    const paging = ref(null)
+    const onRefresh =() => {
+            // 告知z-paging下拉刷新结束，这样才可以开始下一次的下拉刷新
+            setTimeout(() => {
+                // 1.5秒之后停止刷新动画
+                paging.value.complete();
+                paging.value.reload()
+            }, 10)
 	}
 	//分页加载
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
 	const queryList = (pageNo, pageSize) => {
-		console.log("pageNo-->", pageNo, "pageSize---->", pageSize)
-		paging.value.complete(dataList.value);
-		// let cc = pageNo + pageSize
-		// 此处请求仅为演示，请替换为自己项目中的请求
-		//       request.queryList({ pageNo,pageSize }).then(res => {
-		// 	// 将请求结果通过complete传给z-paging处理，同时也代表请求结束，这一行必须调用
-		//           paging.value.complete(res.data.list);
-		//       }).catch(res => {
-		// 	// 如果请求失败写paging.value.complete(false);
-		// 	// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-		// 	// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
-		// 	paging.value.complete(false);
-		// })
+        http.get('/Users/GetPersonalMessage', {
+			Page: pageNo,
+			Limit: pageSize,
+		}).then(res => {
+			paging.value.complete(res.data || [])
+		}).catch(() => {
+			paging.value.complete(false)
+			uni.showToast({ title: '加载失败', icon: 'none' });
+		})
 	}
-const goBack = () => {
-    uni.navigateBack({
-        delta: 1
-    })
-}
+    const goBack = () => {
+        uni.navigateBack({
+            delta: 1
+        })
+    }
 
 const statusBarHeight = ref(0)
 

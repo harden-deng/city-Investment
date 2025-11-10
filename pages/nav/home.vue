@@ -13,7 +13,7 @@
 					<view class="notification-content" @click="handleNotification" role="button" tabindex="0">
 						<!-- <image class="speaker-icon" src="../../static/images/icon_1.svg" mode="aspectFit" aria-label="公告"></image> -->
 						<view class="speaker-icon"></view>
-						<text class="notification-text">·本市排水管理体制改革取得阶段性进展</text>
+						<text class="notification-text">·{{ announcements || '暂无公告' }}</text>
 					</view>
 				</view>
 			</view>
@@ -53,7 +53,8 @@
 </template>
 <script setup>
 	import {
-		onLoad
+		onLoad,
+		onShow
 	} from '@dcloudio/uni-app'
 	import {
 		ref,
@@ -64,16 +65,29 @@
 		getStorage,
 	} from '@/utils/storage'
 	import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
-
+	
+	import http from '@/utils/request.js'
 	const statusBarHeight = ref(0)
 	const tabBarHeight = ref(50) // 如有实际高度可替换
 	const windowHeight = ref(0)
+	const announcements = ref('');
 	onLoad(() => {
 		const statusBarHeightNew = getStorage('statusBarHeight');
 		if (Number(statusBarHeightNew) != 0) {
 			statusBarHeight.value = Number(statusBarHeightNew)
 		}
 	})
+	onShow(() => {
+		getAnnouncements();
+	})
+	
+	const getAnnouncements = () => {
+		http.get('/WF/GetAnnouncements').then(res => {
+			if(res.code == 0){
+				announcements.value = res.data;
+			}
+		})
+	}
 	// 快捷功能列表
 	const quickAccessList = ref([{
 			label: '待办流程',
