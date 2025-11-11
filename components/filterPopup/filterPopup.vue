@@ -162,16 +162,22 @@
 		display: flex !important;
 		justify-content: flex-end !important;
 	}
-
+    /* 移动端样式 */
+    @media screen and (max-width: 913px) {
+        .filter-popup {
+            width: 750rpx !important;
+        }
+    }
 	.filter-popup {
 		position: relative;
 		z-index: 19;
-		width: 750rpx;
+		width: 768rpx;
 		background: $bg-white;
 		border-top-left-radius: 24rpx;
 		border-top-right-radius: 24rpx;
 		height: calc(100vh - 400rpx);
 		overflow: hidden;
+		margin: 0 auto;
 		
 		.filter-title {
 			height: 100rpx;

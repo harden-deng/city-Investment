@@ -33,12 +33,16 @@
 								{{ formatNumber(itemDatas.planToPayTotalPr) }}</text></view>
 					</view>
 				</view>
-				<view class="hero-tags">
+				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
 					<view class="tag" v-for="(t, i) in stageTags" :key="i">{{ t }}</view>
 				</view>
 				<view class="hero-actions" v-show="currentType === 'pending'">
 					<view class="btn outline" @click="onReject">打回</view>
 					<view class="btn primary" @click="onApprove">通过</view>
+				</view>
+			
+				<view class="wfstatus-actions" v-show="currentType === 'completed' && (itemDatas.wfstatus == 'Running' || itemDatas.wfstatus == 'Completed')">
+					{{ wfstatusText }}
 				</view>
 			</view>
 		</view>
@@ -51,9 +55,9 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item" :class="{'info-item-column': row.value.length > 24}" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value">{{ row.value || '--' }}</text>
+						<text class="info-value" :class="{'info-value-left': row.value.length > 24}">{{ row.value || '--' }}</text>
 					</view>
 				</view>
 			</view>
@@ -614,6 +618,27 @@
 					</view>
 				</transition>
 			</view>
+
+			<!-- 附件 -->
+			<view class="section">
+				<view class="section-title-2" @click="setOptions(ATTACHMENT_LIST)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">附件</text>
+					</view>
+					<view class="section-title-2-right"
+						:class="{ 'active': getOptions(ATTACHMENT_LIST) }">
+					</view>
+				</view>
+				<!-- 附件卡片 -->
+				<transition name="collapse">
+					<view class="attachment-section" v-if="getOptions(ATTACHMENT_LIST)">
+						<view style="height: 10rpx;"></view>
+					
+						<attachmentList :list="attachmentData"></attachmentList>
+					</view>
+				</transition>
+			</view>
 			<!-- 审批记录 -->
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(APPROVAL_RECORD)">
@@ -716,7 +741,8 @@
 		FUND_USAGE_STATUS,
 		PAYMENT_ACCOUNT_INFORMATION,
 		COLLECTION_ACCOUNT_INFORMATION,
-		APPROVAL_RECORD
+		APPROVAL_RECORD,
+		ATTACHMENT_LIST
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
@@ -725,6 +751,7 @@
 	} from '@/utils/h5Bribge'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
+	import attachmentList from '@/components/attachmentList/attachmentList.vue'
 	const statusBarHeight = ref(0)
 	let eventChannel
 	onLoad(() => {
@@ -754,6 +781,10 @@
 	// const formDetail = ref({})
 	const stageTags = ref([])
 	const amountColumns = ref(['总金额', '总金额']);
+	const wfstatusText = computed(() => {
+		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
+	})
+	const attachmentData = ref([])
 	// 每行高度（与样式保持一致）
 	const ROW_H = 60
 
@@ -825,6 +856,7 @@
 		[PAYMENT_ACCOUNT_INFORMATION]: true,
 		[COLLECTION_ACCOUNT_INFORMATION]: true,
 		[APPROVAL_RECORD]: true,
+		[ATTACHMENT_LIST]: true,
 	})
 	const setOptions = (name) => {
 		pullDownObj[name] = pullDownObj[name] ? false : true
@@ -1053,7 +1085,8 @@
 	const roadSectionList = ref([]);
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
-			itemDatas.value = res.data?.itemdata || {}
+			let data = res.data || {}
+			itemDatas.value = data?.itemdata || {}
 			infoRows.value.forEach(item => {
 				item.value = itemDatas.value[item.key] || ''
                 if(item.key === 'lv1AccountName'){
@@ -1075,7 +1108,32 @@
 				// roadSectionList.value.push({...cc2})
 				// roadSectionList.value.push({...cc3})
 			}
-			
+			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
+						return {
+							fileTagName: item.fileTagName,
+							fileName: item.fileName,
+							fileUrl: item.fileUrl,
+							id: item.attachmentId
+						}
+			})
+			attachmentData.value = [
+				{fileTagName: '工程付款申请单', children: []}, 
+				{fileTagName: '工程费用支付申请表', children: []},
+			    {fileTagName: '发票', children: []},
+				{fileTagName: '财务监理付款意见书', children: []},
+				{fileTagName: '合同要求其他资料', children: []},
+			]
+			const attachmentMap = new Map()
+			attachmentData.value.forEach(item => {
+				attachmentMap.set(item.fileTagName, item)
+			})
+            console.log('attachmentMap=>',attachmentMap)
+			arr1.forEach(childItem => {
+				const parent = attachmentMap.get(childItem.fileTagName)
+				if (parent) {
+					parent.children.push(childItem)
+				}
+			})
 		})
 	}
 
@@ -1385,9 +1443,29 @@
 					color: #66ccff;
 					white-space: nowrap;
 				}
+				&.hero-tags-width {
+					width: calc(100% - 180rpx);
+				}
 			}
 
-
+            .wfstatus-actions {
+                position: absolute;
+                bottom: 12rpx;
+                right: 36rpx;
+				width: 120rpx;
+				height: 42rpx;
+				border: 2rpx solid #66ccff;
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			
+				border-radius: 25rpx;
+				font-size: 24rpx;
+				color: #66ccff;
+				white-space: nowrap;
+               
+            }
 
 			.hero-actions {
 				position: absolute;
@@ -1523,6 +1601,14 @@
 
 		.info-list {
 			padding: 0 32rpx 10rpx;
+			.info-item-column{
+                flex-direction: column;
+
+			}
+			.info-value-left{
+				text-align: left;
+				margin-top: 10rpx;
+			}
 		}
 
 		.info-item {
@@ -1711,12 +1797,50 @@
 
 
 
+	.attachment-section {    
+		padding: 0 32rpx 24rpx;
+	}
+	.attachment-list {    
+		display: flex;    
+		flex-wrap: wrap;    
+		gap: 24rpx;
+	}
+	.attachment-item {    
+		width: 200rpx;    
+		padding: 24rpx 16rpx 18rpx;    
+		border-radius: 24rpx;  
+		background: linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);   
+		box-shadow: 0 8rpx 24rpx rgba(60, 108, 254, 0.08);    display: flex;    
+		flex-direction: column;    align-items: center;    
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.attachment-item:active {    
+		transform: translateY(4rpx);   
+		box-shadow: 0 6rpx 16rpx rgba(60, 108, 254, 0.12);
+	}
+	.attachment-item-icon {  
+		width: 80rpx;   
+		height: 80rpx;   
+		border-radius: 50%;    
+		background: rgba(60, 108, 254, 0.12);   
+		display: flex;   
+		align-items: center;    
+		justify-content: center;   
+		margin-bottom: 16rpx;
+	}
+	.attachment-item-name {   
+   	    font-size: 24rpx;    
+	    color: #333;   
+		text-align: center;   
+		line-height: 1.4;    
+		word-break: break-word;
+	}
 
 
 
 
 
-
+// ------------------------------------------
 	.margin_1 {
 		margin-top: 20px;
 	}

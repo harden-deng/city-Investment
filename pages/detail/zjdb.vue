@@ -31,12 +31,16 @@
 								{{  infoRows[6].value }}</text></view>
 					</view>
 				</view>
-				<view class="hero-tags">
+				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
 					<view class="tag" v-for="(t, i) in stageTags" :key="i">{{ t }}</view>
 				</view>
 				<view class="hero-actions" v-show="currentType === 'pending'">
 					<view class="btn outline" @click="onReject">打回</view>
 					<view class="btn primary" @click="onApprove">通过</view>
+				</view>
+
+				<view class="wfstatus-actions" v-show="currentType === 'completed' && (itemDatas.wfstatus == 'Running' || itemDatas.wfstatus == 'Completed')">
+					{{ wfstatusText }}
 				</view>
 			</view>
 		</view>
@@ -94,6 +98,26 @@
 					</view>
 				</view>
 			</view>
+
+			<!-- 附件 -->
+			<view class="section">
+				<view class="section-title-2" @click="setOptions(ATTACHMENT_LIST)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">附件</text>
+					</view>
+					<view class="section-title-2-right"
+						:class="{ 'active': getOptions(ATTACHMENT_LIST) }">
+					</view>
+				</view>
+				<!-- 附件卡片 -->
+				<transition name="collapse">
+					<view class="attachment-section" v-if="getOptions(ATTACHMENT_LIST)">
+						<attachmentList :list="attachmentData"></attachmentList>
+					</view>
+				</transition>
+			</view>
+
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(APPROVAL_RECORD)">
 					<view class="section-title-2-left">
@@ -133,7 +157,8 @@
 	} from '@/utils/storage'
 	import {
 		PAYMENT_ACCOUNT_INFORMATION,
-		APPROVAL_RECORD
+		APPROVAL_RECORD,
+		ATTACHMENT_LIST
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
@@ -141,7 +166,7 @@
 	} from '@/utils/h5Bribge'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
-	
+	import attachmentList from '@/components/attachmentList/attachmentList.vue'
 	const statusBarHeight = ref(0)
 	let eventChannel
 	onLoad(() => {
@@ -170,10 +195,14 @@
 	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	const stageTags = ref([])
-	
+	const attachmentData = ref([])
+	const wfstatusText = computed(() => {
+		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
+	})
 	const pullDownObj = reactive({
 		[PAYMENT_ACCOUNT_INFORMATION]: true,
 		[APPROVAL_RECORD]: true,
+		[ATTACHMENT_LIST]: true,
 	})
 	const setOptions = (name) => {
 		pullDownObj[name] = pullDownObj[name] ? false : true
@@ -244,7 +273,8 @@
 	const itemDatas = ref({});
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
-			itemDatas.value = res.data?.data?.wfrequestfundtransfer || {}
+			let data = res.data?.data || {}
+			itemDatas.value = data?.wfrequestfundtransfer || {}
 			infoRows.value.forEach(item => {
 				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
@@ -252,6 +282,27 @@
 				 stageTags.value.push(itemDatas.value.toCompanyName)
 			}
 			
+			let arr1 = (data?.attachments || []).map(item => {
+				return {
+					fileTagName: item.fileTagName,
+					fileName: item.fileName,
+                    fileUrl: item.fileUrl,
+					id: item.attachmentId
+				}
+			})
+			console.log('arr1=>',arr1)
+			attachmentData.value = [{fileTagName: '其他', children: []}]
+			const attachmentMap = new Map()
+			attachmentData.value.forEach(item => {
+				attachmentMap.set(item.fileTagName, item)
+			})
+			arr1.forEach(childItem => {
+				const parent = attachmentMap.get(childItem.fileTagName)
+				if (parent) {
+					parent.children.push(childItem)
+				}
+			})
+
 		})
 	}
 	
@@ -517,8 +568,29 @@
 					color: #66ccff;
 					white-space: nowrap;
 				}
+				&.hero-tags-width {
+					width: calc(100% - 180rpx);
+				}
 			}
 			
+			.wfstatus-actions {
+                position: absolute;
+                bottom: 12rpx;
+                right: 36rpx;
+				width: 120rpx;
+				height: 42rpx;
+				border: 2rpx solid #66ccff;
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			
+				border-radius: 25rpx;
+				font-size: 24rpx;
+				color: #66ccff;
+				white-space: nowrap;
+               
+            }
 			.hero-actions {
 				position: absolute;
 				bottom: 0;
@@ -713,6 +785,11 @@
 	}
 	
 	.approval-record-section {
+		padding: 20rpx 32rpx 40rpx;
+		position: relative;
+	}
+
+	.attachment-section {
 		padding: 20rpx 32rpx 40rpx;
 		position: relative;
 	}
