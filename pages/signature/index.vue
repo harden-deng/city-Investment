@@ -115,7 +115,7 @@
 				},
 				// 签名数据
 				signatureData: {
-					url: '', // 签名生成的图片地址
+					url: '', // 签名生成的图片地址 格式是base64
 					tempTime: Date.now() // 时间戳，用于事件通信
 				},
 				// 保存状态
@@ -126,6 +126,7 @@
 		onLoad(options) {
 			// 如果从其他页面传递了签名数据，则加载
 			if (options.signatureUrl) {
+				console.log('如果从其他页面传递了签名数据，则加载=>', options.signatureUrl);
 				this.signatureData.url = decodeURIComponent(options.signatureUrl);
 			}
 		},

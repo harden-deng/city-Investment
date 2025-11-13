@@ -137,7 +137,7 @@
 		watch: {
 			data: {
 				handler(newVal) {
-					// console.log(newVal, 'newVal----newVal')
+					console.log('签名数据更新1=>', newVal)
 					newVal.url && uni.$emit(`rnReturnData${this.query.tempTime}`, newVal);
 				},
 				deep: true,
@@ -145,7 +145,6 @@
 			}
 		},
 		onLoad(query) {
-			console.log(".vue");
 			this.query = query;
 			const eventChannel = this.getOpenerEventChannel();
 			eventChannel.on(
@@ -183,7 +182,6 @@
 						this.initStyle();
 						this.$nextTick(() => {
 							this.btnShow = true;
-							console.log(1111);
 							this.ctx = new CanvasControl({
 									canvas_id: "canvas_container",
 									data: this.data,
@@ -260,7 +258,6 @@
 					return;
 				}
 				let url = await this.ctx.rotateCanvas();
-				// console.log(url, 'url---url')
 				this.data.url = url;
 				uni.navigateBack(-1);
 			},
@@ -320,7 +317,12 @@
 		left: 0;
 		bottom: 0;
 		right: 0;
-
+        /* #ifdef H5 */
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		flex-direction: row;
+	    /* #endif */
 		.control_wrap {
 			position: absolute;
 			transform-origin: bottom;
@@ -336,10 +338,13 @@
 			/* #endif */
 
 			/* #ifdef H5 */
-			top: 50%;
-			left: 0;
-			transform: translate(-50%, -50%) rotate(90deg);
+			// top: 46.3%;
+			// left: 0;
+			// transform: translate(-50%, -50%) rotate(90deg);
 
+			/* #endif */
+			/* #ifdef H5 */
+			transform: translate(-50%, -50%) rotate(90deg);
 			/* #endif */
 			.btn {
 				width: fit-content;

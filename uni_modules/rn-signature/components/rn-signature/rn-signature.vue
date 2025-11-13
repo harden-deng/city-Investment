@@ -101,6 +101,7 @@
 				uni.$on(`rnReturnData${this.data.tempTime}`, (res) => {
 					// this.$set(this, 'data', res) // 使用内部变量替代props
 					// this.data = JSON.parse(JSON.stringify(res))
+					console.log('签名数据更新2=>', res)
 					for (let key in res) {
 						this.data[key] = res[key];
 					}

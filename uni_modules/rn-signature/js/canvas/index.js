@@ -251,17 +251,17 @@ class CanvasControl {
 	//初始化页面-获取宽高
 	async initPage() {
 		let windowConfig = uni.getSystemInfoSync();
-		this.options.windowWidth = windowConfig.screenWidth;
-		this.options.windowHeight = windowConfig.screenHeight;
+		this.options.windowWidth = windowConfig.windowWidth;
+		this.options.windowHeight = windowConfig.windowHeight;
 		// #ifdef VUE2
 		// #ifdef MP-WEIXIN
 		this.options.windowWidth = Math.max(
-			windowConfig.screenWidth,
-			windowConfig.screenHeight
+			windowConfig.windowWidth,
+			windowConfig.windowHeight
 		);
 		this.options.windowHeight = Math.min(
-			windowConfig.screenWidth,
-			windowConfig.screenHeight
+			windowConfig.windowWidth,
+			windowConfig.windowHeight
 		);
 		// #endif
 		// #endif

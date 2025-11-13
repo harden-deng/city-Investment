@@ -85,15 +85,12 @@
 	} from '@dcloudio/uni-app'
 	import {
 		ref,
-		reactive,
 		onMounted,
 		nextTick,
 		getCurrentInstance
 	} from 'vue'
 	import {
-		setStorage,
-		getStorage,
-		removeStorage
+		getStorage
 	} from '@/utils/storage'
 	import http from '@/utils/request.js'
 	import { formatNumber } from '@/utils/h5Bribge'

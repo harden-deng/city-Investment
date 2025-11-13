@@ -26,7 +26,7 @@
 	})
 
 	const content = props.content ?? ''
-	const msgType = props.msgType ?? 'info'
+	const msgType = props.msgType ?? ''
 
 	const alertDialog = ref()
 	const emit = defineEmits()
