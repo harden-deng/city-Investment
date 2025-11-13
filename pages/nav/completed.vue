@@ -131,6 +131,7 @@
 		'SG01': '/pages/detail/sgjf',
 		'KY01': '/pages/detail/kyjf',
 		'DB01': '/pages/detail/zjdb',
+		'SR01': '/pages/detail/srqr',
 		'QT01': '/pages/detail/qtjf',
 		'ZC01': '/pages/detail/zcys'
 	})

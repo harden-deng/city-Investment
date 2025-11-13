@@ -23,10 +23,10 @@ export default {
 		complete() {}
 	},
 	// 拦截器
-	interceptor: {
-		request: null, //请求
-		response: null //响应
-	},
+	// interceptor: {
+	// 	request: null, //请求
+	// 	response: null //响应
+	// },
 	request(options) {
 		if (!options) {
 			options = {}
@@ -59,26 +59,13 @@ export default {
 				...options.header,
 			}
 		}
-		// console.log('token:' + uni.getStorageSync('token'));
 		return new Promise((resolve, reject) => {
 			let _config = null
 			options.complete = (response) => {
-				// uni.hideLoading()
 				let statusCode = response.statusCode
 				response.config = _config
-
-				if (this.interceptor.response) {
-					let newResponse = this.interceptor.response(response)
-					if (newResponse) {
-						response = newResponse
-					}
-				}
-				// 统一的响应日志记录
-				_reslog(response)
+			
 				if (statusCode === 200) { //成功
-					uni.$emit('login', {
-						login: true
-					});
 					resolve(response.data);
 				} else if (statusCode === 401) {
 					uni.clearStorageSync()
@@ -96,27 +83,17 @@ export default {
 			_config = Object.assign({}, this.config, options)
 			_config.requestId = new Date().getTime()
 
-			if (this.interceptor.request) {
-				this.interceptor.request(_config)
-			}
-
-			// 统一的请求日志记录
-			_reqlog(_config)
-
-			// if (process.env.NODE_ENV === 'development') {
-			//     // console.log("【" + _config.requestId + "】 地址：" + _config.url)
-			//     if (_config.data) {
-			//         // console.log("【" + _config.requestId + "】 参数：" + JSON.stringify(_config.data))
-			//     }
+			// if (this.interceptor.request) {
+			// 	this.interceptor.request(_config)
 			// }
 			// 在请求前添加日志
 			if (process.env.NODE_ENV === 'development') {
+				console.log('请求_config:', _config)
 				console.log('请求URL:', _config.url)
 				console.log('请求方法:', _config.method)
 				console.log('请求头:', _config.header)
 				console.log('请求数据:', _config.data)
 			}
-			console.log(_config);
 			uni.request(_config);
 		});
 	},
@@ -155,51 +132,5 @@ export default {
 		options.data = data
 		options.method = 'DELETE'
 		return this.request(options)
-	}
-}
-
-
-/**
- * 请求接口日志记录
- */
-function _reqlog(req) {
-	if (process.env.NODE_ENV === 'development') {
-		// console.log("【" + req.requestId + "】 地址：" + req.url)
-
-		if (req.statusCode == '401') {
-			uni.reLaunch({
-				url: '/pages/login/login.vue'
-			});
-		}
-
-		// if (req.data) {
-		//     console.log("【" + req.requestId + "】 请求参数：" + JSON.stringify(req.data))
-		// }
-	}
-	//TODO 调接口异步写入日志数据库
-}
-
-/**
- * 响应接口日志记录
- */
-function _reslog(res) {
-	let _statusCode = res.statusCode;
-	// if (process.env.NODE_ENV === 'development') {
-	//     console.log("【" + res.config.requestId + "】 地址：" + res.config.url)
-	//     if (res.config.data) {
-	//         console.log("【" + res.config.requestId + "】 请求参数：" + JSON.stringify(res.config.data))
-	//     }
-	//     console.log("【" + res.config.requestId + "】 响应结果：" + JSON.stringify(res))
-	// }
-	//TODO 除了接口服务错误外，其他日志调接口异步写入日志数据库
-	switch (_statusCode) {
-		case 200:
-			break;
-		case 401:
-			break;
-		case 404:
-			break;
-		default:
-			break;
 	}
 }

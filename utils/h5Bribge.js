@@ -128,3 +128,8 @@ export function formatDateTime(dateString) {
     // 去掉最后的 :秒 部分
     return dateString.substring(0, 16)
 }
+export function formatDateTimeMinute(dateString) {
+    if (!dateString) return ''
+    // 去掉最后的 :秒 部分，只保留时分
+    return dateString.substring(0, 10)
+}

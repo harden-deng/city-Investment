@@ -131,6 +131,7 @@
 		'SG01': '/pages/detail/sgjf', //三公经费
 		'KY01': '/pages/detail/kyjf', //科研经费
 		'DB01': '/pages/detail/zjdb', //资金调拨
+		'SR01': '/pages/detail/srqr', //收入确认
 		'QT01': '/pages/detail/qtjf', //其他
 		'ZC01': '/pages/detail/zcys'  //支出预算
 	})

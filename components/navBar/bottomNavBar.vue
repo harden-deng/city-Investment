@@ -10,7 +10,6 @@
 					{{ item.iconText }}
 				</text>
 			</view>
-
 			<!-- 文字标签 -->
 			<text class="nav-label" :class="{ 'label-active': currentIndex === index }">
 				{{ item.label }}
@@ -186,7 +185,8 @@
 		// border: 1px solid;  
 
 		.nav-item {
-			max-height: 50px;
+			// max-height: 50px;
+			max-height: 100px;
 			overflow: hidden;
 			flex: 1;
 			display: flex;
@@ -233,7 +233,7 @@
 
 					&.text-active {
 						filter: grayscale(0%);
-						transform: scale(1.1);
+						// transform: scale(1.1);
 					}
 				}
 			}
@@ -248,8 +248,8 @@
 
 				&.label-active {
 					color: v-bind(activeColor);
-					font-weight: 500;
-					transform: scale(1.05);
+					// font-weight: 500;
+					// transform: scale(1.05);
 				}
 			}
 		}
@@ -283,7 +283,7 @@
 			height: 100rpx;
 
 			.nav-item {
-				padding: 3px 1px;
+				padding: 0px 1px;
 
 				.icon-container {
 					width: 20px;
@@ -306,6 +306,36 @@
 			}
 		}
 	}
+		// 中屏幕适配
+		@media (min-width: 414px) and (max-width: 767px){
+			.bottom-nav-bar {
+				height: 110rpx;
+
+				.nav-item {
+					padding: 0px 2px;
+
+					.icon-container {
+						width: 24px;
+						height: 24px;
+						margin-bottom: 2px;
+
+						.nav-icon {
+							width: 24px;
+							height: 24px;
+						}
+
+						.nav-icon-text {
+							font-size: 20px;
+							
+						}
+					}
+
+					.nav-label {
+						font-size: 12px;margin-top: 4rpx;
+					}
+				}
+			}
+		}
 
 	// 大屏幕适配
 	@media (min-width: 768px) {
@@ -313,7 +343,7 @@
 			height: 140rpx;
 
 			.nav-item {
-				padding: 12rpx 8rpx;
+				padding: 0rpx 8rpx;
 
 				.icon-container {
 					width: 56rpx;

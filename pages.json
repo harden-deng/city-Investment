@@ -81,6 +81,12 @@
 				"navigationStyle": "custom",
 				"disableScroll": true
 			}
+		},{
+			"path": "pages/detail/srqr",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
 		}, {
 			"path": "uni_modules/rn-signature/pages/rn-canvas",
 			"style": {

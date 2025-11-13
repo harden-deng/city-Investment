@@ -4,8 +4,8 @@
 			<view class="card__header">
 				<text class="card__company">上海公路投资建设发展有限公司</text>
 				<view class="card__body">
-					<text class="card__name">{{ userInfo?.userFullName || '11' }}</text>
-					<text class="card__dept">{{ userInfo?.departmentName || '22' }}</text>
+					<text class="card__name">{{ userInfo?.userFullName || '' }}</text>
+					<text class="card__dept">{{ userInfo?.departmentName || '' }}</text>
 				</view>
 			</view>
 			<image class="card__avatar" src="../../static/images/user.jpg" mode="aspectFill" loading="lazy"></image>
@@ -141,6 +141,7 @@
 		background: #f3f7ff;
 		padding: 16rpx 0px;
 	}
+
 
 	.card {
 		box-sizing: border-box;

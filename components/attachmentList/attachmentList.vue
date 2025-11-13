@@ -141,7 +141,7 @@ const openAttachment = () => {
 }
 
 const getFileExt = (item) => {
-	const url = item?.fileUrl || item?.fileName || ''
+	const url = item?.fileName || item?.fileUrl || ''
 	const source = url
 	const match = /\.([a-zA-Z0-9]+)(?:\?|#|$)/.exec(source)
 	return match ? match[1].toLowerCase() : ''

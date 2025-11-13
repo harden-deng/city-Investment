@@ -24,7 +24,7 @@
 					<view class="access-item" v-for="(item, index) in quickAccessList" :key="index"
 						@click="handleQuickAccess(item)">
 						<view class="access-icon" :style="{ backgroundColor: item.bjColor }">
-							<image :src="item.imgUrl" mode="aspectFit" style="width: 48rpx; height: 48rpx"></image>
+							<image :src="item.imgUrl" mode="aspectFit" style="width: 59%; height: 59%"></image>
 						</view>
 						<text class="access-label">{{ item.label }}</text>
 					</view>
@@ -36,7 +36,7 @@
 						<text class="section-title-bj"></text>
 					</view>
 					<view class="announcement-banner">
-						<image class="announcement-img" src="../../static/images/ib_1.jpg" mode="aspectFill"
+						<image class="announcement-img" src="../../static/images/ib_1.jpg" 
 							loading="lazy" aria-label="在线公示"></image>
 					</view>
 				</view>
@@ -59,7 +59,8 @@
 	import {
 		ref,
 		onMounted,
-		computed
+		computed,
+		nextTick
 	} from 'vue'
 	import {
 		getStorage,
@@ -78,7 +79,9 @@
 		}
 	})
 	onShow(() => {
-		getAnnouncements();
+		nextTick(()=>{
+			getAnnouncements();
+		})
 	})
 	
 	const getAnnouncements = () => {
@@ -232,8 +235,8 @@
 					box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
 
 					.speaker-icon {
-						width: 30rpx;
-						height: 30rpx;
+						width: 28rpx;
+						height: 28rpx;
 						// margin-right: 22rpx;
 						background-image: url('../../static/images/icon_1.svg');
 						background-size: contain;
@@ -261,24 +264,26 @@
 
 			.quick-access {
 				box-sizing: border-box;
-				height: 226rpx;
+				height: 220rpx;
 				width: 90%;
 				margin-left: auto;
 				margin-right: auto;
 				display: flex;
 				justify-content: space-around;
 				align-items: center;
-				margin-bottom: 30rpx;
+				margin-bottom: 32rpx;
 				background-color: #ffffff;
 				border-radius: 25rpx;
 				box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+				padding: 0 4rpx;
+				margin-top: 2rpx;
 
 				.access-item {
 					flex: 1;
 					display: flex;
 					flex-direction: column;
 					align-items: center;
-					margin: 0 8rpx;
+					margin: 0 10rpx;
 
 					.access-icon {
 						width: 90rpx;
@@ -287,7 +292,7 @@
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						margin-bottom: 16rpx;
+						margin-bottom: 20rpx;
 					}
 
 					.access-label {
@@ -301,12 +306,12 @@
 			.announcement-section {
 				box-sizing: border-box;
 				width: 90%;
-				height: 448rpx;
+				// height: 448rpx;
 				margin-left: auto;
 				margin-right: auto;
 				margin-bottom: 30rpx;
 				background-color: #ffffff;
-				padding: 26rpx 30rpx;
+				padding: 26rpx 32rpx 32rpx 32rpx;
 				border-radius: 25rpx;
 				box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 				display: flex;
@@ -314,7 +319,8 @@
 				align-items: center;
 
 				.section-title {
-					width: 622rpx;
+					// width: 622rpx;
+					width: 100%;
 					height: 44rpx;
 					position: relative;
 					margin-bottom: 16rpx;
@@ -339,8 +345,9 @@
 				}
 
 				.announcement-banner {
-					width: 622rpx;
-					height: 325rpx;
+					// width: 622rpx;
+					width: 100%;
+					height: 320rpx;
 					border-radius: 20rpx;
 					overflow: hidden;
 				}

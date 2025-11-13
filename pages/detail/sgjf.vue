@@ -681,7 +681,7 @@
 	
 	const approvalRecordList = ref([])
 	const getApprovalRecord = () => {
-		http.get('/WF/GetApprovalHistory?', {
+		http.get('/WF/GetApprovalHistory', {
 			wfinstanceId: itemDetail.value.wfinstanceId,
 		}).then(res => {
 			console.log(res)
