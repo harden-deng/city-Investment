@@ -48,7 +48,7 @@
 			</view>
 		</scroll-view>
 		<!-- 底部导航栏 -->
-		<BottomNavBar ref="bottomNavRef" :modelValueFlag="0" />
+		<!-- <BottomNavBar ref="bottomNavRef" :modelValueFlag="0" /> -->
 	</view>
 </template>
 <script setup>
@@ -65,11 +65,11 @@
 	import {
 		getStorage,
 	} from '@/utils/storage'
-	import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
+	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	
 	import http from '@/utils/request.js'
 	const statusBarHeight = ref(0)
-	const tabBarHeight = ref(50) // 如有实际高度可替换
+	const tabBarHeight = ref(0) // 如有实际高度可替换
 	const windowHeight = ref(0)
 	const announcements = ref('');
 	onLoad(() => {
@@ -146,6 +146,7 @@
 	onMounted(() => {
 		try {
 			const sys = uni.getSystemInfoSync()
+			console.log("sys=>",sys)
 			windowHeight.value = sys.windowHeight
 		} catch (e) {
 			windowHeight.value = 600
@@ -154,8 +155,6 @@
 			const sys = uni.getSystemInfoSync?.()
 			if (sys?.windowHeight) windowHeight.value = sys.windowHeight
 		})
-
-
 	})
 	// const count = ref(0)
 	// const plusOne = computed({
@@ -260,7 +259,7 @@
 
 
 		.main-content {
-			padding: 30rpx 0 40rpx;
+			padding: 30rpx 0 34rpx;
 
 			.quick-access {
 				box-sizing: border-box;

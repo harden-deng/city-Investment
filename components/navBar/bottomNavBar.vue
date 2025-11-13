@@ -4,11 +4,8 @@
 			:class="{ active: currentIndex === index }" @click="handleNavClick(index, item)">
 			<!-- 图标容器 -->
 			<view class="icon-container">
-				<image v-if="item.icon" :src="currentIndex === index ? item.activeIcon || item.icon : item.icon"
+				<image :src="currentIndex === index ? item.activeIcon || item.icon : item.icon"
 					class="nav-icon" mode="aspectFit" />
-				<text v-else class="nav-icon-text" :class="currentIndex === index ? 'text-active' : ''">
-					{{ item.iconText }}
-				</text>
 			</view>
 			<!-- 文字标签 -->
 			<text class="nav-label" :class="{ 'label-active': currentIndex === index }">
@@ -38,7 +35,6 @@
 			label: '首页',
 			activeIcon: '../../static/images/menu_1_2.svg',
 			icon: '../../static/images/menu_1_1.svg',
-			iconText: '🏠',
 			path: '/pages/nav/home',
 			pagePath: 'pages/nav/home'
 		},
@@ -46,7 +42,6 @@
 			label: '待办流程',
 			activeIcon: '../../static/images/menu_2_2.svg',
 			icon: '../../static/images/menu_2_1.svg',
-			iconText: '📋',
 			path: '/pages/nav/pending',
 			pagePath: 'pages/nav/pending'
 		},
@@ -54,7 +49,6 @@
 			label: '已办流程',
 			activeIcon: '../../static/images/menu_3_2.svg',
 			icon: '../../static/images/menu_3_1.svg',
-			iconText: '✅',
 			path: '/pages/nav/completed',
 			pagePath: 'pages/nav/completed'
 		},
@@ -62,7 +56,6 @@
 			label: '个人中心',
 			activeIcon: '../../static/images/menu_4_2.svg',
 			icon: '../../static/images/menu_4_1.svg',
-			iconText: '👤',
 			path: '/pages/nav/profile',
 			pagePath: 'pages/nav/profile'
 		}
@@ -77,7 +70,6 @@
     const handleNavClick = (index, item) => {
 		// if (currentIndex.value === index) return
 
-		// currentIndex.value = index
 		// emit('update:modelValue', index)
 		// emit('change', index, item)
 		// 页面跳转
@@ -182,18 +174,15 @@
 		padding-bottom: env(safe-area-inset-bottom);
 		z-index: 19;
 		box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.1);
-		// border: 1px solid;  
 
 		.nav-item {
-			// max-height: 50px;
-			max-height: 100px;
+			max-height: 50px;
 			overflow: hidden;
 			flex: 1;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			// padding: 4px 2px;
 			transition: all 0.3s ease;
 			cursor: pointer;
 			height: 100%;
@@ -206,7 +195,7 @@
 
 			&.active {
 				.icon-container {
-					transform: translateY(-2rpx);
+					// transform: translateY(-2rpx);
 				}
 			}
 
@@ -220,22 +209,12 @@
 				transition: all 0.3s ease;
 
 				.nav-icon {
-					width: 24px;
-					height: 24px;
+					width: 100%;
+					height: 100%;
 					transition: all 0.3s ease;
 				}
 
-				.nav-icon-text {
-					font-size: 22px;
-					line-height: 1;
-					transition: all 0.3s ease;
-					filter: grayscale(100%);
-
-					&.text-active {
-						filter: grayscale(0%);
-						// transform: scale(1.1);
-					}
-				}
+				
 			}
 
 			.nav-label {
@@ -281,23 +260,19 @@
 	@media (max-width: 375px) {
 		.bottom-nav-bar {
 			height: 100rpx;
-
 			.nav-item {
 				padding: 0px 1px;
-
 				.icon-container {
 					width: 20px;
 					height: 20px;
 					margin-bottom: 2px;
 
 					.nav-icon {
-						width: 20px;
-						height: 20px;
+						width: 100%;
+						height: 100%;
 					}
 
-					.nav-icon-text {
-						font-size: 18px;
-					}
+				
 				}
 
 				.nav-label {
@@ -310,26 +285,17 @@
 		@media (min-width: 414px) and (max-width: 767px){
 			.bottom-nav-bar {
 				height: 110rpx;
-
 				.nav-item {
 					padding: 0px 2px;
-
 					.icon-container {
 						width: 24px;
 						height: 24px;
 						margin-bottom: 2px;
-
 						.nav-icon {
-							width: 24px;
-							height: 24px;
-						}
-
-						.nav-icon-text {
-							font-size: 20px;
-							
+							width: 100%;
+							height: 100%;
 						}
 					}
-
 					.nav-label {
 						font-size: 12px;margin-top: 4rpx;
 					}
@@ -337,33 +303,25 @@
 			}
 		}
 
-	// 大屏幕适配
-	@media (min-width: 768px) {
-		.bottom-nav-bar {
-			height: 140rpx;
-
-			.nav-item {
-				padding: 0rpx 8rpx;
-
-				.icon-container {
-					width: 56rpx;
-					height: 56rpx;
-					margin-bottom: 8rpx;
-
-					.nav-icon {
+		// 大屏幕适配
+		@media (min-width: 768px) {
+			.bottom-nav-bar {
+				height: 140rpx;
+				.nav-item {
+					padding: 0rpx 8rpx;
+					.icon-container {
 						width: 56rpx;
 						height: 56rpx;
+						margin-bottom: 8rpx;
+						.nav-icon {
+							width: 100%;
+							height: 100%;
+						}
 					}
-
-					.nav-icon-text {
-						font-size: 48rpx;
+					.nav-label {
+						font-size: 24rpx;
 					}
-				}
-
-				.nav-label {
-					font-size: 24rpx;
 				}
 			}
 		}
-	}
 </style>

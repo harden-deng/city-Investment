@@ -44,7 +44,7 @@
 	// const phoneNumber = ref('cwzg');  //业务主管（一事业部）  cwzg财务主管
 	
 	// 申请人:sybjbro  审核人：sybzgo sybldo cwkj
-	const phoneNumber = ref('sybzgo');  //您好，业务主管（运管中心）可实现收入确认
+	const phoneNumber = ref('sybjbro');  //您好，业务主管（运管中心）可实现收入确认
 	const password = ref(123);
 	onLoad(() => {
 		const statusBarHeightNew = getStorage('statusBarHeight');

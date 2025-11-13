@@ -382,12 +382,9 @@
 					item.value = itemDatas.value[item.key] == 0 ? '否' : '是'
 				}
 			});
-            // vehiclePaymentContentList.value = res.data?.data?.wfrequestexpenseclaimvehicleitems || []
 			if(infoRows.value[0].value){
 				 stageTags.value.push(infoRows.value[0].value)
 			}
-			
-
 			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
 				return {
 					fileTagName: item.fileTagName,

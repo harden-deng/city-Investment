@@ -44,7 +44,7 @@
 		</view>
 		<confirmDialog ref="confirmRef" :content="'确定退出吗？'" @confirm="doLogout"></confirmDialog>
 		<!-- 底部导航栏 -->
-		<BottomNavBar ref="bottomNavRef" :modelValueFlag="3"/>
+		<!-- <BottomNavBar ref="bottomNavRef" :modelValueFlag="3"/> -->
 	</view>
 </template>
 
@@ -55,7 +55,7 @@
 	} from 'vue'
 	import http from '@/utils/request.js'
 	import confirmDialog from "@/components/confirmDialog/confirmDialog.vue"
-	import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
+	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	const confirmRef = ref(null) 
 	const userInfo = ref({})
 	onMounted(() => {
@@ -132,6 +132,9 @@
 </script>
 
 <style lang="scss" scoped>
+	::v-deep .uni-popup {
+		z-index: 999 !important;
+	}
 	page {
 		background: #f3f7ff;
 	}

@@ -62,16 +62,13 @@
 			</view>
 
 			<!-- 用款情况 -->
-			<view class="section" v-if="vehiclePaymentContentList.length > 0">
+			<view class="section" v-if="paymentContentList.length > 0">
 				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
-						<text class="section-title-text">用款情况</text>
+						<text class="section-title-text">费用组成</text>
 					</view>
-					<!-- <image class="section-title-2-right" src="../../static/images/c2.png" mode="scaleToFill"
-						style=" width: 28rpx;height: 16rpx;" /> -->
 					<view class="section-title-2-right" :class="{ 'active': getOptions(FUND_USAGE_STATUS) }">
-
 					</view>
 				</view>
 				<transition name="collapse">
@@ -79,32 +76,28 @@
 						<!-- 整体合同 -->
 						<view class="contract-section">
 							<!-- 明细 -->
-							<scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 0">
+							<scroll-view scroll-x class="table-scroll-x" v-if="paymentContentList.length > 0">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
-										   <td class="type font_w sticky-xz-1">费用组成</td>
-										   <td class="type font_w text_right" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-                                               {{ index == 0 ? '合计' : '' }}     
+										   <td class="type font_w sticky-xz-1">费用类目</td>
+										   <td class="type font_w text_right">
+                                               金额 
 										   </td>
 										</tr>
-										<tr>
-											<td class="text sticky-xz-1">费用类目</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ value.itemName || '' }}</td>
-										</tr>
-										<tr>
-											<td class="text sticky-xz-1">金额</td>
-											<td class="info" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ value.costVat || '' }}</td>
+										<tr v-for="(value,index) in paymentContentList" :key="index">
+											<td class="text sticky-xz-1">{{ value.itemName || '' }}</td>
+											<td class="info">
+												{{ formatNumber(value.costVat) }}
+											</td>
 										</tr>
 									</tbody>
 								</table>
 							</scroll-view>
-							<view class="detail-row summary-row" v-if="vehiclePaymentContentList.length > 0">
+							<view class="detail-row summary-row" v-if="paymentContentList.length > 0">
 								<text class="detail-label summary-label">本次用款小计</text>
 								<text
-									class="detail-value summary-value">{{ formatNumber(itemDatas.paymentAmount) }}</text>
+									class="detail-value summary-value">{{ formatNumber(paymentContentObj.costVat) }}</text>
 							</view>
 						</view>
 					</view>
@@ -181,7 +174,7 @@
 		completed: '/WF/GetFormDataView'
 	})
 	const requestTypeSel = reactive({
-		'ZC01': ['itemName','costVat'],
+		'ZC01': ['costVat'],
 	});
 	const inputDialogRef = ref(null)
 	const inputDialogRequired = ref(false)
@@ -247,46 +240,67 @@
 		{
 			label: '本月预计支出',
 			value: '',
-			key: 'PlanToPay'
+			key: 'planToPay'
 		},
 		{
 			label: '款项对应开始日期',
 			value: '',
-			key: 'RelatedPeriodFrom'
+			key: 'relatedPeriodFrom'
 		},
         {
 			label: '款项对应结束日期',
 			value: '',
-			key: 'RelatedPeriodTo'
+			key: 'relatedPeriodTo'
 		},
 	]);
 	const goBack = () =>{
 		uni.navigateBack()
 	};
+	const arrs = ref([{
+		"id": "286cfd12cd5f45b1ac858752c0d1c67c",
+		"referenceBudgetItemId": "fb90ab5183f042f88a471d4720b041d2",
+		"itemId": "RegularMaintainenceEvaluate",
+		"itemName": "日常养护费-考核",
+		"costVat": 10000,
+		"costNet": null,
+		"itemLevel": 0,
+		"ctroadId": null,
+		"roadName": null,
+		"seqNo": 0,
+		"createdBy": "sybjbro",
+		"createdByName": "经办人（运管中心）",
+		"createdDate": "2025-11-13 13:14:42",
+		"lastModifiedBy": "sybjbro",
+		"lastModifiedByName": "经办人（运管中心）",
+		"lastModifiedDate": "2025-11-13 13:14:42"
+	}]);
 	const itemDatas = ref({});
-	const vehiclePaymentContentList = ref([]);
-    const vehiclePaymentContentObj = reactive({});
+	const paymentContentList = ref([]);
+    const paymentContentObj = reactive({});
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
-			itemDatas.value = res.data?.data?.wfrequestexpenseclaim || {}
+			let data = res.data?.data || {}
+			itemDatas.value = data?.wfrequestexpenseclaim || {}
 			infoRows.value.forEach(item => {
 				item.value = (typeof itemDatas.value[item.key] === 'number' || item.key === 'claimAmount' || item.key === 'paymentAmount') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
-            let arr = requestTypeSel[itemDatas.value.requestType] || []
-			if(res.data?.data?.wfrequestexpenseclaimvehicleitems){
-				 vehiclePaymentContentList.value = res.data?.data?.wfrequestexpenseclaimvehicleitems || []
-				 vehiclePaymentContentList.value.forEach(item => {
-					item.total = sumNestedProperties(item, arr);
-				 }) 
+            // let arr = requestTypeSel[itemDatas.value.requestType] || []
+            let arr = requestTypeSel['ZC01'] || []
+			if(arrs.value.length > 0) {
+				//  paymentContentList.value = data?.wfrequestexpenseclaimvehicleitems || []
+				 paymentContentList.value = arrs.value || []
+				//  paymentContentList.value.forEach(item => {
+				// 	item.total = sumNestedProperties(item, arr);
+				//  }) 
 				arr.forEach(item => {
-                  vehiclePaymentContentObj[item] = totalNestedValue(vehiclePaymentContentList.value, item)
+                  paymentContentObj[item] = totalNestedValue(paymentContentList.value, item)
                 })
 			}
-			vehiclePaymentContentObj['total'] = itemDatas.value.paymentAmount || 0;
-			vehiclePaymentContentList.value.unshift({...vehiclePaymentContentObj})
-			if(itemDatas.value.receivingBankName){
-				 stageTags.value.push(itemDatas.value.receivingBankName)
-			}
+			console.log("paymentContentObj===>",paymentContentObj)
+			// paymentContentList.value.push({...paymentContentObj})
+			// if(itemDatas.value.receivingBankName){
+			// 	 stageTags.value.push(itemDatas.value.receivingBankName)
+			// }
 		})
 	}
 

@@ -72,7 +72,7 @@
 		</view>
 		<FilterPopup ref="filterRef" @confirm="onConfirm" @reset="onReset" />
 		<!-- 底部导航栏 -->
-		<BottomNavBar ref="bottomNavRef" :modelValueFlag="2"/>
+		<!-- <BottomNavBar ref="bottomNavRef" :modelValueFlag="2"/> -->
 	</view>
 </template>
 
@@ -98,7 +98,7 @@
 	import http from '@/utils/request.js'
 	import { formatNumber } from '@/utils/h5Bribge'
 	import { formatRelativeTime } from '@/utils/h5Bribge.js'
-	import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
+	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
 	const statusBarHeight = ref(0)
 	onLoad(() => {
