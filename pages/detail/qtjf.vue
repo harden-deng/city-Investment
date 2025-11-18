@@ -182,6 +182,25 @@
 					</view>
 				</transition>
 			</view>
+			
+			<!-- 附件 -->
+			<view class="section">
+				<view class="section-title-2" @click="setOptions(ATTACHMENT_LIST)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">附件</text>
+					</view>
+					<view class="section-title-2-right"
+						:class="{ 'active': getOptions(ATTACHMENT_LIST) }">
+					</view>
+				</view>
+				<!-- 附件卡片 -->
+				<transition name="collapse">
+					<view class="attachment-section" v-if="getOptions(ATTACHMENT_LIST)">
+						<attachmentList :list="attachmentData"></attachmentList>
+					</view>
+				</transition>
+			</view>
 
 			<!-- 审批记录 -->
 			<view class="section">
@@ -225,7 +244,8 @@
 	import {
 		FUND_USAGE_STATUS,
 		PAYMENT_ACCOUNT_INFORMATION,
-		APPROVAL_RECORD
+		APPROVAL_RECORD,
+		ATTACHMENT_LIST
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
@@ -263,6 +283,7 @@
 	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	const stageTags = ref([])
+	const attachmentData = ref([])
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
 		[PAYMENT_ACCOUNT_INFORMATION]: true,
@@ -345,10 +366,32 @@
                 })
 			}
 			vehiclePaymentContentObj['total'] = itemDatas.value.paymentAmount || 0;
-			vehiclePaymentContentList.value.unshift({...vehiclePaymentContentObj})
+			vehiclePaymentContentList.value.unshift({...vehiclePaymentContentObj});
+			
 			if(itemDatas.value.receivingBankName){
 				 stageTags.value.push(itemDatas.value.receivingBankName)
 			}
+
+			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
+				return {
+					fileTagName: item.fileTagName,
+					fileName: item.fileName,
+                    fileUrl: item.fileUrl,
+					id: item.attachmentId
+				}
+			})
+			attachmentData.value = [{fileTagName: '合同', children: []}, {fileTagName: '发票/收据', children: []}, {fileTagName: '其他', children: []}]
+			const attachmentMap = new Map()
+			attachmentData.value.forEach(item => {
+				attachmentMap.set(item.fileTagName, item)
+			})
+			arr1.forEach(childItem => {
+				const parent = attachmentMap.get(childItem.fileTagName)
+				if (parent) {
+					parent.children.push(childItem)
+				}
+			})
+
 		})
 	}
 
@@ -1035,6 +1078,11 @@
 
 	/* 审批记录独立样式区域 */
 	.approval-record-section {
+		padding: 20rpx 32rpx 40rpx;
+		position: relative;
+	}
+
+	.attachment-section {
 		padding: 20rpx 32rpx 40rpx;
 		position: relative;
 	}

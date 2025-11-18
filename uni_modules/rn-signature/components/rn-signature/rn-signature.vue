@@ -25,7 +25,6 @@
 				type: Object,
 				default: () => ({})
 			},
-
 			data: {
 				type: Object,
 				default: () => ({

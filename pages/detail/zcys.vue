@@ -19,17 +19,17 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ infoRows[1].value }}
+							{{ itemDetail.taskName }}
 						</view>
 						<view class="project-name-1">
-							{{ itemDetail.taskName }}
+							{{ infoRows?.length > 0 ? infoRows[1].value : '' }}
 						</view>
 					</view>
 					<view class="amount-box">
 						<view class="amount-label">申请支付总金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{ formatNumber(itemDatas.paymentAmount) }}</text></view>
+								{{ formatNumber(itemDatas.planToPay) }}</text></view>
 					</view>
 				</view>
 				<view class="hero-tags">
@@ -38,6 +38,9 @@
 				<view class="hero-actions" v-show="currentType === 'pending'">
 					<view class="btn outline" @click="onReject">打回</view>
 					<view class="btn primary" @click="onApprove">通过</view>
+				</view>
+				<view class="wfstatus-actions" v-show="currentType === 'completed' && (itemDatas.wfstatus == 'Running' || itemDatas.wfstatus == 'Completed')">
+					{{ wfstatusText }}
 				</view>
 			</view>
 		</view>
@@ -53,10 +56,6 @@
 					<view class="info-item" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
 						<text class="info-value">{{ row.value || '--'}}</text>
-					</view>
-					<view class="info-item">
-						<text class="info-label">内容</text>
-						<text class="info-value">{{ itemDatas.content || '--' }}</text>
 					</view>
 				</view>
 			</view>
@@ -76,7 +75,7 @@
 						<!-- 整体合同 -->
 						<view class="contract-section">
 							<!-- 明细 -->
-							<scroll-view scroll-x class="table-scroll-x" v-if="paymentContentList.length > 0">
+							<scroll-view scroll-x class="table-scroll-x">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
@@ -94,12 +93,31 @@
 									</tbody>
 								</table>
 							</scroll-view>
-							<view class="detail-row summary-row" v-if="paymentContentList.length > 0">
+							<view class="detail-row summary-row">
 								<text class="detail-label summary-label">本次用款小计</text>
 								<text
 									class="detail-value summary-value">{{ formatNumber(paymentContentObj.costVat) }}</text>
 							</view>
 						</view>
+					</view>
+				</transition>
+			</view>
+
+			<!-- 附件 -->
+			<view class="section">
+				<view class="section-title-2" @click="setOptions(ATTACHMENT_LIST)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">附件</text>
+					</view>
+					<view class="section-title-2-right"
+						:class="{ 'active': getOptions(ATTACHMENT_LIST) }">
+					</view>
+				</view>
+				<!-- 附件卡片 -->
+				<transition name="collapse">
+					<view class="attachment-section" v-if="getOptions(ATTACHMENT_LIST)">
+						<attachmentList :list="attachmentData"></attachmentList>
 					</view>
 				</transition>
 			</view>
@@ -146,11 +164,12 @@
 	import {
 		FUND_USAGE_STATUS,
 		PAYMENT_ACCOUNT_INFORMATION,
-		APPROVAL_RECORD
+		APPROVAL_RECORD,
+		ATTACHMENT_LIST
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber
+		formatNumber,formatDateTimeMinute
 	} from '@/utils/h5Bribge'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
@@ -184,10 +203,15 @@
 	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	const stageTags = ref([])
+	const wfstatusText = computed(() => {
+		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
+	})
+	const attachmentData = ref([])
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
 		[PAYMENT_ACCOUNT_INFORMATION]: true,
 		[APPROVAL_RECORD]: true,
+		[ATTACHMENT_LIST]: true,
 	})
 	const setOptions = (name) => {
 		pullDownObj[name] = pullDownObj[name] ? false : true
@@ -209,8 +233,8 @@
 		}
 		return params[currentType.value]
 	})
-
-	const infoRows = ref([{
+	const infoRowsObj = {
+		'出租房产服务费':[{
 			label: '合同名称',
 			value: '',
 			key: 'contractName'
@@ -225,7 +249,7 @@
 		},{
 			label: '我方单位',
 			value: '',
-			key: 'myCompanyID'
+			key: 'companyName'
 		},
 		{
 			label: '对方单位',
@@ -252,10 +276,217 @@
 			value: '',
 			key: 'relatedPeriodTo'
 		},
-	]);
+        {
+			label: '是否已确认成本',
+			value: '',
+			key: 'isCostConfirmed'
+		},
+        {
+			label: '发票是否已收讫',
+			value: '',
+			key: 'isInvoiceReceived'
+		},
+		],
+		'通行费业务':[{
+				label: '合同名称',
+				value: '',
+				key: 'contractName'
+			},{
+				label: '合同编号',
+				value: '',
+				key: 'contractNo'
+			},{
+				label: '业务类型',
+				value: '',
+				key: 'contractTypeName'
+			},{
+				label: '项目名称/资产名称',
+				value: '',
+				key: 'contractObjectName' 
+			},
+			{
+				label: '对方单位',
+				value: '',
+				key: 'contractRelevantParty'
+			},
+			{
+				label: '合同价（含税）',
+				value: '',
+				key: 'contractPrice'
+			},
+			{
+				label: '合同支付子项',
+				value: '',
+				key: 'contractItemName'
+			},
+			{
+				label: '预算事项',
+				value: '',
+				key: 'budgetItemName'
+			},
+			{
+				label: '本月预计支出',
+				value: '',
+				key: 'planToPay'
+			},
+			{
+				label: '款项对应开始日期',
+				value: '',
+				key: 'relatedPeriodFrom'
+			},
+			{
+				label: '款项对应结束日期',
+				value: '',
+				key: 'relatedPeriodTo'
+			},
+			{
+				label: '是否已确认成本',
+				value: '',
+				key: 'isCostConfirmed'
+			},
+			{
+				label: '发票是否已收讫',
+				value: '',
+				key: 'isInvoiceReceived'
+			},
+		],
+	}
+	const infoRows = ref([]);
 	const goBack = () =>{
 		uni.navigateBack()
 	};
+	// const magicData = ref({
+	// 		"id": "015d2b166e1c475bbbc8cfbf1e7ef78c",
+	// 		"budgetRequestId": "fe6c78b4b8a64359b2fc82f62b08484e",
+	// 		"budgetPeriod": "202511",
+	// 		"itemLevel": null,
+	// 		"itemStatus": null,
+	// 		"isDeleted": null,
+	// 		"deleteTime": null,
+	// 		"deletedBy": null,
+	// 		"deletedByName": null,
+	// 		"seqNo": 5,
+	// 		"companyId": "9406c8f5e0414ac0a0c16e42743a1008",
+	// 		"companyName": "上海长江隧桥建设发展有限公司",
+	// 		"businessUnit": "OperationDivision",
+	// 		"businessUnitName": "运管中心",
+	// 		"budgetItemName": "TEST111",
+	// 		"contractNo": "NoContract",
+	// 		"contractName": "无合同",
+	// 		"contractItemId": null,
+	// 		"contractItemName": null,
+	// 		"contractTypeCode": "RealEstateRentingService",
+	// 		"contractTypeName": "通行费业务",
+	// 		"mappingGuid": "c2b9bc823b444d27af0a76e544af0009",
+	// 		"contractObjectId": null,
+	// 		"contractObjectName": "TEST11",
+	// 		"contractRelevantParty": "TEST111",
+	// 		"contractPrice": null,
+	// 		"contractSettlePrice": null,
+	// 		"totalPaid": null,
+	// 		"totalPaidRatio": null,
+	// 		"totalPaidIncludeCurrent": null,
+	// 		"totalPaidIncludeCurrentRatio": 0,
+	// 		"actualPaid": null,
+	// 		"relatedPeriodFrom": "2025-11-14 00:00:00",
+	// 		"relatedPeriodTo": "2025-11-21 00:00:00",
+	// 		"currentYearExpectPayment": null,
+	// 		"currentYearTotalPaid": null,
+	// 		"currentYearTotalPaidRatio": 0,
+	// 		"planToPay": 1000,
+	// 		"remark": null,
+	// 		"isCostConfirmed": true,
+	// 		"costConfirmRequestFormNo": "",
+	// 		"isInvoiceReceived": true,
+	// 		"invoiceReceiveFormNo": null,
+	// 		"isPassPreApproval": null,
+	// 		"notPassType": null,
+	// 		"notPassReason": null,
+	// 		"isBalanceMeetingPassed": null,
+	// 		"paymentCode": "ZC202511145789494982069",
+	// 		"requestFormNo": "支出预算（运管）-20251114003",
+	// 		"requestId": "c813661b45194e068461a69d2af01d33",
+	// 		"wfinstanceId": "663a74d2121c4150a1abba8d0c47b32c",
+	// 		"wfstatus": "Running",
+	// 		"approvalResult": "Pending",
+	// 		"customizeAttribute": "{\"ToDo\": \"true\", \"Amount\": \"1000.00\", \"isOutBudget\": \"false\", \"ProcessInitiator\": \"sybjbro\", \"isMultipleSections\": \"true\", \"IsFinanceEarlyInvolve\": \"false\", \"IsIncludedMonthBudget\": \"false\"}",
+	// 		"messageId": "2e2cc168b94f446aac70332a57258ebd",
+	// 		"submittedBy": "sybjbro",
+	// 		"submittedByName": "经办人（运管中心）",
+	// 		"submittedDate": "2025-11-14 10:22:00",
+	// 		"createdBy": "sybjbro",
+	// 		"createdByName": "经办人（运管中心）",
+	// 		"createdDate": "2025-11-14 10:16:53",
+	// 		"lastModifiedBy": "sybjbro",
+	// 		"lastModifiedByName": "经办人（运管中心）",
+	// 		"lastModifiedDate": "2025-11-14 10:22:00"
+	// 	})
+	const magicData1 = ref({
+			"id": "9ee89869afaf4331bb0ce9a8045c5e3c",
+			"budgetRequestId": "fe6c78b4b8a64359b2fc82f62b08484e",
+			"budgetPeriod": "202511",
+			"itemLevel": null,
+			"itemStatus": null,
+			"isDeleted": null,
+			"deleteTime": null,
+			"deletedBy": null,
+			"deletedByName": null,
+			"seqNo": 5,
+			"companyId": "9406c8f5e0414ac0a0c16e42743a1001",
+			"companyName": "上海城投环城高速建设发展有限公司",
+			"businessUnit": "OperationDivision",
+			"businessUnitName": "运管中心",
+			"budgetItemName": "第一季度付款ABC",
+			"contractNo": "S32-YYYH-7297",
+			"contractName": "S32申嘉湖道路运行养护合同（2025年度）",
+			"contractItemId": "e24c8f7115704fbfb09e673862b181ec",
+			"contractItemName": "第一季度付款",
+			"contractTypeCode": "Traffic",
+			"contractTypeName": "通行费业务",
+			"mappingGuid": "c2b9bc823b444d27af0a76e544af0018",
+			"contractObjectId": "f7c7daec-bc70-4704-9f92-d02e888ac21d",
+			"contractObjectName": "S32申嘉湖",
+			"contractRelevantParty": "上海市市政工程建设发展有限公司",
+			"contractPrice": 10000000,
+			"contractSettlePrice": 10000000,
+			"totalPaid": 0,
+			"totalPaidRatio": 0,
+			"totalPaidIncludeCurrent": 10000,
+			"totalPaidIncludeCurrentRatio": 0.1,
+			"actualPaid": null,
+			"relatedPeriodFrom": "2025-11-14 00:00:00",
+			"relatedPeriodTo": "2025-11-27 00:00:00",
+			"currentYearExpectPayment": null,
+			"currentYearTotalPaid": 0,
+			"currentYearTotalPaidRatio": 0,
+			"planToPay": 10000,
+			"remark": null,
+			"isCostConfirmed": true,
+			"costConfirmRequestFormNo": "1",
+			"isInvoiceReceived": true,
+			"invoiceReceiveFormNo": null,
+			"isPassPreApproval": null,
+			"notPassType": null,
+			"notPassReason": null,
+			"isBalanceMeetingPassed": null,
+			"paymentCode": "ZC202511145789427483541",
+			"requestFormNo": "支出预算（运管）-20251114001",
+			"requestId": "027120201cde47c4b7d5c4157e6685af",
+			"wfinstanceId": "4ce3104646d9406eb5b889126dc8919f",
+			"wfstatus": "Running",
+			"approvalResult": "Pending",
+			"customizeAttribute": "{\"ToDo\": \"true\", \"Amount\": \"10000.00\", \"isOutBudget\": \"false\", \"ProcessInitiator\": \"sybjbro\", \"isMultipleSections\": \"true\", \"IsFinanceEarlyInvolve\": \"false\", \"IsIncludedMonthBudget\": \"false\"}",
+			"messageId": "e6251d461e7d439a8bedb665c5026f79",
+			"submittedBy": "sybjbro",
+			"submittedByName": "经办人（运管中心）",
+			"submittedDate": "2025-11-14 09:46:51",
+			"createdBy": "sybjbro",
+			"createdByName": "经办人（运管中心）",
+			"createdDate": "2025-11-14 09:42:51",
+			"lastModifiedBy": "sybjbro",
+			"lastModifiedByName": "经办人（运管中心）",
+			"lastModifiedDate": "2025-11-14 09:46:51"
+		})
 	const arrs = ref([{
 		"id": "286cfd12cd5f45b1ac858752c0d1c67c",
 		"referenceBudgetItemId": "fb90ab5183f042f88a471d4720b041d2",
@@ -279,34 +510,80 @@
     const paymentContentObj = reactive({});
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
-			let data = res.data?.data || {}
-			itemDatas.value = data?.wfrequestexpenseclaim || {}
+			// let data = res.data?.data || {}
+			let data = magicData1.value || {}
+			itemDatas.value = data || {}
+			infoRows.value = infoRowsObj[itemDatas.value['contractTypeName']];
 			infoRows.value.forEach(item => {
-				item.value = (typeof itemDatas.value[item.key] === 'number' || item.key === 'claimAmount' || item.key === 'paymentAmount') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
+				item.value = (typeof itemDatas.value[item.key] === 'number') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
+			    if(item.key == 'relatedPeriodFrom'){
+					item.value = formatDateTimeMinute(itemDatas.value[item.key]) || ''
+				}
+				if(item.key == 'relatedPeriodTo'){
+					item.value = formatDateTimeMinute(itemDatas.value[item.key]) || ''
+				}
+				if(item.key == 'isCostConfirmed'){
+					item.value = itemDatas.value[item.key] == true ? '是' : (itemDatas.value[item.key] == false ? '否' : '')
+				}
+				if(item.key == 'isInvoiceReceived'){
+					item.value = itemDatas.value[item.key] == true ? '是' : (itemDatas.value[item.key] == false ? '否' : '')
+				}
 			})
-            // let arr = requestTypeSel[itemDatas.value.requestType] || []
+			if(itemDatas.value.isCostConfirmed){
+				let obj = {
+					label: '确认成本申请单',
+					value: '',
+					key: 'costConfirmRequestFormNo'
+				};
+				obj.value = itemDatas.value.costConfirmRequestFormNo || '';
+				infoRows.value.splice(infoRows.value.length - 1, 0, obj);
+			}
             let arr = requestTypeSel['ZC01'] || []
 			if(arrs.value.length > 0) {
-				//  paymentContentList.value = data?.wfrequestexpenseclaimvehicleitems || []
 				 paymentContentList.value = arrs.value || []
-				//  paymentContentList.value.forEach(item => {
-				// 	item.total = sumNestedProperties(item, arr);
-				//  }) 
 				arr.forEach(item => {
                   paymentContentObj[item] = totalNestedValue(paymentContentList.value, item)
                 })
 			}
-			console.log("paymentContentObj===>",paymentContentObj)
-			// paymentContentList.value.push({...paymentContentObj})
-			// if(itemDatas.value.receivingBankName){
-			// 	 stageTags.value.push(itemDatas.value.receivingBankName)
-			// }
+
+			if(itemDatas.value.contractTypeName){
+				 stageTags.value.push(itemDatas.value.contractTypeName)
+			}
+			if(itemDatas.value.contractObjectName){
+				 stageTags.value.push(itemDatas.value.contractObjectName)
+			}
+
+			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
+				return {
+					fileTagName: item.fileTagName,
+					fileName: item.fileName,
+                    fileUrl: item.fileUrl,
+					id: item.attachmentId
+				}
+			})
+			attachmentData.value = [
+				{fileTagName: '工程付款申请单', children: []}, 
+				{fileTagName: '工程费用支付申请表', children: []}, 
+				{fileTagName: '合同款支付情况统计表', children: []},
+				{fileTagName: '发票', children: []},
+				{fileTagName: '财务监理付款意见书', children: []},
+				{fileTagName: '其他合同约定需提供资料', children: []},
+		    ]
+			const attachmentMap = new Map()
+			attachmentData.value.forEach(item => {
+				attachmentMap.set(item.fileTagName, item)
+			})
+			arr1.forEach(childItem => {
+				const parent = attachmentMap.get(childItem.fileTagName)
+				if (parent) {
+					parent.children.push(childItem)
+				}
+			})
+            			
 		})
 	}
 
-    const sumNestedProperties = (obj, properties) => {
-        return properties.reduce((sum, prop) => sum + (obj[prop] || 0), 0);
-    }
+
     const totalNestedValue = (array,properties) => {
         return array.reduce((accumulator, currentValue) => {
             return accumulator + currentValue[properties];
@@ -598,6 +875,24 @@
 				display: flex;
 				justify-content: flex-end;
 			}
+			.wfstatus-actions {
+                position: absolute;
+                bottom: 12rpx;
+                right: 36rpx;
+				width: 120rpx;
+				height: 42rpx;
+				border: 2rpx solid #66ccff;
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			
+				border-radius: 25rpx;
+				font-size: 24rpx;
+				color: #66ccff;
+				white-space: nowrap;
+               
+            }
 
 			.btn {
 				height: 100%;
@@ -987,6 +1282,10 @@
 
 	/* 审批记录独立样式区域 */
 	.approval-record-section {
+		padding: 20rpx 32rpx 40rpx;
+		position: relative;
+	}
+	.attachment-section {
 		padding: 20rpx 32rpx 40rpx;
 		position: relative;
 	}

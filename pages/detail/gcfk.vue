@@ -1935,9 +1935,10 @@
 	.table1 td.sticky-2 { position: sticky; left: 109.02px;  z-index: 4;box-sizing: border-box; }
 	.table1 td.sticky-3 { position: sticky; left: 220px;  z-index: 2;box-sizing: border-box; }
 
+	 /* max-width: 55px !important;min-width: 55px !important;确保组件宽度始终精确为55px，忽略所有其他影响因素 */
 	.table1 td.sticky-1-plus { position: sticky; left: 0; top: 0; z-index: 3;max-width: 55px !important;min-width: 55px !important;box-sizing: border-box; 
-                              white-space: normal; /* 默认值，允许文本换行 */ border-left: 2rpx #ddd solid;
-							  background-clip: padding-box;}
+                              white-space: normal; /* 默认值，允许文本换行 */ border-left: 2rpx #ddd solid;  /* 解决左右滑动时，边框不显示 */
+							  background-clip: padding-box; }
 	.table1 td.sticky-2-plus { position: sticky; left: 55px;  z-index: 4;max-width: 59px !important;min-width: 59px !important;box-sizing: border-box;  white-space: normal; /* 默认值，允许文本换行 */
 	                    	}
 	.table1 td.sticky-3-plus { position: sticky; left: 114px;  z-index: 2;box-sizing: border-box;background: #fff; 

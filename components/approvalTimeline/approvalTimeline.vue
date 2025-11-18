@@ -129,6 +129,7 @@ defineProps({
 	}
 
 	.timeline-indicator {
+		box-sizing: border-box;
 		width: 30rpx;
 		height: 30rpx;
 		border-radius: 50%;
@@ -138,6 +139,7 @@ defineProps({
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		padding-top: 1rpx;
 
 		&.status-approved {
 			background: #fff;
@@ -169,9 +171,12 @@ defineProps({
 		}
 
 		.indicator-checkmark {
-			color: #fff;
-			font-size: 32rpx;
-			font-weight: bold;
+			// color: #fff;
+			// font-size: 32rpx;
+			// font-weight: bold;
+			box-sizing: border-box;
+			width: 100%;
+			height: 100%;
 			display: flex;
 			align-items: center;
 			justify-content: center;

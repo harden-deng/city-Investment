@@ -131,7 +131,8 @@
 		'DB01': '/pages/detail/zjdb',
 		'SR01': '/pages/detail/srqr',
 		'QT01': '/pages/detail/qtjf',
-		'ZC01': '/pages/detail/zcys'
+		'ZC01': '/pages/detail/zcys',
+		'ZZ01': '/pages/detail/fyzz',  //费用暂支
 	})
 	const wfstatusArr = ref(tabs.map(t => t.wf));
 	const tabValues = ref(tabs.map(t => t.label));

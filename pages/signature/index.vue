@@ -2,7 +2,6 @@
 	<view class="signature-container">
 		<!-- 签名组件 -->
 		<rn-signature :options="signatureOptions" :data="signatureData" @update:data="handleSignatureUpdate" />
-
 		<!-- 其他内容保持不变 -->
 		<!-- <view v-if="signatureData.url" class="signature-preview">
 			<view class="preview-title">签名预览：</view>
@@ -34,15 +33,7 @@
 </template>
 
 <script>
-	// 导入rn-signature组件
-	import RnSignature from '@/uni_modules/rn-signature/components/rn-signature/rn-signature.vue'
-
 	export default {
-		// 注册组件
-		components: {
-			RnSignature
-		},
-
 		data() {
 			return {
 				// 签名组件配置
@@ -122,7 +113,6 @@
 				isSaving: false
 			}
 		},
-
 		onLoad(options) {
 			// 如果从其他页面传递了签名数据，则加载
 			if (options.signatureUrl) {
@@ -130,7 +120,6 @@
 				this.signatureData.url = decodeURIComponent(options.signatureUrl);
 			}
 		},
-
 		methods: {
 			// 处理签名数据更新
 			handleSignatureUpdate(newData) {

@@ -130,7 +130,9 @@
 		'DB01': '/pages/detail/zjdb', //资金调拨
 		'SR01': '/pages/detail/srqr', //收入确认
 		'QT01': '/pages/detail/qtjf', //其他
-		'ZC01': '/pages/detail/zcys'  //支出预算
+		'ZC01': '/pages/detail/zcys',  //支出预算
+		'ZZ01': '/pages/detail/fyzz',  //费用暂支
+		'CB01': '/pages/detail/cbqr',  //成本确认
 	})
 	const wfstatusArr = ref(tabs.map(t => t.wf));
 	const tabValues = ref(tabs.map(t => t.label));

@@ -991,7 +991,8 @@
 
 					.account-info-row {
 						box-sizing: border-box;
-						height: 94rpx;
+						min-height: 94rpx;
+						height: auto;
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
