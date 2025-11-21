@@ -2,25 +2,25 @@
 	<view class="detail-page">
 		<view class="header-stickt">
 			<detailNavBar></detailNavBar>
-			<!-- 顶部蓝卡片 -->
 			<view class="hero-card">
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ itemDetail.taskName  }}
+							{{ itemDetail.taskName }}
 						</view>
 						<view class="project-name-1">
-							{{ itemDatas.contractName }}
+							上海市市政工程建设发展有限公司
 						</view>
 					</view>
 					<view class="amount-box">
 						<view class="amount-label">申请支付总金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{ formatNumber(itemDatas.planToPay) }}</text></view>
+								<!-- 潜在 bug: 这里应该是合同价 -->
+								{{ formatNumber(itemDatas.paymentAmount) }}</text></view>
 					</view>
 				</view>
-				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
+				<view class="hero-tags">
 					<view class="tag" v-for="(t, i) in stageTags" :key="i">{{ t }}</view>
 				</view>
 				<view class="hero-actions" v-show="currentType === 'pending'">
@@ -33,62 +33,204 @@
 			</view>
 		</view>
 		<scroll-view scroll-y="true" class="scroller">
-			<!-- 顶部蓝卡片 -->
-			<!-- 基本信息 -->
 			<view class="section">
 				<view class="section-title">
 					<text class="section-title-vertical"></text>
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item"  :class="{'info-item-column': row.value.length > 34,'info-item-border': (row.key === 'contractNo' || row.key === 'contractPaymentRatio')}"  v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value">{{ row.value || '--' }}</text>
+						<text class="info-value" :class="{'info-value-left': row.value.length > 34}">{{row.key === 'contractPaymentRatio' ? row.value + '%' : row.value || '--'}}</text>
+					</view>
+					<view class="info-item" v-if="['OverBudget','OutOfBudget'].includes(itemDatas.specialCase)">
+						<text class="info-label">补充说明</text>
+						<text class="info-value">{{ itemDatas.specialRemark || '--' }}</text>
 					</view>
 				</view>
 			</view>
-			<!-- 发票信息 -->
-			<view class="section" v-if="itemDatas.CBInvoiceReceived == 1">
-				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
-					<view class="section-title-2-left">
-						<text class="section-title-vertical"></text>
-						<text class="section-title-text">发票信息</text>
-					</view>
-					<view class="section-title-2-right" :class="{ 'active': getOptions(FUND_USAGE_STATUS) }">
-
-					</view>
-				</view>
-				<transition name="collapse">
-                    <view class="info-list" v-if="getOptions(FUND_USAGE_STATUS)">
-                        <view class="info-item" v-for="(row, idx) in infoRows2" :key="idx">
-                            <text class="info-label">{{ row.label }}</text>
-                            <text class="info-value">{{ row.value || '--' }}</text>
-                        </view>
-				    </view>
-				</transition>
-			</view>
-            <!-- 确认成本信息 -->
+		
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
-						<text class="section-title-text">确认成本信息</text>
+						<text class="section-title-text">付款内容</text>
 					</view>
 					<view class="section-title-2-right" :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
-
 					</view>
 				</view>
 				<transition name="collapse">
-                    <view class="info-list" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
-                        <view class="info-item" v-for="(row, idx) in infoRows3" :key="idx">
-                            <text class="info-label">{{ row.label }}</text>
-                            <text class="info-value">{{ row.value || '--' }}</text>
-                        </view>
-				    </view>
+					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
+						<view class="account-card">
+							<view class="account-info-block">
+								<view class="account-info-row">
+									<text class="account-info-label">付款内容</text>
+									<text class="account-info-value">{{ itemDatas.paymentContent || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">本次付款金额</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.paymentAmount) || '' }}</text>
+								</view>
+								
+							</view>
+							<view class="account-info-block" style="margin-top: 20rpx;">
+								<view class="account-info-row">
+									<text class="account-info-label">收款单位名称</text>
+									<text class="account-info-value"> {{ itemDatas.receivingCompany || '' }} </text>
+								</view>
+                                <view class="account-info-row">
+									<text class="account-info-label">开户银行</text>
+									<text class="account-info-value">{{ itemDatas.receivingBank || '' }}</text>
+								</view>
+                                <view class="account-info-row">
+									<text class="account-info-label">账号</text>
+									<text class="account-info-value">{{ itemDatas.receivingAccountNo || '' }}</text>
+								</view>
+								
+							</view>
+							<view class="account-info-block" style="margin-top: 20rpx;">
+								<view class="account-info-row">
+									<text class="account-info-label">普票金额</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vatoamount) || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">专票金额(含税)</text>
+									<text class="account-info-value"> {{ formatNumber(itemDatas.vatamount) || '' }} </text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">不含税金额</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vatamountNet) || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">进项税额</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vattaxAmount) || '' }}</text>
+								</view>
+                              
+                                <view class="account-info-row">
+									<text class="account-info-label">税率%</text>
+									<text class="account-info-value">{{ itemDatas.taxRate ? itemDatas.taxRate + '%' : '--' }}</text>
+								</view>
+							</view>
+						</view>
+					</view>
 				</transition>
 			</view>
 
-			<!-- 附件 -->
+			<view class="section" v-if="itemDatas.relatedRecivingContractId">
+				<view class="section-title-2" @click="setOptions(COLLECTION_ACCOUNT_INFORMATION)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">关联合同情况</text>
+					</view>
+					<view class="section-title-2-right" :class="{ 'active': getOptions(COLLECTION_ACCOUNT_INFORMATION) }">
+					</view>
+				</view>
+				<transition name="collapse">
+					<view class="usage-details" v-if="getOptions(COLLECTION_ACCOUNT_INFORMATION)">
+							<scroll-view scroll-x class="table-scroll-x">
+								<table cellspacing="0" cellpadding="0" class="table1">
+									<tbody>
+										<tr>
+											<td class="type text sticky-xz-1">收款合同</td>
+											<td class="info info-plus">
+												{{ itemDatas.relatedRecivingContractName }}
+											</td>
+										</tr>
+										<tr>
+											<td class="type text sticky-xz-1">合同编号</td>
+											<td class="info info-plus">
+												{{ itemDatas.relatedRecivingContractNo }}</td>
+										</tr>
+                                        <tr>
+											<td class="type text sticky-xz-1">业主单位</td>
+											<td class="info info-plus">
+												{{ itemDatas.relatedRecivingContractCustomer }}</td>
+										</tr>
+                                        <tr>
+											<td class="type text sticky-xz-1">合同价</td>
+											<td class="info info-plus">
+												{{ formatNumber(itemDatas.relatedRecivingContractAmountVat) }}</td>
+										</tr>
+                                        <tr>
+											<td class="type text sticky-xz-1">决算价</td>
+											<td class="info info-plus">
+												{{ formatNumber(itemDatas.relatedRecivingContractSettleAmountVat) }}</td>
+										</tr>
+                                        <tr>
+											<td class="type text sticky-xz-1">已完成工作量</td>
+											<td class="info info-plus">
+												{{ formatNumber(itemDatas.relatedRecivingContractAccWorkload) }}</td>
+										</tr>
+                                        <tr>
+											<td class="type text sticky-xz-1">累计已收款</td>
+											<td class="info info-plus">
+												{{ formatNumber(itemDatas.relatedRecivingContractAccReceived) }}</td>
+										</tr>
+                                        <tr>
+											<td class="type text sticky-xz-1">付款比例</td>
+											<td class="info info-plus">
+												{{ itemDatas.relatedRecivingContractAccReceivedRatio + '%' }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</scroll-view>
+					</view>
+				</transition>
+			</view>
+
+            <view class="section" v-if="itemDatas.relatedBudgetItemId">
+				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">预算关联信息</text>
+					</view>
+					<view class="section-title-2-right" :class="{ 'active': getOptions(FUND_USAGE_STATUS) }">
+					</view>
+				</view>
+				<transition name="collapse">
+					<view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
+							<scroll-view scroll-x class="table-scroll-x">
+								<table cellspacing="0" cellpadding="0" class="table1">
+									<tbody>
+										<tr>
+											<td class="type text sticky-xz-1">预算事项</td>
+											<td class="info info-plus">
+												{{ itemDatas.relatedBudgetItemContent }}
+											</td>
+										</tr>
+										<tr>
+											<td class="type text sticky-xz-1">预算栏目</td>
+											<td class="info info-plus">
+												{{ itemDatas.budgetCategoryName }}</td>
+										</tr>
+                                        <tr>
+											<td class="type text sticky-xz-1">月度预算金额</td>
+											<td class="info info-plus">
+												{{ formatNumber(itemDatas.currentMonthBudgetAmount) }}</td>
+										</tr>
+                                        <tr>
+											<td class="type text sticky-xz-1">当月累计支出数(含本次申请)</td>
+											<td class="info info-plus">
+												{{ formatNumber(itemDatas.currentMonthAccPaymentIncludeCurrent) }}</td>
+										</tr>
+                                        <tr>
+											<td class="type text sticky-xz-1">年度预算金额</td>
+											<td class="info info-plus">
+												{{ formatNumber(itemDatas.yearlyBudgetAmount) }}</td>
+										</tr>
+                                        <tr>
+											<td class="type text sticky-xz-1">年度累计支出(截至上月)</td>
+											<td class="info info-plus">
+												{{ formatNumber(itemDatas.yearlyAccPayment) }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</scroll-view>
+					</view>
+				</transition>
+			</view>
+
+			
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(ATTACHMENT_LIST)">
 					<view class="section-title-2-left">
@@ -99,7 +241,6 @@
 						:class="{ 'active': getOptions(ATTACHMENT_LIST) }">
 					</view>
 				</view>
-				<!-- 附件卡片 -->
 				<transition name="collapse">
 					<view class="attachment-section" v-if="getOptions(ATTACHMENT_LIST)">
 						<attachmentList :list="attachmentData"></attachmentList>
@@ -107,7 +248,6 @@
 				</transition>
 			</view>
 
-			<!-- 审批记录 -->
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(APPROVAL_RECORD)">
 					<view class="section-title-2-left">
@@ -117,7 +257,6 @@
 					<view class="section-title-2-right" :class="{ 'active': getOptions(APPROVAL_RECORD) }">
 					</view>
 				</view>
-				<!-- 审批记录卡片 -->
 				<transition name="collapse">
 					<view class="approval-record-section" v-if="getOptions(APPROVAL_RECORD)">
 						<approvalTimeline :list="approvalRecordList"></approvalTimeline>
@@ -138,31 +277,31 @@
 	import {
 		ref,
 		reactive,
-		onMounted,
-		nextTick,
 		getCurrentInstance,
 		computed
 	} from 'vue'
 	import {
 		FUND_USAGE_STATUS,
-		APPROVAL_RECORD,
 		PAYMENT_ACCOUNT_INFORMATION,
+		COLLECTION_ACCOUNT_INFORMATION,
+		APPROVAL_RECORD,
 		ATTACHMENT_LIST,
 		currentUrlObj
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,formatDateTimeMinute,goBack
+		formatNumber
 	} from '@/utils/h5Bribge'
-	import detailNavBar from '@/components/navBar/detailNavBar.vue'
+	import { useListHeight } from '@/utils/useListHeight.js'
+	import { useApproval } from '@/utils/useApproval.js'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
+	import detailNavBar from '@/components/navBar/detailNavBar.vue'
 	let eventChannel
 	onLoad(() => {
 		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
 		eventChannel.on('open-detail', (data) => {
-			console.log('open-detail', data);
 			currentType.value = data.type
 			itemDetail.value = data.order
 			getFormDataApproval()
@@ -170,22 +309,40 @@
 		})
 	})
 	const currentType = ref('')
-	const inputDialogRef = ref(null)
-	const inputDialogRequired = ref(false)
-	const inputDialogTitle = ref('')
-	const inputDialogPlaceholder = ref('')
-	const inputDialogValue = ref('')
-	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	const stageTags = ref([])
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
 	const attachmentData = ref([])
+    const { listHeight } = useListHeight({
+	     headerSelector: '.header-stickt', // 可选，默认就是这个值
+		 iosFit: true,
+	})
+	const {
+		inputDialogRef,
+		inputDialogRequired,
+		inputDialogTitle,
+		inputDialogPlaceholder,
+		handleInputConfirm,
+		handleInputCancel,
+		onReject,
+		onApprove,
+		approvalRecordList,
+		getApprovalRecord
+		} = useApproval({
+			itemDetail,
+			currentType,
+			successMessage: '已审批',
+			autoGoBack: true,
+			autoRefresh: true
+		})
+	
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
-		[APPROVAL_RECORD]: true,
 		[PAYMENT_ACCOUNT_INFORMATION]: true,
+		[COLLECTION_ACCOUNT_INFORMATION]: true,
+		[APPROVAL_RECORD]: true,
 		[ATTACHMENT_LIST]: true,
 	})
 	const setOptions = (name) => {
@@ -210,155 +367,66 @@
 	})
 
 	const infoRows = ref([{
-			label: '合同名称',
+			label: '用款部门',
 			value: '',
-			key: 'RelatedContractID'
-		},
-		{
-			label: '合同子项',
-			value: '',
-			key: 'RelatedContractItemID' 
-		},
-		{
-			label: '项目名称',
-			value: '',
-			key: 'ProjectName'
+			key: 'businessUnitName' 
 		},{
-			label: '所属部门',
+			label: '申请人',
 			value: '',
-			key: 'BusinessUnitName' 
+			key: 'applicantName'
 		},{
-			label: '对方单位',
+			label: '付款合同',
 			value: '',
-			key: 'PartyName'
-		},{
-			label: '合同金额',
-			value: '',
-			key: 'ContractAmountVAT'
+			key: 'contractName'
 		},{
 			label: '合同编号',
 			value: '',
-			key: 'ContractNo'
+			key: 'contractNo'
+		},
+        
+        {
+			label: '合同价',
+			value: '',
+			key: 'contractAmountVat'
 		},{
-			label: '对应收入合同编号',
+			label: '决算价',
 			value: '',
-			key: 'ReceivingContractNo'
+			key: 'contractSettleAmountVat'
 		},{
-			label: '是否已收到发票',
+			label: '已完成工作量',
 			value: '',
-			key: 'CBInvoiceReceived'
+			key: 'contractCompletedWorkload'
+		},{
+			label: '累计付款(含本次付款)',
+			value: '',
+			key: 'contractAccPaymentIncludeCurrent'
+		},{
+			label: '付款比例',
+			value: '',
+			key: 'contractPaymentRatio'
 		}
-	])
-
-    
-	const infoRows2 = ref([{
-			label: '专票含税金额',
-			value: '',
-			key: 'InvoiceAmountVAT'
-		},
-		{
-			label: '发票号',
-			value: '',
-			key: 'InvoiceID'
-		},
-		{
-			label: '专票不含税金额',
-			value: '',
-			key: 'InvoiceAmountNET'
-		},
-		{
-			label: '普票金额',
-			value: '',
-			key: 'InvoiceAmountVATO'
-		},
-		{
-			label: '专票税额',
-			value: '',
-			key: 'InvoiceAmountTax' 
-		}
-	])
-    const infoRows3 = ref([{
-			label: '确认日期',
-			value: '',
-			key: 'ConfirmedDate'
-		},
-		{
-			label: '本期确认成本量',
-			value: '',
-			key: 'ConfirmedCostVAT'
-		},
-		{
-			label: '本期成本量占合同比% ',
-			value: '',
-			key: 'ContractRatio'
-		},
-		{
-			label: '确认金额(含税)',
-			value: '',
-			key: 'ConfirmedCostAmountVAT'
-		},
-		{
-			label: '增值税税额',
-			value: '',
-			key: 'ConfirmedCostTaxAmount' 
-		},
-		{
-			label: '确认金额(不含税)',
-			value: '',
-			key: 'ConfirmedCostAmountNET'
-		},	{
-			label: '累计确认金额(含税)',
-			value: '',
-			key: 'AccuredConfirmedCostAmountVAT'
-		},	{
-			label: '内容',
-			value: '',
-			key: 'Content'
-		},	{
-			label: '确认依据',
-			value: '',
-			key: 'Remark'
-		}
-	])
+	]);
+	
 	const itemDatas = ref({});
-	const requestTypeObj = reactive({
-		'IncomeConfirm': '收入确认',
-		'Invoicing': '申请开票',
-	})
-	// const vehiclePaymentContentList = ref([]);
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
-			uni.showToast({
-					title: '暂未联调',
-					icon: 'none'
-				})
 			let data = res.data?.data || {}
-			itemDatas.value = data || {}
+			itemDatas.value = data?.wfrequestmarketingpayment || {}
 			infoRows.value.forEach(item => {
-				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key]
-                if(item.key == 'CBInvoiceReceived' && [0,1].includes(itemDatas.value[item.key])){
-					item.value = itemDatas.value[item.key] == 0 ? '否' : '是'
-				}
-			});
+				item.value = (typeof itemDatas.value[item.key] === 'number' && item.key !== 'contractPaymentRatio') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
+			})
 
-			infoRows2.value.forEach(item => {
-				item.value = (typeof itemDatas.value[item.key] === 'number') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key]
-			});
-
-			infoRows3.value.forEach(item => {
-				item.value = (typeof itemDatas.value[item.key] === 'number' && item.key != 'contractRatio') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key];
-                if(item.key == 'contractRatio'){
-					item.value = itemDatas.value[item.key] + '%' || ''
-				}
-				if(item.key == 'confirmedDate'){
-					item.value = formatDateTimeMinute(itemDatas.value[item.key]) || ''
-				}
-                
-			});
-			if(infoRows.value[0].value){
-				 stageTags.value.push(infoRows.value[0].value)
+			if(itemDatas.value.businessUnitName){
+				 stageTags.value.push(itemDatas.value.businessUnitName);
 			}
-			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
+			if(itemDatas.value.specialCase && itemDatas.value.specialCase === 'OutOfBudget'){
+				 stageTags.value.push('预算外');
+			}
+			if(itemDatas.value.specialCase && itemDatas.value.specialCase === 'OverBudget'){
+				 stageTags.value.push('超预算');
+			}
+
+			let arr1 = (data?.attachementList || []).map(item => {
 				return {
 					fileTagName: item.fileTagName,
 					fileName: item.fileName,
@@ -366,8 +434,9 @@
 					id: item.attachmentId
 				}
 			})
-			attachmentData.value = [{fileTagName: '合同', children: []}, {fileTagName: '发票/收据', children: []}, {fileTagName: '合同要求其他资料', children: []}, {fileTagName: '其他', children: []}]
-			const attachmentMap = new Map()
+
+			attachmentData.value = [{fileTagName: '合同', children: []}, {fileTagName: '发票/收据', children: []}, {fileTagName: '其他', children: []}]
+			const attachmentMap = new Map();
 			attachmentData.value.forEach(item => {
 				attachmentMap.set(item.fileTagName, item)
 			})
@@ -377,136 +446,10 @@
 					parent.children.push(childItem)
 				}
 			})
-
 		})
 	}
 
-	const onReject = () => {
-		inputDialogRequired.value = true
-		openInputDialog('打回原因', '请输入打回原因')
-	}
 
-	const onApprove = () => {
-		inputDialogRequired.value = false
-		openInputDialog('通过原因', '请输入通过原因')
-	}
-	const openInputDialog = (title, placeholder) => {
-		inputDialogTitle.value = title
-		inputDialogPlaceholder.value = placeholder
-		inputDialogRef.value.open()
-	}
-	const handleInputConfirm = (value, dialogType) => {
-		inputDialogValue.value = value
-		inputDialogRef.value.close()
-		doSubmitApproval(dialogType)
-	}
-	const handleInputCancel = () => {
-		inputDialogRef.value.close()
-		inputDialogValue.value = ''
-	}
-	const doSubmitApproval = (dialogType) => {
-		let params = {
-            wfInstanceId: itemDetail.value.wfinstanceId,
-			workItemId: itemDetail.value.workItemId,
-			approvalComment: inputDialogValue.value,
-			annotationComment: '',
-			pictureBaseData: '',
-			isApproval: dialogType,
-			procDefCode: itemDetail.value.procDefCode, //ZC01和GC01两个类型的可以了
-		}
-		http.post('/WF/SubmitApproval', params).then(res => {
-			if (res.code === 0) {
-				uni.showToast({
-					title: '已审批',
-					icon: 'success'
-				})
-				setTimeout(() => {
-					if (currentType.value === 'pending') {
-						uni.$emit('refresh-pending')
-						uni.$emit('refresh-completed')
-					};
-					goBack();
-				}, 1000)
-			} else {
-				uni.showToast({
-					title: res.message,
-					icon: 'none'
-				})
-			}
-		})
-	}
-	//获取审批记录接口 start
-	const approvalRecordList = ref([]);
-	const getApprovalRecord = () => {
-		http.get('/WF/GetApprovalHistory', {
-			wfinstanceId: itemDetail.value.wfinstanceId,
-		}).then(res => {
-			console.log(res)
-			// 假设接口返回的数据在res.data中，需要根据实际接口调整
-			approvalRecordList.value = res.data || []
-		})
-	}
-	//获取审批记录接口 end
-	// 计算 scroll-view 高度 = 设备窗口高 - 头部实际高
-	function computeScrollHeight() {
-		try {
-			const {
-				windowHeight
-			} = uni.getSystemInfoSync() // px
-			const inst = getCurrentInstance()
-			const q = uni.createSelectorQuery().in(inst?.proxy)
-
-			q.select('.header-stickt').boundingClientRect(data => {
-				const headerH = data?.height || 0
-				const h = Math.max(0, windowHeight - headerH)
-				scrollerHeight.value = `${h}px`
-			}).exec()
-		} catch (e) {
-			// 兜底：若获取失败，至少不挡住页面
-			scrollerHeight.value = 'calc(100vh - 88rpx)'
-		}
-	}
-	onMounted(() => {
-		nextTick(() => {
-			computeScrollHeight()
-		})
-		// 获取系统信息
-		const systemInfo = uni.getSystemInfoSync()
-		const isIOS = systemInfo.platform === 'ios'
-		const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
-
-		// 只在 iOS H5 环境下添加滚动修复
-		if (isIOS && isH5) {
-			console.log('检测到 iOS H5 环境，添加滚动修复')
-
-			// 添加失焦滚动修复
-			document.addEventListener('focusout', () => {
-				setTimeout(() => {
-					window.scrollTo({
-						top: 0,
-						left: 0,
-						behavior: 'instant'
-					})
-				}, 20)
-			})
-
-			// // 可选：添加其他 iOS H5 特有的修复
-			// document.addEventListener('touchstart', () => {
-			// // iOS H5 触摸开始时的处理
-			// })
-		} else {
-			window.visualViewport?.addEventListener('resize', onResize)
-			window.addEventListener('resize', onResize) // 部分浏览器兼容
-		}
-
-
-	})
-
-	function onResize() {
-		setTimeout(() => {
-			computeScrollHeight()
-		}, 100)
-	}
 </script>
 
 <style lang="scss" scoped>
@@ -561,7 +504,7 @@
 
 		.scroller {
 			box-sizing: border-box;
-			height: v-bind(scrollerHeight);
+			height: v-bind(listHeight);
 		}
 
 		.hero-card {
@@ -596,13 +539,11 @@
 					white-space: normal;
 					line-height: 1.4;
 					min-height: 72rpx;
-					/* 如果需要最小高度，使用 min-height */
 				}
 			}
 
 			.amount-box {
 				text-align: right;
-				// border: 1px solid red;
 
 				.amount-label {
 					height: 70rpx;
@@ -630,12 +571,10 @@
 				}
 			}
 
-
-
 			.hero-tags {
 				width: calc(100% - 320rpx);
 				height: 72rpx;
-				overflow: hidden;
+				overflow-x: hidden;
 				display: flex;
 				align-items: center;
 				gap: 8rpx;
@@ -654,12 +593,7 @@
 					color: #66ccff;
 					white-space: nowrap;
 				}
-				&.hero-tags-width {
-					width: calc(100% - 180rpx);
-				}
 			}
-
-
 
 			.hero-actions {
 				position: absolute;
@@ -673,6 +607,7 @@
 				display: flex;
 				justify-content: flex-end;
 			}
+
 			.wfstatus-actions {
                 position: absolute;
                 bottom: 12rpx;
@@ -689,7 +624,6 @@
 				font-size: 24rpx;
 				color: #66ccff;
 				white-space: nowrap;
-               
             }
 
 			.btn {
@@ -740,7 +674,6 @@
 				font-size: 28rpx;
 				color: #000000;
 				font-weight: bold;
-
 			}
 		}
 
@@ -767,7 +700,6 @@
 					font-size: 28rpx;
 					color: #000000;
 					font-weight: bold;
-
 				}
 			}
 
@@ -776,20 +708,18 @@
 				height: 112rpx;
 				background: url('../../static/images/c2.png') center center no-repeat;
 				background-size: 24rpx;
-				margin-right: -31rpx;
+				margin-right: -32rpx;
 				transition: transform 0.3s ease;
 
 				&.active {
 					background: url('../../static/images/c2.png') center center no-repeat !important;
 					background-size: 24rpx !important;
-					margin-right: -31rpx !important;
+					margin-right: -32rpx !important;
 					transform: rotate(180deg);
 				}
 			}
-
 		}
 
-		// 折叠动画样式
 		.collapse-enter-active,
 		.collapse-leave-active {
 			transition: all 0.3s ease;
@@ -812,6 +742,14 @@
 
 		.info-list {
 			padding: 0 32rpx 20rpx;
+			.info-item-column {
+                flex-direction: column;
+
+			}
+			.info-value-left {
+				text-align: left;
+				margin-top: 10rpx;
+			}
 		}
 
 		.info-item {
@@ -837,10 +775,6 @@
 			font-size: 24rpx;
 			color: #000;
 			white-space: nowrap;
-			&.info-label-width {
-				min-width: 100rpx;
-				max-width: 240rpx;
-			}
 		}
 
 		.info-value {
@@ -851,7 +785,6 @@
 			text-align: right;
 		}
 
-		// 用款情况样式
 		.usage-details {
 			padding: 0 32rpx 40rpx;
 
@@ -859,29 +792,6 @@
 				box-sizing: border-box;
 				border: 2rpx solid #ddd;
 				padding: 16rpx;
-				overflow: hidden;
-
-				.contract-header {
-					background: #f6f8fc;
-					height: 48rpx;
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					font-size: 24rpx;
-					color: #000;
-					font-weight: bold;
-					padding: 4rpx 16rpx;
-				}
-
-				.contract-details {
-					background: #ffffff;
-				}
-			}
-
-			.other-info {
-				box-sizing: border-box;
-				border-radius: 25rpx;
-				padding: 16rpx 20rpx;
 				overflow: hidden;
 			}
 
@@ -897,7 +807,6 @@
 				.detail-label {
 					font-size: 24rpx;
 					min-width: 200rpx;
-					font-size: 24rpx;
 					color: #000000;
 				}
 
@@ -934,28 +843,12 @@
 					font-weight: bold;
 				}
 			}
-
-
-
 		}
 
-
-		
-
-
-		// 付款账户信息独立样式 - 不与其他样式共用
 		.account-info-section {
 			padding: 0 32rpx 40rpx;
 
 			.account-card {
-
-				.account-company-title {
-					font-size: 24rpx;
-					color: #000;
-					margin-bottom: 20rpx;
-					text-align: left;
-				}
-
 				.account-info-block {
 					background: #f6f8fc;
 					border: 2rpx solid #ddd;
@@ -989,7 +882,6 @@
 							color: #666;
 							text-align: right;
 							flex: 0.72;
-							//文字自动换行
 							white-space: normal;
 							word-break: break-all;
 							word-wrap: break-word;
@@ -998,7 +890,6 @@
 				}
 			}
 		}
-
 	}
 
 	@media screen and (min-width: 768px) {
@@ -1008,24 +899,12 @@
 		}
 	}
 
-
-
-
-
-
-
-
-
-	.margin_1 {
-		margin-top: 20px;
-	}
-
 	.table1 {
 		box-sizing: border-box;
 		width: 100%;
-		border-bottom: 2rpx #ddd solid;
+        border-top: 2rpx #ddd solid;
 	}
-
+ 
 	.table2 {
 		box-sizing: border-box;
 		width: 100%;
@@ -1043,8 +922,8 @@
 
 	.table1 td {
 		box-sizing: border-box;
-		border-left: 2rpx #ddd solid;
-		border-top: 2rpx #ddd solid;
+		border-bottom: 2rpx #ddd solid;
+		border-right: 2rpx #ddd solid;
 		padding: 8px;
 		font-size: 12px;
 	}
@@ -1052,6 +931,13 @@
 	.table1 .info {
 		text-align: right;
 		color: #666;
+		padding: 8px !important;
+		max-width: 350px;
+		white-space: wrap !important;
+	}
+
+	.table1 .info-plus {
+		min-width: 150px;
 	}
 
 	.table1 .text {
@@ -1067,31 +953,35 @@
 		text-align: right;
 	}
 
-
-	/* 防止单元格换行挤压变形，可按需保留或去掉 */
 	.table1 .info,
 	.table1 .type {
 		white-space: nowrap;
 	}
 
-	/* 需要给表格的前几列设置 sticky 和 left 偏移，按你的列宽自行调整 */
-	.table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 109.02px !important;box-sizing: border-box;  }
-	.table1 td.sticky-2 { position: sticky; left: 109.02px;  z-index: 4;box-sizing: border-box; }
-	.table1 td.sticky-3 { position: sticky; left: 220px;  z-index: 2;box-sizing: border-box; }
+	.table1 td.sticky-xz-1 { 
+		position: sticky; 
+		left: 0; 
+		top: 0; 
+		z-index: 3;
+		max-width: 176px !important;
+		min-width: 176px !important;
+        border-left: 2rpx #ddd solid;
+		box-sizing: border-box;
+		background: #fff;
+	}
 
-	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 55.5px !important; ;background: #fff;}
-	.table1 td.sticky-xz-2 { position: sticky; left: 55.5px;  z-index: 4;;background: #fff; }
-	.table1 td.sticky-xz-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
+	.table1 td.sticky-xz-2 { 
+		position: sticky;  
+		left: 76px;  
+		z-index: 4;
+		background: #fff; 
+	}
 
-	.table1 td.sticky-lx-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 76px !important;background: #fff; }
-	.table1 td.sticky-lx-2 { position: sticky; left: 76px;  z-index: 4;background: #fff; }
-	.table1 td.sticky-lx-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
-
-	/* 审批记录独立样式区域 */
 	.approval-record-section {
 		padding: 20rpx 32rpx 40rpx;
 		position: relative;
 	}
+
 	.attachment-section {
 		padding: 20rpx 32rpx 40rpx;
 		position: relative;

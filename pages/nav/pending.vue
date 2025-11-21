@@ -80,29 +80,20 @@
 	import {
 		onLoad,
 		onUnload,
-		onShow,  // 添加这个
-        onHide   // 添加这个
 	} from '@dcloudio/uni-app'
 	import {
 		ref,
-		onMounted,
-		nextTick,
-		getCurrentInstance
 	} from 'vue'
-	import {
-		getStorage
-	} from '@/utils/storage'
 	import http from '@/utils/request.js'
-	import { formatNumber } from '@/utils/h5Bribge'
-	import { formatRelativeTime } from '@/utils/h5Bribge.js'
+	import {
+		procDefCodeUrlObj,
+	} from '@/utils/definitions'
+	import { formatNumber,formatRelativeTime } from '@/utils/h5Bribge.js'
+	import { useListHeight } from '@/utils/useListHeight.js'
 	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
 	const statusBarHeight = ref(0)
 	onLoad(() => {
-		const statusBarHeightNew = getStorage('statusBarHeight');
-		if (Number(statusBarHeightNew) != 0) {
-			statusBarHeight.value = Number(statusBarHeightNew)
-		}
 		uni.$on('refresh-pending', () => {
 			onRefresh()
 		})
@@ -110,52 +101,34 @@
 	onUnload(() => {
       uni.$off("refresh-pending");
     });
+	const { listHeight } = useListHeight({
+	     headerSelector: '.header-stickt', // 可选，默认就是这个值
+	})
 	const paging = ref(null)
 	// 搜索相关
 	const searchKeyword = ref('')
-	
-	// const msgFlag = ref([0, 1, 2])
 	// 分段控制器
 	const currentTab = ref(0)
-
 	const tabs = [
 		{ label: '所有', wf: '' },
 		{ label: '工程类款项', wf: 'GC01' },
 		{ label: '其他类', wf: 'QT01' },
 	];
-	const procDefCodeUrlObj = ref({
-		'GC01': '/pages/detail/gcfk', //工程类款项
-		'SG01': '/pages/detail/sgjf', //三公经费
-		'KY01': '/pages/detail/kyjf', //科研经费
-		'DB01': '/pages/detail/zjdb', //资金调拨
-		'SR01': '/pages/detail/srqr', //收入确认
-		'QT01': '/pages/detail/qtjf', //其他
-		'ZC01': '/pages/detail/zcys',  //支出预算
-		'ZZ01': '/pages/detail/fyzz',  //费用暂支
-		'CB01': '/pages/detail/cbqr',  //成本确认
-	})
 	const wfstatusArr = ref(tabs.map(t => t.wf));
 	const tabValues = ref(tabs.map(t => t.label));
 	//弹窗筛选--------start
 	const filterRef = ref(null)
-
 	function openFilter() {
 	    filterRef.value?.open()
 	}
-
 	function onConfirm(payload) {
 		console.log('筛选结果', payload)
 	}
-
 	function onReset() {
 		console.log('重置筛选')
 	}
     //弹窗筛选------end
 	const doSearch = () => {
-		// if (!searchKeyword.value?.trim()) {
-		// 	uni.showToast({ title: '请输入搜索关键词', icon: 'none' })
-		// 	return
-		// }
 		uni.hideKeyboard()
 		// 真正搜索逻辑：刷新列表或跳转搜索页
 		// 例1：刷新当前列表
@@ -171,7 +144,6 @@
 		// if (idx !== -1) msgFlag.value.splice(idx, 1);
 		console.log('切换到:', tabValues.value[val])
 	}
-
 	const onRefresh =() => {
 		// 告知z-paging下拉刷新结束，这样才可以开始下一次的下拉刷新
 		paging.value.reload()
@@ -211,7 +183,7 @@
 	//分页加载--------end
 	const toDetail = (order) => {
 		uni.navigateTo({
-			url: procDefCodeUrlObj.value[order.procDefCode],
+			url: procDefCodeUrlObj[order.procDefCode],
 			success(res) {
 					res.eventChannel.emit('open-detail', {
 						type: 'pending',
@@ -220,43 +192,6 @@
 			}
 		})
 	}
-		// 页面显示时重新计算高度
-	onShow(() => {
-		console.log('页面显示，重新计算高度')
-		nextTick(() => {
-			computeOrderListHeight()
-		})
-	})
-	// 页面隐藏时记录状态
-	onHide(() => {
-	   console.log('页面隐藏')
-	})
-	//计算订单列表高度--------start
-	const orderListHeight = ref('')
-	const computeOrderListHeight = () => {
-		try {
-			const {
-				windowHeight
-			} = uni.getSystemInfoSync() // px
-			const inst = getCurrentInstance()
-			const q = uni.createSelectorQuery().in(inst?.proxy)
-			q.select('.header-stickt').boundingClientRect(rect => {
-				const headerH = rect?.height || 0
-				const h = Math.max(0, windowHeight - headerH)
-				orderListHeight.value = `${h}px`
-			}).exec()
-		} catch (e) {
-			// 兜底，避免阻塞页面
-			orderListHeight.value = 'calc(100vh - 50px)'
-		}
-	}
-	onMounted(() => {
-		console.log('订单页面加载完成')
-		nextTick(() => computeOrderListHeight())
-		// 横竖屏切换/窗口改变时重算（H5 有效）
-		uni.onWindowResize?.(() => computeOrderListHeight())
-	})
-	//计算订单列表高度-------end
 </script>
 
 <style lang="scss" scoped>
@@ -515,7 +450,7 @@
 
 	// 订单列表
 	.order-list {
-		height: v-bind(orderListHeight);
+		height: v-bind(listHeight);
 	}
 
 	.order-card {

@@ -53,7 +53,7 @@
 							class="action-btn"
 							:class="{
 								'btn-approved': item.approvalResult == '批准' || item.approvalResult == '提交' || item.approvalResult == '完成' || item.approvalResult === '处理完成',
-								'btn-pending': item.approvalResult == '待审批',
+								'btn-pending': item.approvalResult == '待审批' || item.approvalResult == '待处理',
 								'btn-rejected': item.approvalResult == '驳回'|| item.approvalResult == '已拒绝'
 							}"
 						>

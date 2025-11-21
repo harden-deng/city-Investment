@@ -93,6 +93,18 @@
 				"navigationStyle": "custom",
 				"disableScroll": true
 			}
+		},{
+			"path": "pages/detail/cbqr",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
+		},{
+			"path": "pages/detail/szxm",
+			"style": {
+				"navigationStyle": "custom",
+				"disableScroll": true
+			}
 		}, {
 			"path": "uni_modules/rn-signature/pages/rn-canvas",
 			"style": {

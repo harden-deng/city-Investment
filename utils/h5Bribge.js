@@ -134,3 +134,26 @@ export function formatDateTimeMinute(dateString) {
     return dateString.substring(0, 10)
 }
 
+export function goBack() {
+	if (typeof window !== 'undefined' && (window).uni?.postMessage) {
+		(window).uni.navigateBack()
+	} else {
+		window.history.back()
+	}
+}
+
+export function totalNestedValue(array,properties) {
+	return array.reduce((accumulator, currentValue) => {
+		return accumulator + currentValue[properties];
+	}, 0);
+}
+
+	// 处理表格横向滚动时的 touchmove 事件
+export	const handleTableTouchMove = (e) => {
+		// 阻止事件冒泡到外层 scroll-view
+		e.stopPropagation()
+		// 只有在事件可取消时才阻止默认行为
+		if (e.cancelable && !e.defaultPrevented) {
+			// 允许横向滚动继续
+		}
+	}

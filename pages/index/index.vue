@@ -31,7 +31,6 @@
 <script setup>
 	import { onLoad } from '@dcloudio/uni-app'
 	import { ref, onMounted, computed } from 'vue'
-	import { setStorage, getStorage, removeStorage } from '@/utils/storage'
 	import http from '@/utils/request.js'
 	const styles = {
 	    placeholderColor: '#999999',
@@ -39,18 +38,14 @@
 	const statusBarHeight = ref(0)
 	// 响应式数据
 	// const phoneNumber = ref('sybjbr1');  //经办人事业部
-	const phoneNumber = ref('sybzgo');  //您好，业务主管（运管中心）
-	// const phoneNumber = ref('sybzg1');  //业务主管（一事业部）
+	// const phoneNumber = ref('sybzgo');  //您好，业务主管（运管中心）
+	// const phoneNumber = ref('sybzg1');  //业务主管（一事业部） （其他）
 	// const phoneNumber = ref('cwzg');  //业务主管（一事业部）  cwzg财务主管
-	
+	// const phoneNumber = ref('jbrsz');  //经办人（市政）
 	// 申请人:sybjbro  审核人：sybzgo sybldo cwkj
-	// const phoneNumber = ref('sybjbro');  //您好，业务主管（运管中心）可实现收入确认
+	const phoneNumber = ref('sybjbro');  //您好，业务主管（运管中心）可实现收入确认
 	const password = ref(123);
 	onLoad(() => {
-		const statusBarHeightNew = getStorage('statusBarHeight');
-		if (Number(statusBarHeightNew) != 0) {
-			statusBarHeight.value = Number(statusBarHeightNew)
-		}
 		//    uni.redirectTo({
 		//    	url: "/pages/nav/home"
 		//    })

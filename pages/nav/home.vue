@@ -53,7 +53,6 @@
 </template>
 <script setup>
 	import {
-		onLoad,
 		onShow
 	} from '@dcloudio/uni-app'
 	import {
@@ -62,9 +61,7 @@
 		computed,
 		nextTick
 	} from 'vue'
-	import {
-		getStorage,
-	} from '@/utils/storage'
+
 	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	
 	import http from '@/utils/request.js'
@@ -72,12 +69,6 @@
 	const tabBarHeight = ref(0) // 如有实际高度可替换
 	const windowHeight = ref(0)
 	const announcements = ref('');
-	onLoad(() => {
-		const statusBarHeightNew = getStorage('statusBarHeight');
-		if (Number(statusBarHeightNew) != 0) {
-			statusBarHeight.value = Number(statusBarHeightNew)
-		}
-	})
 	onShow(() => {
 		nextTick(()=>{
 			getAnnouncements();

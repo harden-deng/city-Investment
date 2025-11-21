@@ -1,17 +1,7 @@
 <template>
 	<view class="detail-page">
 		<view class="header-stickt">
-			<view class="status_bar" :style="{ height: `${statusBarHeight * 2}rpx` }"></view>
-			<uni-nav-bar class="nav-bar-top">
-				<template v-slot:left>
-					<view class="back-btn" @click="goBack">
-					</view>
-				</template>
-				<view class="nav-title">审批详情</view>
-				<template v-slot:right>
-					<view style="width: 40rpx"></view>
-				</template>
-			</uni-nav-bar>
+			<detailNavBar></detailNavBar>
 			<view class="hero-card">
 				<view class="hero-header">
 					<view class="project-name">
@@ -96,7 +86,7 @@
 									<tbody>
 										<tr>
 										   <td class="type font_w sticky-xz-1 bordr-none">{{ infoRows[0].value.slice(0,-3)}}明细</td>
-                                           <td class="type font_w text_right sticky-xz-2 bordr-none" >合计</td> 
+                                           <td class="type font_w text_right sticky-xz-2 bordr-none bordr-right-none">合计</td> 
 										   <!-- <td class="type font_w text_right bordr-none" >合1计</td> 
 										   <td class="type font_w text_right bordr-none" >合2计</td> 
 										   <td class="type font_w text_right bordr-none" >合3计</td>  -->
@@ -323,26 +313,22 @@
 		computed
 	} from 'vue'
 	import {
-		getStorage
-	} from '@/utils/storage'
-	import {
 		FUND_USAGE_STATUS,
 		PAYMENT_ACCOUNT_INFORMATION,
 		APPROVAL_RECORD,
-		ATTACHMENT_LIST
+		ATTACHMENT_LIST,
+		currentUrlObj
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber
+		formatNumber,goBack
 	} from '@/utils/h5Bribge'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
-	const statusBarHeight = ref(0)
+	import detailNavBar from '@/components/navBar/detailNavBar.vue'
 	let eventChannel
 	onLoad(() => {
-		const h = getStorage('statusBarHeight')
-		if (Number(h)) statusBarHeight.value = Number(h)
 		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
 		eventChannel.on('open-detail', (data) => {
 			console.log('open-detail', data);
@@ -354,10 +340,6 @@
 	})
 	
 	const currentType = ref('')
-	const currentUrlObj = reactive({
-		pending: '/WF/GetFormDataApproval',
-		completed: '/WF/GetFormDataView'
-	})
 	const requestTypeObj = reactive({
 		'Vehicle': '公务用车报销单',
 		'GnE': '业务招待报销单',
@@ -446,10 +428,7 @@
 			key: 'receivingBankAccountNumber'
 		},
 	])
-	
-	function goBack() {
-		uni.navigateBack()
-	}
+
 	// let cccc = reactive({
 	// 	createdBy:"super",
 	// 	createdByName:"super",
@@ -875,8 +854,8 @@
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					border: 1rpx solid #66ccff;
-					padding: 1rpx 12rpx;
+					border: 2rpx solid #66ccff;
+					padding: 2rpx 12rpx;
 					border-radius: 8rpx;
 					font-size: 18rpx;
 					color: #66ccff;
@@ -1034,7 +1013,7 @@
 		}
 		
 		.info-list {
-			padding: 0 32rpx 10rpx;
+			padding: 0 32rpx 20rpx;
 		}
 		
 		.info-item {
@@ -1143,7 +1122,7 @@
 				
 				.account-info-block {
 					background: #f6f8fc;
-					border: 1rpx solid #ddd;
+					border: 2rpx solid #ddd;
 					overflow: hidden;
 					padding: 0;
 					
@@ -1155,7 +1134,7 @@
 						justify-content: space-between;
 						align-items: center;
 						padding: 16rpx;
-						border-bottom: 1rpx solid #dddddd;
+						border-bottom: 2rpx solid #dddddd;
 						background: #f6f8fc;
 						
 						&:last-child {
@@ -1224,6 +1203,9 @@
 	.bordr-none{
 		border-top: none !important;
 	}
+	.bordr-right-none{
+		border-right: none !important;
+	}
 	
 	.table1 .info {
 		text-align: right;
@@ -1248,8 +1230,8 @@
 		white-space: nowrap;
 	}
 	
-	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 88px !important; ;background: #fff;}
-	.table1 td.sticky-xz-2 { position: sticky; left: 88px;  z-index: 4;;background: #fff;	border-right: 2rpx #ddd solid; }
+	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 88px !important;background: #fff;}
+	.table1 td.sticky-xz-2 { position: sticky; left: 88px;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid; }
 	.table1 td.sticky-xz-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
 	
 	.approval-record-section {

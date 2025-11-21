@@ -80,30 +80,20 @@
 	import {
 		onLoad,
 		onUnload,
-		onShow,  // 添加这个
-        onHide   // 添加这个
 	} from '@dcloudio/uni-app'
 	import {
 		ref,
-		reactive,
-		onMounted,
-		nextTick,
-		getCurrentInstance
 	} from 'vue'
-	import {
-		getStorage
-	} from '@/utils/storage'
 	import http from '@/utils/request.js'
-	import { formatNumber } from '@/utils/h5Bribge'
-	import { formatRelativeTime } from '@/utils/h5Bribge.js'
+	import {
+		procDefCodeUrlObj,
+	} from '@/utils/definitions'
+	import { formatNumber,formatRelativeTime } from '@/utils/h5Bribge.js'
+	import { useListHeight } from '@/utils/useListHeight.js'
 	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
 	const statusBarHeight = ref(0)
 	onLoad(() => {
-		const statusBarHeightNew = getStorage('statusBarHeight');
-		if (Number(statusBarHeightNew) != 0) {
-			statusBarHeight.value = Number(statusBarHeightNew)
-		}
 		uni.$on('refresh-completed', () => {
 			onRefresh()
 		})
@@ -111,29 +101,19 @@
 	onUnload(() => {
        uni.$off("refresh-completed");
     });
+	const { listHeight } = useListHeight({
+	     headerSelector: '.header-stickt', // 可选，默认就是这个值
+	});
 	const paging = ref(null)
 	// 搜索相关
 	const searchKeyword = ref('')
-	
-	// const msgFlag = ref([0, 1, 2])
 	// 分段控制器
 	const currentTab = ref(0)
-
 	const tabs = [
 		{ label: '所有', wf: '' },
 		{ label: '流转中', wf: 'Running' },
 		{ label: '已审核', wf: 'Completed' },
 	];
-	const procDefCodeUrlObj = ref({
-		'GC01': '/pages/detail/gcfk',
-		'SG01': '/pages/detail/sgjf',
-		'KY01': '/pages/detail/kyjf',
-		'DB01': '/pages/detail/zjdb',
-		'SR01': '/pages/detail/srqr',
-		'QT01': '/pages/detail/qtjf',
-		'ZC01': '/pages/detail/zcys',
-		'ZZ01': '/pages/detail/fyzz',  //费用暂支
-	})
 	const wfstatusArr = ref(tabs.map(t => t.wf));
 	const tabValues = ref(tabs.map(t => t.label));
 	//弹窗筛选--------start
@@ -212,7 +192,7 @@
 
 	const toDetail = (order) => {
 		uni.navigateTo({
-			url: procDefCodeUrlObj.value[order.procDefCode],
+			url: procDefCodeUrlObj[order.procDefCode],
 			success(res) {
 				res.eventChannel.emit('open-detail', {
 				   type: 'completed',
@@ -221,43 +201,6 @@
 			}
 		})
 	}
-	// 页面显示时重新计算高度
-	onShow(() => {
-		console.log('页面显示，重新计算高度')
-		nextTick(() => {
-			computeOrderListHeight()
-		})
-	})
-	// 页面隐藏时记录状态
-	onHide(() => {
-	   console.log('页面隐藏')
-	})
-	//计算订单列表高度--------start
-	const orderListHeight = ref('')
-	const computeOrderListHeight = () => {
-		try {
-			const {
-				windowHeight
-			} = uni.getSystemInfoSync() // px
-			const inst = getCurrentInstance()
-			const q = uni.createSelectorQuery().in(inst?.proxy)
-			q.select('.header-stickt').boundingClientRect(rect => {
-				const headerH = rect?.height || 0
-				const h = Math.max(0, windowHeight - headerH)
-				orderListHeight.value = `${h}px`
-			}).exec()
-		} catch (e) {
-			// 兜底，避免阻塞页面
-			orderListHeight.value = 'calc(100vh - 100rpx)'
-		}
-	}
-	onMounted(() => {
-		console.log('订单页面加载完成')
-		nextTick(() => computeOrderListHeight())
-		// 横竖屏切换/窗口改变时重算（H5 有效）
-		uni.onWindowResize?.(() => computeOrderListHeight())
-	})
-	//计算订单列表高度-------end
 </script>
 
 <style lang="scss" scoped>
@@ -518,7 +461,7 @@
 	.order-list {
 		// padding: 0 0rpx;
 		box-sizing: border-box;
-		height: v-bind(orderListHeight);
+		height: v-bind(listHeight);
 	}
 
 	.order-card {

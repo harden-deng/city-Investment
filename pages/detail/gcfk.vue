@@ -1,19 +1,7 @@
 <template>
 	<view class="detail-page">
 		<view class="header-stickt">
-			<view class="status_bar" :style="{ height: `${statusBarHeight * 2}rpx` }"></view>
-			<uni-nav-bar class="nav-bar-top">
-				<template v-slot:left>
-					<view class="back-btn" @click="goBack">
-						<!-- <uni-icons type="back" color="#000" size="22" /> -->
-						<!-- <image src="../../static/images/back.svg" mode=""></image> -->
-					</view>
-				</template>
-				<view class="nav-title">审批详情</view>
-				<template v-slot:right>
-					<view style="width: 40rpx"></view>
-				</template>
-			</uni-nav-bar>
+			<detailNavBar></detailNavBar>
 			<!-- 顶部蓝卡片 -->
 			<view class="hero-card">
 				<view class="hero-header">
@@ -133,7 +121,6 @@
 								<text class="detail-value">{{ formatNumber(itemDatas.settlementWorkload) }}</text>
 							</view>
 						</view>
-						<!-- 整体合同 -->
 						<view class="contract-section">
 							<!-- 用款性质 -->
 							<view class="contract-header" v-if="roadSectionList.length === 0">
@@ -149,24 +136,24 @@
 									<text class="detail-value">{{ formatNumber(itemDatas.planToPayEstimatedPr) }}</text>
 								</view>
 							</view>
-							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0">
+							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0" @touchmove.stop="handleTableTouchMove">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
-											<td colspan="2" class="type font_w sticky-xz-1">用款性质</td>
-											<td class="type font_w text_right" v-for="value in roadSectionList"
+											<td colspan="2" class="type font_w sticky-xz-1 bordr-none bordr-right-none">用款性质</td>
+											<td class="type font_w text_right bordr-none bordr-right-none" v-for="value in roadSectionList"
 												:key="value.id">{{ value.roadName }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-xz-1">确定性</td>
+											<td class="text sticky-xz-1 bordr-right-none">确定性</td>
 											<td class="info sticky-xz-2">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
+											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
 												{{ formatNumber(value.confirmed) }}</td>
 										</tr>
-										<tr>
-											<td class="text sticky-xz-1">预估性</td>
-											<td class="info sticky-xz-2">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
+										<tr class="border-top">
+											<td class="text sticky-xz-1 bordr-right-none bordr-bottom-none">预估性</td>
+											<td class="info sticky-xz-2 bordr-bottom-none">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
+											<td class="info bordr-right-none bordr-bottom-none" v-for="value in roadSectionList" :key="value.id">
 												{{ formatNumber(value.estimated) }}</td>
 										</tr>
 									</tbody>
@@ -208,47 +195,47 @@
 										class="detail-value summary-value">{{ formatNumber(itemDatas.planToPayTotalPr) }}</text>
 								</view>
 							</view>
-							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0">
+							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0" @touchmove.stop="handleTableTouchMove">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
-											<td colspan="2" class="type font_w sticky-lx-1">款项类型</td>
-											<td class="type font_w text_right" v-for="value in roadSectionList"
+											<td colspan="2" class="type font_w sticky-lx-1  bordr-none bordr-right-none">款项类型</td>
+											<td class="type font_w text_right bordr-none bordr-right-none" v-for="value in roadSectionList"
 												:key="value.id">{{ value.roadName }}</td>
 										</tr>
 
 										<tr>
-											<td class="text sticky-lx-1">工程费用</td>
+											<td class="text sticky-lx-1 bordr-right-none">工程费用</td>
 											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayConstructionAmountPr) }}
 											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
+											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
 												{{ formatNumber(value.constructionAmount) }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1">农民工工资</td>
+											<td class="text sticky-lx-1 bordr-right-none">农民工工资</td>
 											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayRuralLaborsSalaryPr)  }}
 											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
+											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
 												{{ formatNumber(value.ruralLaborsSalary) }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1">材料款</td>
+											<td class="text sticky-lx-1 bordr-right-none">材料款</td>
 											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayMaterialAmountPr)  }}
 											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
+											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
 												{{ formatNumber(value.materialAmount) }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1">前期费用</td>
+											<td class="text sticky-lx-1 bordr-right-none">前期费用</td>
 											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayProphaseAmountPr)  }}
 											</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
+											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
 												{{ formatNumber(value.prophaseAmount) }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1">其他</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayOtherAmountPr)  }}</td>
-											<td class="info" v-for="value in roadSectionList" :key="value.id">
+											<td class="text sticky-lx-1 bordr-right-none bordr-bottom-none">其他</td>
+											<td class="info sticky-lx-2 bordr-bottom-none">{{ formatNumber(itemDatas.planToPayOtherAmountPr)  }}</td>
+											<td class="info bordr-right-none bordr-bottom-none" v-for="value in roadSectionList" :key="value.id">
 												{{ formatNumber(value.otherAmount) }}</td>
 										</tr>
 									</tbody>
@@ -262,8 +249,6 @@
 						</view>
 
 						<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length == 0">
-							<!-- <table cellspacing="0" cellpadding="0" class="table1 margin_1"
-								style="border-right: 1px #ddd solid;"> -->
 							<table cellspacing="0" cellpadding="0" class="table1 margin_1 table1—left-border">
 								<tbody>
 									<tr>
@@ -371,9 +356,7 @@
 							</table>
 						</scroll-view>
 
-						<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0">
-							<!-- <table cellspacing="0" cellpadding="0" class="table1 margin_1"
-								style="border-right: 1px #ddd solid;"> -->
+						<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0" @touchmove.stop="handleTableTouchMove">
 							<table cellspacing="0" cellpadding="0" class="table1 margin_1">
 								<tbody>
 									<tr>
@@ -735,31 +718,27 @@
 		computed
 	} from 'vue'
 	import {
-		getStorage
-	} from '@/utils/storage'
-	import {
 		FUND_USAGE_STATUS,
 		PAYMENT_ACCOUNT_INFORMATION,
 		COLLECTION_ACCOUNT_INFORMATION,
 		APPROVAL_RECORD,
-		ATTACHMENT_LIST
+		ATTACHMENT_LIST,
+		currentUrlObj
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,
-		formatDateTime
+		formatNumber,handleTableTouchMove
 	} from '@/utils/h5Bribge'
+	import { useListHeight } from '@/utils/useListHeight.js'
+	import { useApproval } from '@/utils/useApproval.js'
+	import detailNavBar from '@/components/navBar/detailNavBar.vue'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
-	const statusBarHeight = ref(0)
 	let eventChannel
 	onLoad(() => {
-		const h = getStorage('statusBarHeight')
-		if (Number(h)) statusBarHeight.value = Number(h)
 		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
 		eventChannel.on('open-detail', (data) => {
-			console.log('open-detail', data);
 			currentType.value = data.type
 			itemDetail.value = data.order
 			getFormDataApproval()
@@ -767,90 +746,34 @@
 		})
 	})
 	const currentType = ref('')
-	const currentUrlObj = reactive({
-		pending: '/WF/GetFormDataApproval',
-		completed: '/WF/GetFormDataView'
-	})
-	const inputDialogRef = ref(null)
-	const inputDialogRequired = ref(false)
-	const inputDialogTitle = ref('')
-	const inputDialogPlaceholder = ref('')
-	const inputDialogValue = ref('')
-	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
-	// const formDetail = ref({})
 	const stageTags = ref([])
-	const amountColumns = ref(['总金额', '总金额']);
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
 	const attachmentData = ref([])
-	// 每行高度（与样式保持一致）
-	const ROW_H = 60
-
-	// 分类-科目映射（key 对应你现有 itemDatas 字段）
-	const categories = computed(() => ([{
-			name: '城投拨付资金',
-			items: [{
-					label: '市财力',
-					key: 'planToPayCtfundCityPr'
-				},
-				{
-					label: '土地出让金',
-					key: 'planToPayCtfundLandTransferFeePr'
-				},
-				{
-					label: '专项债',
-					key: 'planToPayCtfundSpecialPurposeBondPr'
-				},
-				{
-					label: '城投其他资金',
-					key: 'planToPayCtfundOtherPr'
-				},
-				{
-					label: '资本金',
-					key: 'planToPayCtfundCapitalPr'
-				},
-			],
-		},
-		{
-			name: '非城投拨付资金',
-			items: [{
-					label: '市级财力',
-					key: 'planToPayNonCtfundCityPr'
-				},
-				{
-					label: '区县财力',
-					key: 'planToPayNonCtfundDistrictPr'
-				},
-				{
-					label: '自筹资金',
-					key: 'planToPayNonCtfundSelfPr'
-				},
-				{
-					label: '其他',
-					key: 'planToPayNonCtfundOtherPr'
-				},
-			],
-		},
-		{
-			name: '直拨(无资金流入)',
-			items: [{
-					label: '交通专项',
-					key: 'planToPayDirectFundTransportationSpecialPr'
-				},
-				{
-					label: '超长期国债',
-					key: 'planToPayDirectFundUltraTbpr'
-				},
-				{
-					label: '其他',
-					key: 'planToPayDirectFundOtherPr'
-				},
-			],
-		},
-	]))
-
+	const { listHeight } = useListHeight({
+	     headerSelector: '.header-stickt', // 可选，默认就是这个值
+		 iosFit: true,
+	})
+	const {
+		inputDialogRef,
+		inputDialogRequired,
+		inputDialogTitle,
+		inputDialogPlaceholder,
+		handleInputConfirm,
+		handleInputCancel,
+		onReject,
+		onApprove,
+		approvalRecordList,
+		getApprovalRecord
+		} = useApproval({
+			itemDetail,
+			currentType,
+			successMessage: '已审批',
+			autoGoBack: true,
+			autoRefresh: true
+		})
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
 		[PAYMENT_ACCOUNT_INFORMATION]: true,
@@ -964,123 +887,121 @@
 
 	
 
-	function goBack() {
-		uni.navigateBack()
-	}
-// 	let cc1 = reactive({
-// 	"id": "e28c6698fb77416682a12131131332123123245c516bc",
-// 	"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
-// 	"roadName": "S2沪芦",
-// 	"paymentBank": "工商银行市分行营业部",
-// 	"paymentAccount": "1001244319006338868-000000010",
-// 	"paymentBankNote": null,
-// 	"paymentAccountBankNote": null,
-// 	"planToPayTotal": 30000000,
-// 	"confirmed": 20000000,
-// 	"estimated": 10000000,
-// 	"constructionAmount": 20000000,
-// 	"ruralLaborsSalary": null,
-// 	"materialAmount": null,
-// 	"prophaseAmount": 5000000,
-// 	"otherAmount": 5000000,
-// 	"status": "200",
-// 	"lastApprovedBy": null,
-// 	"lastApprovedByName": null,
-// 	"lastApprovedDate": null,
-// 	"roadSectionPlanToPayInfo": {
-// 		"planToPayCtfundCityDistrict": 10000000,
-// 		"planToPayCtfundCity": 10000000,
-// 		"planToPayCtfundLandTransferFee": 10000000,
-// 		"planToPayCtfundSpecialPurposeBond": null,
-// 		"planToPayCtfundOther": null,
-// 		"planToPayCtfundCapital": null,
-// 		"planToPayNonCtfundCity": null,
-// 		"planToPayNonCtfundDistrict": null,
-// 		"planToPayNonCtfundSelf": null,
-// 		"planToPayNonCtfundOther": null,
-// 		"planToPayDirectFundTransportationSpecial": null,
-// 		"planToPayDirectFundUltraTb": null,
-// 		"planToPayDirectFundOther": null,
-// 		"planToPayBankNote": null
-// 	},
-// 	"paymentBankList": []
-// })
-// 	let cc2 = reactive({
-// 	"id": "e28c6698fb774166werwerw82a13131213132123123245c516bc",
-// 	"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
-// 	"roadName": "S2沪芦",
-// 	"paymentBank": "工商银行市分行营业部",
-// 	"paymentAccount": "1001244319006338868-000000010",
-// 	"paymentBankNote": null,
-// 	"paymentAccountBankNote": null,
-// 	"planToPayTotal": 30000000,
-// 	"confirmed": 20000000,
-// 	"estimated": 10000000,
-// 	"constructionAmount": 20000000,
-// 	"ruralLaborsSalary": null,
-// 	"materialAmount": null,
-// 	"prophaseAmount": 5000000,
-// 	"otherAmount": 5000000,
-// 	"status": "200",
-// 	"lastApprovedBy": null,
-// 	"lastApprovedByName": null,
-// 	"lastApprovedDate": null,
-// 	"roadSectionPlanToPayInfo": {
-// 		"planToPayCtfundCityDistrict": 10000000,
-// 		"planToPayCtfundCity": 10000000,
-// 		"planToPayCtfundLandTransferFee": 10000000,
-// 		"planToPayCtfundSpecialPurposeBond": null,
-// 		"planToPayCtfundOther": null,
-// 		"planToPayCtfundCapital": null,
-// 		"planToPayNonCtfundCity": null,
-// 		"planToPayNonCtfundDistrict": null,
-// 		"planToPayNonCtfundSelf": null,
-// 		"planToPayNonCtfundOther": null,
-// 		"planToPayDirectFundTransportationSpecial": null,
-// 		"planToPayDirectFundUltraTb": null,
-// 		"planToPayDirectFundOther": null,
-// 		"planToPayBankNote": null
-// 	},
-// 	"paymentBankList": []
-// })
-// 	let cc3 = reactive({
-// 	"id": "e28c6698fb77416682a1213132131232122423423123245c516bc",
-// 	"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
-// 	"roadName": "S2沪芦",
-// 	"paymentBank": "工商银行市分行营业部",
-// 	"paymentAccount": "1001244319006338868-000000010",
-// 	"paymentBankNote": null,
-// 	"paymentAccountBankNote": null,
-// 	"planToPayTotal": 30000000,
-// 	"confirmed": 20000000,
-// 	"estimated": 10000000,
-// 	"constructionAmount": 20000000,
-// 	"ruralLaborsSalary": null,
-// 	"materialAmount": null,
-// 	"prophaseAmount": 5000000,
-// 	"otherAmount": 5000000,
-// 	"status": "200",
-// 	"lastApprovedBy": null,
-// 	"lastApprovedByName": null,
-// 	"lastApprovedDate": null,
-// 	"roadSectionPlanToPayInfo": {
-// 		"planToPayCtfundCityDistrict": 10000000,
-// 		"planToPayCtfundCity": 10000000,
-// 		"planToPayCtfundLandTransferFee": 10000000,
-// 		"planToPayCtfundSpecialPurposeBond": null,
-// 		"planToPayCtfundOther": null,
-// 		"planToPayCtfundCapital": null,
-// 		"planToPayNonCtfundCity": null,
-// 		"planToPayNonCtfundDistrict": null,
-// 		"planToPayNonCtfundSelf": null,
-// 		"planToPayNonCtfundOther": null,
-// 		"planToPayDirectFundTransportationSpecial": null,
-// 		"planToPayDirectFundUltraTb": null,
-// 		"planToPayDirectFundOther": null,
-// 		"planToPayBankNote": null
-// 	},
-// 	"paymentBankList": []
-// })
+
+	let cc1 = reactive({
+	"id": "e28c6698fb77416682a12131131332123123245c516bc",
+	"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
+	"roadName": "S2沪芦",
+	"paymentBank": "工商银行市分行营业部",
+	"paymentAccount": "1001244319006338868-000000010",
+	"paymentBankNote": null,
+	"paymentAccountBankNote": null,
+	"planToPayTotal": 30000000,
+	"confirmed": 20000000,
+	"estimated": 10000000,
+	"constructionAmount": 20000000,
+	"ruralLaborsSalary": null,
+	"materialAmount": null,
+	"prophaseAmount": 5000000,
+	"otherAmount": 5000000,
+	"status": "200",
+	"lastApprovedBy": null,
+	"lastApprovedByName": null,
+	"lastApprovedDate": null,
+	"roadSectionPlanToPayInfo": {
+		"planToPayCtfundCityDistrict": 10000000,
+		"planToPayCtfundCity": 10000000,
+		"planToPayCtfundLandTransferFee": 10000000,
+		"planToPayCtfundSpecialPurposeBond": null,
+		"planToPayCtfundOther": null,
+		"planToPayCtfundCapital": null,
+		"planToPayNonCtfundCity": null,
+		"planToPayNonCtfundDistrict": null,
+		"planToPayNonCtfundSelf": null,
+		"planToPayNonCtfundOther": null,
+		"planToPayDirectFundTransportationSpecial": null,
+		"planToPayDirectFundUltraTb": null,
+		"planToPayDirectFundOther": null,
+		"planToPayBankNote": null
+	},
+	"paymentBankList": []
+})
+	let cc2 = reactive({
+	"id": "e28c6698fb774166werwerw82a13131213132123123245c516bc",
+	"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
+	"roadName": "S2沪芦",
+	"paymentBank": "工商银行市分行营业部",
+	"paymentAccount": "1001244319006338868-000000010",
+	"paymentBankNote": null,
+	"paymentAccountBankNote": null,
+	"planToPayTotal": 30000000,
+	"confirmed": 20000000,
+	"estimated": 10000000,
+	"constructionAmount": 20000000,
+	"ruralLaborsSalary": null,
+	"materialAmount": null,
+	"prophaseAmount": 5000000,
+	"otherAmount": 5000000,
+	"status": "200",
+	"lastApprovedBy": null,
+	"lastApprovedByName": null,
+	"lastApprovedDate": null,
+	"roadSectionPlanToPayInfo": {
+		"planToPayCtfundCityDistrict": 10000000,
+		"planToPayCtfundCity": 10000000,
+		"planToPayCtfundLandTransferFee": 10000000,
+		"planToPayCtfundSpecialPurposeBond": null,
+		"planToPayCtfundOther": null,
+		"planToPayCtfundCapital": null,
+		"planToPayNonCtfundCity": null,
+		"planToPayNonCtfundDistrict": null,
+		"planToPayNonCtfundSelf": null,
+		"planToPayNonCtfundOther": null,
+		"planToPayDirectFundTransportationSpecial": null,
+		"planToPayDirectFundUltraTb": null,
+		"planToPayDirectFundOther": null,
+		"planToPayBankNote": null
+	},
+	"paymentBankList": []
+})
+	let cc3 = reactive({
+	"id": "e28c6698fb77416682a1213132131232122423423123245c516bc",
+	"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
+	"roadName": "S2沪芦",
+	"paymentBank": "工商银行市分行营业部",
+	"paymentAccount": "1001244319006338868-000000010",
+	"paymentBankNote": null,
+	"paymentAccountBankNote": null,
+	"planToPayTotal": 30000000,
+	"confirmed": 20000000,
+	"estimated": 10000000,
+	"constructionAmount": 20000000,
+	"ruralLaborsSalary": null,
+	"materialAmount": null,
+	"prophaseAmount": 5000000,
+	"otherAmount": 5000000,
+	"status": "200",
+	"lastApprovedBy": null,
+	"lastApprovedByName": null,
+	"lastApprovedDate": null,
+	"roadSectionPlanToPayInfo": {
+		"planToPayCtfundCityDistrict": 10000000,
+		"planToPayCtfundCity": 10000000,
+		"planToPayCtfundLandTransferFee": 10000000,
+		"planToPayCtfundSpecialPurposeBond": null,
+		"planToPayCtfundOther": null,
+		"planToPayCtfundCapital": null,
+		"planToPayNonCtfundCity": null,
+		"planToPayNonCtfundDistrict": null,
+		"planToPayNonCtfundSelf": null,
+		"planToPayNonCtfundOther": null,
+		"planToPayDirectFundTransportationSpecial": null,
+		"planToPayDirectFundUltraTb": null,
+		"planToPayDirectFundOther": null,
+		"planToPayBankNote": null
+	},
+	"paymentBankList": []
+})
 	const itemDatas = ref({});
 	const roadSectionList = ref([]);
 	const getFormDataApproval = () => {
@@ -1104,10 +1025,12 @@
 			}
 			if(itemDatas.value.roadSectionList&&itemDatas.value.roadSectionList.length > 0){
 				roadSectionList.value = itemDatas.value.roadSectionList
-				// roadSectionList.value.push({...cc1})
-				// roadSectionList.value.push({...cc2})
-				// roadSectionList.value.push({...cc3})
 			}
+			// else{
+			// 	roadSectionList.value.push({...cc1})
+			// 	roadSectionList.value.push({...cc2})
+			// 	roadSectionList.value.push({...cc3})
+			// }
 			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
 						return {
 							fileTagName: item.fileTagName,
@@ -1136,151 +1059,7 @@
 			})
 		})
 	}
-
-	const onReject = () => {
-		// uni.showToast({
-		// 	title: '已打回',
-		// 	icon: 'none'
-		// })
-		inputDialogRequired.value = true
-		openInputDialog('打回原因', '请输入打回原因')
-	}
-
-	const onApprove = () => {
-		// uni.showToast({
-		// 	title: '已通过',
-		// 	icon: 'success'
-		// })
-		inputDialogRequired.value = false
-		openInputDialog('通过原因', '请输入通过原因')
-	}
-	const openInputDialog = (title, placeholder) => {
-		inputDialogTitle.value = title
-		inputDialogPlaceholder.value = placeholder
-		inputDialogRef.value.open()
-	}
-	const handleInputConfirm = (value, dialogType) => {
-		inputDialogValue.value = value
-		inputDialogRef.value.close()
-		doSubmitApproval(dialogType)
-	}
-	const handleInputCancel = () => {
-		inputDialogRef.value.close()
-		inputDialogValue.value = ''
-	}
-	const doSubmitApproval = (dialogType) => {
-		let params = {
-            wfInstanceId: itemDetail.value.wfinstanceId,
-			workItemId: itemDetail.value.workItemId,
-			approvalComment: inputDialogValue.value,
-			annotationComment: '',
-			pictureBaseData: '',
-			isApproval: dialogType,
-			procDefCode: itemDetail.value.procDefCode, //ZC01和GC01两个类型的可以了
-		}
-		http.post('/WF/SubmitApproval', params).then(res => {
-			if (res.code === 0) {
-				uni.showToast({
-					title: '已审批',
-					icon: 'success'
-				})
-				setTimeout(() => {
-					if (currentType.value === 'pending') {
-						uni.$emit('refresh-pending')
-						uni.$emit('refresh-completed')
-					};
-					goBack();
-				}, 1000)
-			} else {
-				uni.showToast({
-					title: res.message,
-					icon: 'none'
-				})
-			}
-		})
-	}
-	//获取审批记录接口 start
-	const approvalRecordList = ref([])
-	const getApprovalRecord = () => {
-		http.get('/WF/GetApprovalHistory', {
-			wfinstanceId: itemDetail.value.wfinstanceId,
-		}).then(res => {
-			console.log(res)
-			// 假设接口返回的数据在res.data中，需要根据实际接口调整
-			approvalRecordList.value = res.data || []
-		})
-	}
-	//获取审批记录接口 end
-	// 计算 scroll-view 高度 = 设备窗口高 - 头部实际高
-	function computeScrollHeight() {
-		try {
-			const {
-				windowHeight
-			} = uni.getSystemInfoSync() // px
-			const inst = getCurrentInstance()
-			const q = uni.createSelectorQuery().in(inst?.proxy)
-
-			q.select('.header-stickt').boundingClientRect(data => {
-				const headerH = data?.height || 0
-				const h = Math.max(0, windowHeight - headerH)
-				scrollerHeight.value = `${h}px`
-			}).exec()
-		} catch (e) {
-			// 兜底：若获取失败，至少不挡住页面
-			scrollerHeight.value = 'calc(100vh - 88rpx)'
-		}
-	}
-	onMounted(() => {
-		nextTick(() => {
-			computeScrollHeight()
-		})
-		// 可选：横竖屏/窗口尺寸改变时重算
-		// uni.onWindowResize?.(() => {
-		// 	computeScrollHeight()
-		// })
-		// focusout 事件在元素失去焦点时触发，特别是在移动端输入框收起键盘时
-		// document.addEventListener('focusout', () => {
-		//   setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' }), 20)
-		// })
-		// 视口变化 = 键盘弹起/收起
-
-		// 获取系统信息
-		const systemInfo = uni.getSystemInfoSync()
-		const isIOS = systemInfo.platform === 'ios'
-		const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
-
-		// 只在 iOS H5 环境下添加滚动修复
-		if (isIOS && isH5) {
-			console.log('检测到 iOS H5 环境，添加滚动修复')
-
-			// 添加失焦滚动修复
-			document.addEventListener('focusout', () => {
-				setTimeout(() => {
-					window.scrollTo({
-						top: 0,
-						left: 0,
-						behavior: 'instant'
-					})
-				}, 20)
-			})
-
-			// // 可选：添加其他 iOS H5 特有的修复
-			// document.addEventListener('touchstart', () => {
-			// // iOS H5 触摸开始时的处理
-			// })
-		} else {
-			window.visualViewport?.addEventListener('resize', onResize)
-			window.addEventListener('resize', onResize) // 部分浏览器兼容
-		}
-
-
-	})
-
-	function onResize() {
-		setTimeout(() => {
-			computeScrollHeight()
-		}, 100)
-	}
+	
 </script>
 
 <style lang="scss" scoped>
@@ -1346,7 +1125,7 @@
 
 		.scroller {
 			box-sizing: border-box;
-			height: v-bind(scrollerHeight);
+			height: v-bind(listHeight);
 			// position: absolute;
 			// z-index: 19;
 			// top: 88rpx;
@@ -1437,7 +1216,7 @@
 					align-items: center;
 					justify-content: center;
 					border: 2rpx solid #66ccff;
-					padding: 1rpx 12rpx;
+					padding: 2rpx 12rpx;
 					border-radius: 8rpx;
 					font-size: 18rpx;
 					color: #66ccff;
@@ -1600,7 +1379,7 @@
 		}
 
 		.info-list {
-			padding: 0 32rpx 10rpx;
+			padding: 0 32rpx 20rpx;
 			.info-item-column{
                 flex-direction: column;
 
@@ -1868,7 +1647,7 @@
 		border: none !important;
 
 		td {
-			border: none !important;
+			// border: none !important;
 		}
 	}
 
@@ -1945,16 +1724,27 @@
 		                   }
 
 	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 55px !important;min-width: 55px !important;background: #fff; white-space: normal; /* 默认值，允许文本换行 */}
-	.table1 td.sticky-xz-2 { position: sticky; left: 55px;  z-index: 4;background: #fff; }
+	.table1 td.sticky-xz-2 { position: sticky; left: 55px;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid !important; }
 	.table1 td.sticky-xz-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
 
 	.table1 td.sticky-lx-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 76px !important;min-width: 76px !important;background: #fff; }
-	.table1 td.sticky-lx-2 { position: sticky; left: 76px;  z-index: 4;background: #fff; }
+	.table1 td.sticky-lx-2 { position: sticky; left: 76px;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid !important; }
 	.table1 td.sticky-lx-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
 
 	/* 审批记录独立样式区域 */
 	.approval-record-section {
 		padding: 20rpx 32rpx 40rpx;
 		position: relative;
+	}
+
+
+	.bordr-none{
+		border-bottom: none !important;
+	}
+	.bordr-right-none{
+		border-right: none !important;
+	}
+	.bordr-bottom-none{
+		border-bottom: none !important;
 	}
 </style>

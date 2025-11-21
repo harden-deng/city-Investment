@@ -1,19 +1,7 @@
 <template>
 	<view class="detail-page">
 		<view class="header-stickt">
-			<view class="status_bar" :style="{ height: `${statusBarHeight * 2}rpx` }"></view>
-			<uni-nav-bar class="nav-bar-top">
-				<template v-slot:left>
-					<view class="back-btn" @click="goBack">
-						<!-- <uni-icons type="back" color="#000" size="22" /> -->
-						<!-- <image src="../../static/images/back.svg" mode=""></image> -->
-					</view>
-				</template>
-				<view class="nav-title">审批详情</view>
-				<template v-slot:right>
-					<view style="width: 40rpx"></view>
-				</template>
-			</uni-nav-bar>
+			<detailNavBar></detailNavBar>
 			<!-- 顶部蓝卡片 -->
 			<view class="hero-card">
 				<view class="hero-header">
@@ -133,32 +121,28 @@
 	import {
 		ref,
 		reactive,
-		onMounted,
-		nextTick,
 		getCurrentInstance,
 		computed
 	} from 'vue'
 	import {
-		getStorage
-	} from '@/utils/storage'
-	import {
 		FUND_USAGE_STATUS,
 		APPROVAL_RECORD,
 		PAYMENT_ACCOUNT_INFORMATION,
-		ATTACHMENT_LIST
+		ATTACHMENT_LIST,
+		currentUrlObj
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,
+		formatNumber
 	} from '@/utils/h5Bribge'
+	import { useListHeight } from '@/utils/useListHeight.js'
+	import { useApproval } from '@/utils/useApproval.js'
+	import detailNavBar from '@/components/navBar/detailNavBar.vue'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
-	const statusBarHeight = ref(0)
 	let eventChannel
 	onLoad(() => {
-		const h = getStorage('statusBarHeight')
-		if (Number(h)) statusBarHeight.value = Number(h)
 		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
 		eventChannel.on('open-detail', (data) => {
 			console.log('open-detail', data);
@@ -169,23 +153,36 @@
 		})
 	})
 	const currentType = ref('')
-	const currentUrlObj = reactive({
-		pending: '/WF/GetFormDataApproval',
-		completed: '/WF/GetFormDataView'
-	})
-	
-	const inputDialogRef = ref(null)
-	const inputDialogRequired = ref(false)
-	const inputDialogTitle = ref('')
-	const inputDialogPlaceholder = ref('')
-	const inputDialogValue = ref('')
-	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	const stageTags = ref([])
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
-	const attachmentData = ref([])
+	const attachmentData = ref([]);
+
+	const { listHeight } = useListHeight({
+	     headerSelector: '.header-stickt', // 可选，默认就是这个值
+		 iosFit: true,
+	});
+
+	const {
+		inputDialogRef,
+		inputDialogRequired,
+		inputDialogTitle,
+		inputDialogPlaceholder,
+		handleInputConfirm,
+		handleInputCancel,
+		onReject,
+		onApprove,
+		approvalRecordList,
+		getApprovalRecord
+		} = useApproval({
+			itemDetail,
+			currentType,
+			successMessage: '已审批',
+			autoGoBack: true,
+			autoRefresh: true
+		})
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
 		[APPROVAL_RECORD]: true,
@@ -300,13 +297,15 @@
 			"lastModifiedByName": "财务分管领导",
 			"lastModifiedDate": "2025-11-17 11:22:49"
 		})
-	function goBack() {
-		uni.navigateBack()
-	}
+
 	const itemDatas = ref({});
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			// let data = res.data?.data || {}
+			uni.showToast({
+					title: '暂未联调',
+					icon: 'none'
+				})
 			let data = magicData.value || {}
 			itemDatas.value = data || {}
 			infoRows.value.forEach(item => {
@@ -345,145 +344,9 @@
 
 		})
 	}
-
-	const onReject = () => {
-		inputDialogRequired.value = true
-		openInputDialog('打回原因', '请输入打回原因')
-	}
-
-	const onApprove = () => {
-		inputDialogRequired.value = false
-		openInputDialog('通过原因', '请输入通过原因')
-	}
-	const openInputDialog = (title, placeholder) => {
-		inputDialogTitle.value = title
-		inputDialogPlaceholder.value = placeholder
-		inputDialogRef.value.open()
-	}
-	const handleInputConfirm = (value, dialogType) => {
-		inputDialogValue.value = value
-		inputDialogRef.value.close()
-		doSubmitApproval(dialogType)
-	}
-	const handleInputCancel = () => {
-		inputDialogRef.value.close()
-		inputDialogValue.value = ''
-	}
-	const doSubmitApproval = (dialogType) => {
-		let params = {
-            wfInstanceId: itemDetail.value.wfinstanceId,
-			workItemId: itemDetail.value.workItemId,
-			approvalComment: inputDialogValue.value,
-			annotationComment: '',
-			pictureBaseData: '',
-			isApproval: dialogType,
-			procDefCode: itemDetail.value.procDefCode, //ZC01和GC01两个类型的可以了
-		}
-		http.post('/WF/SubmitApproval', params).then(res => {
-			if (res.code === 0) {
-				uni.showToast({
-					title: '已审批',
-					icon: 'success'
-				})
-				setTimeout(() => {
-					if (currentType.value === 'pending') {
-						uni.$emit('refresh-pending')
-						uni.$emit('refresh-completed')
-					};
-					goBack();
-				}, 1000)
-			} else {
-				uni.showToast({
-					title: res.message,
-					icon: 'none'
-				})
-			}
-		})
-	}
-	//获取审批记录接口 start
-	const approvalRecordList = ref([]);
-	const getApprovalRecord = () => {
-		http.get('/WF/GetApprovalHistory', {
-			wfinstanceId: itemDetail.value.wfinstanceId,
-		}).then(res => {
-			console.log(res)
-			// 假设接口返回的数据在res.data中，需要根据实际接口调整
-			approvalRecordList.value = res.data || []
-		})
-	}
-	//获取审批记录接口 end
-	// 计算 scroll-view 高度 = 设备窗口高 - 头部实际高
-	function computeScrollHeight() {
-		try {
-			const {
-				windowHeight
-			} = uni.getSystemInfoSync() // px
-			const inst = getCurrentInstance()
-			const q = uni.createSelectorQuery().in(inst?.proxy)
-
-			q.select('.header-stickt').boundingClientRect(data => {
-				const headerH = data?.height || 0
-				const h = Math.max(0, windowHeight - headerH)
-				scrollerHeight.value = `${h}px`
-			}).exec()
-		} catch (e) {
-			// 兜底：若获取失败，至少不挡住页面
-			scrollerHeight.value = 'calc(100vh - 88rpx)'
-		}
-	}
-	onMounted(() => {
-		nextTick(() => {
-			computeScrollHeight()
-		})
-		// 获取系统信息
-		const systemInfo = uni.getSystemInfoSync()
-		const isIOS = systemInfo.platform === 'ios'
-		const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
-
-		// 只在 iOS H5 环境下添加滚动修复
-		if (isIOS && isH5) {
-			console.log('检测到 iOS H5 环境，添加滚动修复')
-
-			// 添加失焦滚动修复
-			document.addEventListener('focusout', () => {
-				setTimeout(() => {
-					window.scrollTo({
-						top: 0,
-						left: 0,
-						behavior: 'instant'
-					})
-				}, 20)
-			})
-
-			// // 可选：添加其他 iOS H5 特有的修复
-			// document.addEventListener('touchstart', () => {
-			// // iOS H5 触摸开始时的处理
-			// })
-		} else {
-			window.visualViewport?.addEventListener('resize', onResize)
-			window.addEventListener('resize', onResize) // 部分浏览器兼容
-		}
-
-
-	})
-
-	function onResize() {
-		setTimeout(() => {
-			computeScrollHeight()
-		}, 100)
-	}
 </script>
 
 <style lang="scss" scoped>
-	::v-deep .uni-navbar__header-container {
-		justify-content: center !important;
-		align-items: center !important;
-	}
-
-	::v-deep .uni-navbar__header {
-		padding: 0 !important;
-	}
-
 	::v-deep .uni-tabbar-bottom {
 		display: none !important;
 		height: 0 !important;
@@ -499,34 +362,34 @@
 			top: 0;
 			z-index: 19;
 
-			.status_bar {
-				background: #fff;
-				width: 100%;
-			}
+			// .status_bar {
+			// 	background: #fff;
+			// 	width: 100%;
+			// }
 		}
 
-		.nav-bar-top {
-			::v-deep .uni-navbar__header {
-				background: #fff !important;
-			}
+		// .nav-bar-top {
+		// 	::v-deep .uni-navbar__header {
+		// 		background: #fff !important;
+		// 	}
 
-			.back-btn {
-				width: 100rpx;
-				height: 100rpx;
-				background: url('../../static/images/back.svg') center center no-repeat;
-				background-size: 24rpx;
-			}
+		// 	.back-btn {
+		// 		width: 100rpx;
+		// 		height: 100rpx;
+		// 		background: url('../../static/images/back.svg') center center no-repeat;
+		// 		background-size: 24rpx;
+		// 	}
 
-			.nav-title {
-				font-size: 32rpx;
-				font-weight: bold;
-				color: #000;
-			}
-		}
+		// 	.nav-title {
+		// 		font-size: 32rpx;
+		// 		font-weight: bold;
+		// 		color: #000;
+		// 	}
+		// }
 
 		.scroller {
 			box-sizing: border-box;
-			height: v-bind(scrollerHeight);
+			height: v-bind(listHeight);
 		}
 
 		.hero-card {
@@ -612,8 +475,8 @@
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					border: 1rpx solid #66ccff;
-					padding: 1rpx 12rpx;
+					border: 2rpx solid #66ccff;
+					padding: 2rpx 12rpx;
 					border-radius: 8rpx;
 					font-size: 18rpx;
 					color: #66ccff;
@@ -776,7 +639,15 @@
 		}
 
 		.info-list {
-			padding: 0 32rpx 10rpx;
+			padding: 0 32rpx 20rpx;
+			.info-item-column {
+                flex-direction: column;
+
+			}
+			.info-value-left {
+				text-align: left;
+				margin-top: 10rpx;
+			}
 		}
 
 		.info-item {
@@ -784,7 +655,7 @@
 			align-items: flex-start;
 			padding: 8rpx 0;
 			&.info-item-border {
-				border-bottom: 1rpx dashed #ddd;
+				border-bottom: 2rpx dashed #ddd;
 				padding-bottom: 22rpx !important;
 				margin-bottom: 12rpx;
 			}
@@ -822,7 +693,7 @@
 
 			.contract-section {
 				box-sizing: border-box;
-				border: 1rpx solid #ddd;
+				border: 2rpx solid #ddd;
 				padding: 16rpx;
 				overflow: hidden;
 
@@ -923,7 +794,7 @@
 
 				.account-info-block {
 					background: #f6f8fc;
-					border: 1rpx solid #ddd;
+					border: 2rpx solid #ddd;
 					overflow: hidden;
 					padding: 0;
 
@@ -934,8 +805,8 @@
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
-						padding: 0 16rpx;
-						border-bottom: 1rpx solid #dddddd;
+						padding: 16rpx;
+						border-bottom: 2rpx solid #dddddd;
 						background: #f6f8fc;
 
 						&:last-child {
@@ -988,7 +859,7 @@
 	.table1 {
 		box-sizing: border-box;
 		width: 100%;
-		border-bottom: 1rpx #ddd solid;
+		border-bottom: 2rpx #ddd solid;
 	}
 
 	.table2 {
@@ -1008,8 +879,8 @@
 
 	.table1 td {
 		box-sizing: border-box;
-		border-left: 1rpx #ddd solid;
-		border-top: 1rpx #ddd solid;
+		border-left: 2rpx #ddd solid;
+		border-top: 2rpx #ddd solid;
 		padding: 8px;
 		font-size: 12px;
 	}
