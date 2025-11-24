@@ -12,9 +12,9 @@ export const procDefCodeUrlObj = {
   'SR01': '/pages/detail/srqr', //收入确认11/19
   'QT01': '/pages/detail/qtjf', //其他11/19
   'XM01': '/pages/detail/szxm',  //市政项目11/19
+  'ZZ01': '/pages/detail/fyzz',  //费用暂支11/21
+  'CB01': '/pages/detail/cbqr',  //成本确认11/21 
   'ZC01': '/pages/detail/zcys',  //支出预算
-  'ZZ01': '/pages/detail/fyzz',  //费用暂支
-  'CB01': '/pages/detail/cbqr',  //成本确认
 }
 export const currentUrlObj = {
   pending: '/WF/GetFormDataApproval',

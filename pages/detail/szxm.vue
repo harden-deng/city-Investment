@@ -39,9 +39,9 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item"  :class="{'info-item-column': row.value.length > 34,'info-item-border': (row.key === 'contractNo' || row.key === 'contractPaymentRatio')}"  v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item"  :class="{'info-item-column': row.value?.length > 34,'info-item-border': (row.key === 'contractNo' || row.key === 'contractPaymentRatio')}"  v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value" :class="{'info-value-left': row.value.length > 34}">{{row.key === 'contractPaymentRatio' ? row.value + '%' : row.value || '--'}}</text>
+						<text class="info-value" :class="{'info-value-left': row.value?.length > 34}">{{row.key === 'contractPaymentRatio' ? row.value + '%' : row.value || '--'}}</text>
 					</view>
 					<view class="info-item" v-if="['OverBudget','OutOfBudget'].includes(itemDatas.specialCase)">
 						<text class="info-label">补充说明</text>
@@ -749,6 +749,9 @@
 			.info-value-left {
 				text-align: left;
 				margin-top: 10rpx;
+				white-space: normal;
+				word-break: break-all;
+				word-wrap: break-word;
 			}
 		}
 
@@ -965,6 +968,7 @@
 		z-index: 3;
 		max-width: 176px !important;
 		min-width: 176px !important;
+		width: 176px !important;
         border-left: 2rpx #ddd solid;
 		box-sizing: border-box;
 		background: #fff;

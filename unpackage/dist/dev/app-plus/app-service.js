@@ -11165,7 +11165,7 @@ if (uni.restoreGlobal) {
                 return vue.openBlock(), vue.createElementBlock(
                   "view",
                   {
-                    class: vue.normalizeClass(["info-item", { "info-item-column": row.value.length > 34 }]),
+                    class: vue.normalizeClass(["info-item", { "info-item-column": row.value?.length > 34 }]),
                     key: idx
                   },
                   [
@@ -11179,7 +11179,7 @@ if (uni.restoreGlobal) {
                     vue.createElementVNode(
                       "text",
                       {
-                        class: vue.normalizeClass(["info-value", { "info-value-left": row.value.length > 34 }])
+                        class: vue.normalizeClass(["info-value", { "info-value-left": row.value?.length > 34 }])
                       },
                       vue.toDisplayString(row.value || "--"),
                       3

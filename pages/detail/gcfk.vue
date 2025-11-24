@@ -43,9 +43,9 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" :class="{'info-item-column': row.value.length > 34}" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item" :class="{'info-item-column': row.value?.length > 34}" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value" :class="{'info-value-left': row.value.length > 34}">{{ row.value || '--' }}</text>
+						<text class="info-value" :class="{'info-value-left': row.value?.length > 34}">{{ row.value || '--' }}</text>
 					</view>
 				</view>
 			</view>
@@ -1387,6 +1387,9 @@
 			.info-value-left{
 				text-align: left;
 				margin-top: 10rpx;
+				white-space: normal;
+				word-break: break-all;
+				word-wrap: break-word;
 			}
 		}
 

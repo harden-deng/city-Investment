@@ -14,10 +14,10 @@
 						</view>
 					</view>
 					<view class="amount-box">
-						<view class="amount-label">申请支付总金额</view>
+						<view class="amount-label">申请金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{ formatNumber(itemDatas.planToPay) }}</text></view>
+								{{ formatNumber(itemDatas.confirmedCostAmountVat) }}</text></view>
 					</view>
 				</view>
 				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
@@ -41,14 +41,14 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item" :class="{'info-item-column': row.value?.length > 34}" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value">{{ row.value || '--' }}</text>
+						<text class="info-value" :class="{'info-value-left': row.value?.length > 34}">{{ row.value || '--' }}</text>
 					</view>
 				</view>
 			</view>
 			<!-- 发票信息 -->
-			<view class="section" v-if="itemDatas.CBInvoiceReceived == 1">
+			<view class="section" v-if="itemDatas.invoiceReceived == 1">
 				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
@@ -60,7 +60,7 @@
 				</view>
 				<transition name="collapse">
                     <view class="info-list" v-if="getOptions(FUND_USAGE_STATUS)">
-                        <view class="info-item" v-for="(row, idx) in infoRows2" :key="idx">
+                        <view class="info-item"  v-for="(row, idx) in infoRows2" :key="idx">
                             <text class="info-label">{{ row.label }}</text>
                             <text class="info-value">{{ row.value || '--' }}</text>
                         </view>
@@ -79,12 +79,66 @@
 					</view>
 				</view>
 				<transition name="collapse">
-                    <view class="info-list" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
+                    <!-- <view class="info-list" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
                         <view class="info-item" v-for="(row, idx) in infoRows3" :key="idx">
                             <text class="info-label">{{ row.label }}</text>
                             <text class="info-value">{{ row.value || '--' }}</text>
                         </view>
-				    </view>
+				    </view> -->
+					<view class="usage-details" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
+							<scroll-view scroll-x class="table-scroll-x" @touchmove.stop="handleTableTouchMove">
+								<table cellspacing="0" cellpadding="0" class="table1">
+									<tbody>
+										<tr>
+											<td class="type sticky-xz-1">{{ infoRows3[0].label }}</td>
+											<td class="info info-plus">
+												{{ infoRows3[0].value }}
+											</td>
+										</tr>
+										<tr>
+											<td class="type sticky-xz-1">{{ infoRows3[1].label }}</td>
+											<td class="info info-plus">
+												{{ infoRows3[1].value }}</td>
+										</tr>
+                                        <tr>
+											<td class="type sticky-xz-1">{{ infoRows3[2].label }}</td>
+											<td class="info info-plus">
+												{{ infoRows3[2].value }}</td>
+										</tr>
+                                        <tr>
+											<td class="type sticky-xz-1">{{ infoRows3[3].label }}</td>
+											<td class="info info-plus">
+												{{ infoRows3[3].value }}</td>
+										</tr>
+                                        <tr>
+											<td class="type sticky-xz-1">{{ infoRows3[4].label }}</td>
+											<td class="info info-plus">
+												{{ infoRows3[4].value }}</td>
+										</tr>
+                                        <tr>
+											<td class="type sticky-xz-1">{{ infoRows3[5].label }}</td>
+											<td class="info info-plus">
+												{{ infoRows3[5].value }}</td>
+										</tr>
+                                        <tr>
+											<td class="type sticky-xz-1">{{ infoRows3[6].label }}</td>
+											<td class="info info-plus">
+												{{ infoRows3[6].value }}</td>
+										</tr>
+                                        <tr>
+											<td class="type sticky-xz-1">{{ infoRows3[7].label }}</td>
+											<td class="info info-plus">
+												{{ infoRows3[7].value }}</td>
+										</tr>
+                                        <tr>
+											<td class="type sticky-xz-1">{{ infoRows3[8].label }}</td>
+											<td class="info info-plus">
+												{{ infoRows3[8].value }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</scroll-view>
+					</view>
 				</transition>
 			</view>
 
@@ -138,8 +192,6 @@
 	import {
 		ref,
 		reactive,
-		onMounted,
-		nextTick,
 		getCurrentInstance,
 		computed
 	} from 'vue'
@@ -152,8 +204,10 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,formatDateTimeMinute,goBack
+		formatNumber,formatDateTimeMinute,handleTableTouchMove
 	} from '@/utils/h5Bribge'
+	import { useListHeight } from '@/utils/useListHeight.js'
+	import { useApproval } from '@/utils/useApproval.js'
 	import detailNavBar from '@/components/navBar/detailNavBar.vue'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
@@ -170,18 +224,37 @@
 		})
 	})
 	const currentType = ref('')
-	const inputDialogRef = ref(null)
-	const inputDialogRequired = ref(false)
-	const inputDialogTitle = ref('')
-	const inputDialogPlaceholder = ref('')
-	const inputDialogValue = ref('')
-	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	const stageTags = ref([])
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
 	const attachmentData = ref([])
+
+	const { listHeight } = useListHeight({
+	     headerSelector: '.header-stickt', // 可选，默认就是这个值
+		 iosFit: true,
+	});
+
+	const {
+		inputDialogRef,
+		inputDialogRequired,
+		inputDialogTitle,
+		inputDialogPlaceholder,
+		handleInputConfirm,
+		handleInputCancel,
+		onReject,
+		onApprove,
+		approvalRecordList,
+		getApprovalRecord
+		} = useApproval({
+			itemDetail,
+			currentType,
+			successMessage: '已审批',
+			autoGoBack: true,
+			autoRefresh: true
+		})
+
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
 		[APPROVAL_RECORD]: true,
@@ -212,137 +285,127 @@
 	const infoRows = ref([{
 			label: '合同名称',
 			value: '',
-			key: 'RelatedContractID'
+			key: 'relatedContractName'
+		},{
+			label: '合同编号',
+			value: '',
+			key: 'contractNo'
 		},
 		{
 			label: '合同子项',
 			value: '',
-			key: 'RelatedContractItemID' 
+			key: 'relatedContractItemName' 
 		},
 		{
 			label: '项目名称',
 			value: '',
-			key: 'ProjectName'
+			key: 'projectName'
 		},{
 			label: '所属部门',
 			value: '',
-			key: 'BusinessUnitName' 
+			key: 'businessUnitName' 
 		},{
 			label: '对方单位',
 			value: '',
-			key: 'PartyName'
+			key: 'partyName'
 		},{
 			label: '合同金额',
 			value: '',
-			key: 'ContractAmountVAT'
-		},{
-			label: '合同编号',
-			value: '',
-			key: 'ContractNo'
+			key: 'contractAmountVat'
 		},{
 			label: '对应收入合同编号',
 			value: '',
-			key: 'ReceivingContractNo'
+			key: 'receivingContractNo'
 		},{
 			label: '是否已收到发票',
 			value: '',
-			key: 'CBInvoiceReceived'
+			key: 'invoiceReceived'
 		}
 	])
 
     
 	const infoRows2 = ref([{
-			label: '专票含税金额',
-			value: '',
-			key: 'InvoiceAmountVAT'
-		},
-		{
 			label: '发票号',
 			value: '',
-			key: 'InvoiceID'
+			key: 'invoiceId'
+		},{
+			label: '专票含税金额',
+			value: '',
+			key: 'invoiceAmountVat'
 		},
+		
 		{
 			label: '专票不含税金额',
 			value: '',
-			key: 'InvoiceAmountNET'
-		},
-		{
-			label: '普票金额',
-			value: '',
-			key: 'InvoiceAmountVATO'
+			key: 'invoiceAmountNet'
 		},
 		{
 			label: '专票税额',
 			value: '',
-			key: 'InvoiceAmountTax' 
+			key: 'invoiceAmountTax' 
+		},{
+			label: '普票金额',
+			value: '',
+			key: 'invoiceAmountVato'
 		}
 	])
     const infoRows3 = ref([{
 			label: '确认日期',
 			value: '',
-			key: 'ConfirmedDate'
+			key: 'confirmedDate'
 		},
 		{
 			label: '本期确认成本量',
 			value: '',
-			key: 'ConfirmedCostVAT'
+			key: 'confirmedCostVat'
 		},
 		{
 			label: '本期成本量占合同比% ',
 			value: '',
-			key: 'ContractRatio'
+			key: 'contractRatio'
 		},
 		{
 			label: '确认金额(含税)',
 			value: '',
-			key: 'ConfirmedCostAmountVAT'
+			key: 'confirmedCostAmountVat'
 		},
 		{
 			label: '增值税税额',
 			value: '',
-			key: 'ConfirmedCostTaxAmount' 
+			key: 'confirmedCostTaxAmount' 
 		},
 		{
 			label: '确认金额(不含税)',
 			value: '',
-			key: 'ConfirmedCostAmountNET'
+			key: 'confirmedCostAmountNet'
 		},	{
 			label: '累计确认金额(含税)',
 			value: '',
-			key: 'AccuredConfirmedCostAmountVAT'
+			key: 'accuredConfirmedCostAmountVat'
 		},	{
 			label: '内容',
 			value: '',
-			key: 'Content'
+			key: 'content'
 		},	{
 			label: '确认依据',
 			value: '',
-			key: 'Remark'
+			key: 'remark'
 		}
 	])
 	const itemDatas = ref({});
-	const requestTypeObj = reactive({
-		'IncomeConfirm': '收入确认',
-		'Invoicing': '申请开票',
-	})
-	// const vehiclePaymentContentList = ref([]);
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
-			uni.showToast({
-					title: '暂未联调',
-					icon: 'none'
-				})
 			let data = res.data?.data || {}
 			itemDatas.value = data || {}
 			infoRows.value.forEach(item => {
 				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key]
-                if(item.key == 'CBInvoiceReceived' && [0,1].includes(itemDatas.value[item.key])){
+                if(item.key == 'invoiceReceived' && [0,1].includes(itemDatas.value[item.key])){
 					item.value = itemDatas.value[item.key] == 0 ? '否' : '是'
 				}
 			});
 
 			infoRows2.value.forEach(item => {
-				item.value = (typeof itemDatas.value[item.key] === 'number') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key]
+				item.value = (typeof itemDatas.value[item.key] === 'number') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key];
 			});
 
 			infoRows3.value.forEach(item => {
@@ -355,8 +418,8 @@
 				}
                 
 			});
-			if(infoRows.value[0].value){
-				 stageTags.value.push(infoRows.value[0].value)
+			if(itemDatas.value.businessUnitName){
+				 stageTags.value.push(itemDatas.value.businessUnitName)
 			}
 			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
 				return {
@@ -379,133 +442,6 @@
 			})
 
 		})
-	}
-
-	const onReject = () => {
-		inputDialogRequired.value = true
-		openInputDialog('打回原因', '请输入打回原因')
-	}
-
-	const onApprove = () => {
-		inputDialogRequired.value = false
-		openInputDialog('通过原因', '请输入通过原因')
-	}
-	const openInputDialog = (title, placeholder) => {
-		inputDialogTitle.value = title
-		inputDialogPlaceholder.value = placeholder
-		inputDialogRef.value.open()
-	}
-	const handleInputConfirm = (value, dialogType) => {
-		inputDialogValue.value = value
-		inputDialogRef.value.close()
-		doSubmitApproval(dialogType)
-	}
-	const handleInputCancel = () => {
-		inputDialogRef.value.close()
-		inputDialogValue.value = ''
-	}
-	const doSubmitApproval = (dialogType) => {
-		let params = {
-            wfInstanceId: itemDetail.value.wfinstanceId,
-			workItemId: itemDetail.value.workItemId,
-			approvalComment: inputDialogValue.value,
-			annotationComment: '',
-			pictureBaseData: '',
-			isApproval: dialogType,
-			procDefCode: itemDetail.value.procDefCode, //ZC01和GC01两个类型的可以了
-		}
-		http.post('/WF/SubmitApproval', params).then(res => {
-			if (res.code === 0) {
-				uni.showToast({
-					title: '已审批',
-					icon: 'success'
-				})
-				setTimeout(() => {
-					if (currentType.value === 'pending') {
-						uni.$emit('refresh-pending')
-						uni.$emit('refresh-completed')
-					};
-					goBack();
-				}, 1000)
-			} else {
-				uni.showToast({
-					title: res.message,
-					icon: 'none'
-				})
-			}
-		})
-	}
-	//获取审批记录接口 start
-	const approvalRecordList = ref([]);
-	const getApprovalRecord = () => {
-		http.get('/WF/GetApprovalHistory', {
-			wfinstanceId: itemDetail.value.wfinstanceId,
-		}).then(res => {
-			console.log(res)
-			// 假设接口返回的数据在res.data中，需要根据实际接口调整
-			approvalRecordList.value = res.data || []
-		})
-	}
-	//获取审批记录接口 end
-	// 计算 scroll-view 高度 = 设备窗口高 - 头部实际高
-	function computeScrollHeight() {
-		try {
-			const {
-				windowHeight
-			} = uni.getSystemInfoSync() // px
-			const inst = getCurrentInstance()
-			const q = uni.createSelectorQuery().in(inst?.proxy)
-
-			q.select('.header-stickt').boundingClientRect(data => {
-				const headerH = data?.height || 0
-				const h = Math.max(0, windowHeight - headerH)
-				scrollerHeight.value = `${h}px`
-			}).exec()
-		} catch (e) {
-			// 兜底：若获取失败，至少不挡住页面
-			scrollerHeight.value = 'calc(100vh - 88rpx)'
-		}
-	}
-	onMounted(() => {
-		nextTick(() => {
-			computeScrollHeight()
-		})
-		// 获取系统信息
-		const systemInfo = uni.getSystemInfoSync()
-		const isIOS = systemInfo.platform === 'ios'
-		const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
-
-		// 只在 iOS H5 环境下添加滚动修复
-		if (isIOS && isH5) {
-			console.log('检测到 iOS H5 环境，添加滚动修复')
-
-			// 添加失焦滚动修复
-			document.addEventListener('focusout', () => {
-				setTimeout(() => {
-					window.scrollTo({
-						top: 0,
-						left: 0,
-						behavior: 'instant'
-					})
-				}, 20)
-			})
-
-			// // 可选：添加其他 iOS H5 特有的修复
-			// document.addEventListener('touchstart', () => {
-			// // iOS H5 触摸开始时的处理
-			// })
-		} else {
-			window.visualViewport?.addEventListener('resize', onResize)
-			window.addEventListener('resize', onResize) // 部分浏览器兼容
-		}
-
-
-	})
-
-	function onResize() {
-		setTimeout(() => {
-			computeScrollHeight()
-		}, 100)
 	}
 </script>
 
@@ -561,7 +497,7 @@
 
 		.scroller {
 			box-sizing: border-box;
-			height: v-bind(scrollerHeight);
+			height: v-bind(listHeight);
 		}
 
 		.hero-card {
@@ -812,12 +748,24 @@
 
 		.info-list {
 			padding: 0 32rpx 20rpx;
+			.info-item-column{
+                flex-direction: column;
+
+			}
+			.info-value-left{
+				text-align: left;
+				margin-top: 10rpx;
+				white-space: normal;
+				word-break: break-all;
+				word-wrap: break-word;
+			}
 		}
 
 		.info-item {
 			display: flex;
 			align-items: flex-start;
 			padding: 8rpx 0;
+			flex-wrap: wrap;
 			&.info-item-border {
 				border-bottom: 2rpx dashed #ddd;
 				padding-bottom: 22rpx !important;
@@ -830,7 +778,7 @@
 		}
 
 		.info-label {
-			min-width: 180rpx;
+			min-width: 120rpx;
 			max-width: 280rpx;
 			padding-right: 10rpx;
 			line-height: 40rpx;
@@ -848,7 +796,10 @@
 			font-size: 24rpx;
 			color: #666;
 			line-height: 40rpx;
-			text-align: right;
+			text-align: right;	
+			white-space: normal;
+			word-break: break-all;
+			word-wrap: break-word;
 		}
 
 		// 用款情况样式
@@ -1023,7 +974,8 @@
 	.table1 {
 		box-sizing: border-box;
 		width: 100%;
-		border-bottom: 2rpx #ddd solid;
+		// border-bottom: 2rpx #ddd solid;
+		border-top: 2rpx #ddd solid;
 	}
 
 	.table2 {
@@ -1043,8 +995,10 @@
 
 	.table1 td {
 		box-sizing: border-box;
-		border-left: 2rpx #ddd solid;
-		border-top: 2rpx #ddd solid;
+		// border-left: 2rpx #ddd solid;
+		// border-top: 2rpx #ddd solid;
+		border-bottom: 2rpx #ddd solid;
+		border-right: 2rpx #ddd solid;
 		padding: 8px;
 		font-size: 12px;
 	}
@@ -1052,6 +1006,9 @@
 	.table1 .info {
 		text-align: right;
 		color: #666;
+		padding: 8px !important;
+		max-width: 350px;
+		white-space: wrap !important;
 	}
 
 	.table1 .text {
@@ -1079,8 +1036,9 @@
 	.table1 td.sticky-2 { position: sticky; left: 109.02px;  z-index: 4;box-sizing: border-box; }
 	.table1 td.sticky-3 { position: sticky; left: 220px;  z-index: 2;box-sizing: border-box; }
 
-	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 55.5px !important; ;background: #fff;}
-	.table1 td.sticky-xz-2 { position: sticky; left: 55.5px;  z-index: 4;;background: #fff; }
+	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;	max-width: 176px !important;
+		min-width: 176px !important;width: 176px !important; border-left: 2rpx #ddd solid;box-sizing: border-box;background: #fff;}
+	.table1 td.sticky-xz-2 { position: sticky; left: 176px;  z-index: 4;;background: #fff; }
 	.table1 td.sticky-xz-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
 
 	.table1 td.sticky-lx-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 76px !important;background: #fff; }

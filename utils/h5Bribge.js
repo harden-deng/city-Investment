@@ -157,3 +157,20 @@ export	const handleTableTouchMove = (e) => {
 			// 允许横向滚动继续
 		}
 	}
+
+	// 处理表格横向滚动时的 touchmove 事件
+	export	const handleAmount = (num,item) => {
+		if (num === null || num === undefined || isNaN(num) || num === 0) {
+			let arr = JSON.parse(item.keyInfo)
+			let val = arr[arr.length - 1]
+			if(val.includes('￥')){
+				return val.replace('￥', '')
+			}else{
+				return '0.00'
+			}
+		}
+		return Number(num).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+	}

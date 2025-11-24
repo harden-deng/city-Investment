@@ -9,15 +9,24 @@
 						<view class="project-name-1">
 							{{ itemDetail.taskName  }}
 						</view>
-						<view class="project-name-1">
+						
+						<view class="amount-value" v-if="infoRows[0].value.includes('收入确认')&&infoRows[0].value.includes('申请开票')">
+							<text class="amount-value-symbol">确认金额:</text><text class="amount-value-symbol">¥</text><text
+								class="amount-value-number">
+								{{ formatNumber(itemDatas.confirmedIncomeAmountVat) }}</text>
+						</view>
+						<view class="project-name-1" v-else>
 							{{ itemDatas.contractName }}
 						</view>
 					</view>
 					<view class="amount-box">
 						<view class="amount-label">申请金额</view>
-						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
+						<view class="amount-value" style="justify-content: flex-end;" v-if="infoRows[0].value.includes('申请开票')"><text class="amount-value-symbol">发票金额:</text><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{ formatNumber(itemDatas.contractAmountVat) }}</text></view>
+								{{ formatNumber(itemDatas.planToReceive) }}</text></view>
+						<view class="amount-value" style="justify-content: flex-end;" v-else="infoRows[0].value.includes('收入确认')"><text class="amount-value-symbol">确认金额:</text><text class="amount-value-symbol">¥</text><text
+								class="amount-value-number">
+								{{ formatNumber(itemDatas.confirmedIncomeAmountVat) }}</text></view>
 					</view>
 				</view>
 				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
@@ -282,6 +291,9 @@
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
+	const amountArr = () => {
+		return [infoRows[0].value.includes('收入确认'),infoRows[0].value.includes('申请开票')]
+	}
 	const attachmentData = ref([])
 	const { listHeight } = useListHeight({
 	     headerSelector: '.header-stickt', // 可选，默认就是这个值
@@ -604,7 +616,7 @@
 			}
 
 			.project-name {
-				width: 60%;
+				width: 50%;
 				font-size: 24rpx;
 				color: #fff;
 
@@ -617,6 +629,28 @@
 					line-height: 1.4;
 					min-height: 72rpx;
 					/* 如果需要最小高度，使用 min-height */
+				}
+				.amount-value {
+					height: 70rpx;
+					display: flex;
+					align-items: center;
+					flex-wrap: wrap;
+					// line-height: 70rpx;
+
+					.amount-value-symbol {
+						font-size: 24rpx;
+						color: #ffffff;
+						margin-right: 10rpx;
+					}
+
+					.amount-value-number {
+						font-size: 32rpx;
+						color: #ffd615;
+						font-weight: bold;
+						white-space: normal;
+						word-break: break-all;
+						word-wrap: break-word;
+					}
 				}
 			}
 
@@ -634,16 +668,18 @@
 
 				.amount-value {
 					height: 70rpx;
-					line-height: 70rpx;
+					display: flex;
+					align-items: center;
+					flex-wrap: wrap;
 
 					.amount-value-symbol {
-						font-size: 28rpx;
+						font-size: 24rpx;
 						color: #ffffff;
 						margin-right: 10rpx;
 					}
 
 					.amount-value-number {
-						font-size: 36rpx;
+						font-size: 32rpx;
 						color: #ffd615;
 						font-weight: bold;
 					}

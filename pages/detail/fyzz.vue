@@ -41,9 +41,9 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" :class="{'info-item-column': row.value.length > 34}" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item" :class="{'info-item-column': row.value?.length > 34}" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value" :class="{'info-value-left': row.value.length > 34}">{{ row.value || '--' }}</text>
+						<text class="info-value" :class="{'info-value-left': row.value?.length > 34}">{{ row.value || '--' }}</text>
 					</view>
 				</view>
 			</view>	
@@ -61,9 +61,37 @@
 					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
 						<view class="account-card">
 							<view class="account-info-block">
-								<view class="account-info-row" v-for="(row, idx) in infoRows2" :key="idx">
-									<text class="account-info-label">{{ row.label }}</text>
-									<text class="account-info-value">{{ row.value || '' }}</text>
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[0].label }}</text>
+									<text class="account-info-value">{{ infoRows2[0].value || '' }}</text>
+								</view>
+							</view>
+							<view class="account-info-block" style="margin-top: 20rpx;">
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[1].label }}</text>
+									<text class="account-info-value">{{ infoRows2[1].value || '' }}</text>
+								</view>
+							<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[2].label }}</text>
+									<text class="account-info-value">{{ infoRows2[2].value || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[3].label }}</text>
+									<text class="account-info-value">{{ infoRows2[3].value || '' }}</text>
+								</view>
+							</view>
+							<view class="account-info-block" style="margin-top: 20rpx;">
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[4].label }}</text>
+									<text class="account-info-value">{{ infoRows2[4].value || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[5].label }}</text>
+									<text class="account-info-value">{{ infoRows2[5].value || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[6].label }}</text>
+									<text class="account-info-value">{{ infoRows2[6].value || '' }}</text>
 								</view>
 							</view>
 						</view>
@@ -133,7 +161,7 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber
+		formatNumber,formatDateTimeMinute
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
@@ -221,8 +249,6 @@
 			key: 'businessUnitName'
 		}
 	])
-
-    
 	const infoRows2 = ref([{
 			label: '付款单位',
 			value: '',
@@ -234,95 +260,49 @@
 			key: 'receivingBankAccountName'
 		},
 		{
+			label: '开户银行',
+			value: '',
+			key: 'receivingBankName'
+		},{
+			label: '帐号',
+			value: '',
+			key: 'receivingBankAccountNumber'
+		},
+		{
 			label: '预算栏目',
 			value: '',
 			key: 'claimCategoryName'
 		},
 		{
-			label: '开户银行',
+			label: '暂支事由',
 			value: '',
-			key: 'receivingBankName'
+			key: 'content'
 		},
 		{
 			label: '暂支金额',
 			value: '',
 			key: 'amount' 
-		},
-		{
-			label: '帐号',
-			value: '',
-			key: 'receivingBankAccountNumber'
-		},{
-			label: '暂支事由',
-			value: '',
-			key: 'content'
 		}
 	])
-		const magicData = ref({
-			"id": 38,
-			"requestId": "197ff63453b84076bfe836324aa771c4",
-			"requestFormNo": "费用暂支单-20251117002",
-			"wfinstanceId": "975180353ffd47bc978ae8b344ea9a5e",
-			"customizeAttribute": null,
-			"applicantId": "sybjbro",
-			"applicantName": "经办人（运管中心）",
-			"businessUnit": "OperationDivision",
-			"businessUnitName": "运管中心",
-			"content": "前期拨款",
-			"paymentCompanyId": "9406c8f5e0414ac0a0c16e42743a1009",
-			"paymentCompanyName": "上海复兴隧道建设发展有限公司",
-			"businessType": null,
-			"amount": 500000,
-			"receivingBankName": "上海银行1",
-			"receivingBankAccountName": "张三1",
-			"receivingBankAccountNumber": "666666666666661",
-			"claimCategoryId": "Insurance",
-			"claimCategoryName": "保险费",
-			"claimCategoryIdlv1": null,
-			"claimCategoryNameLv1": null,
-			"claimCategoryIdlv2": null,
-			"claimCategoryNameLv2": null,
-			"claimCategoryIdlv3": null,
-			"claimCategoryNameLv3": null,
-			"mappingGuid": "c2b9bc823b444d27af0a76e544af0021",
-			"messageId": "386b1eff458d45d8823b70de7b5f2ecd",
-			"wfstatus": "Completed",
-			"createdBy": "sybjbro",
-			"createdByName": "经办人（运管中心）",
-			"createdDate": "2025-11-17 11:20:30",
-			"submittedBy": "sybjbro",
-			"submittedByName": "经办人（运管中心）",
-			"submittedDate": "2025-11-17 11:20:30",
-			"lastModifiedBy": "cwfgld",
-			"lastModifiedByName": "财务分管领导",
-			"lastModifiedDate": "2025-11-17 11:22:49"
-		})
 
 	const itemDatas = ref({});
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
-			// let data = res.data?.data || {}
-			uni.showToast({
-					title: '暂未联调',
-					icon: 'none'
-				})
-			let data = magicData.value || {}
-			itemDatas.value = data || {}
+			let data = res.data?.data || {}
+			itemDatas.value = data.entity || {}
 			infoRows.value.forEach(item => {
 				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
 			infoRows2.value.forEach(item => {
 				item.value = (typeof itemDatas.value[item.key] === 'number') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
-            // vehiclePaymentContentList.value = res.data?.data?.wfrequestexpenseclaimvehicleitems || []
-			if(itemDatas.value.claimCategoryName){
-				 stageTags.value.push(itemDatas.value.claimCategoryName)
+			if(itemDatas.value.businessUnitName){
+				 stageTags.value.push(itemDatas.value.businessUnitName)
 			}
-			if(itemDatas.value.receivingBankName){
-				 stageTags.value.push(itemDatas.value.receivingBankName)
+			if(itemDatas.value.submittedDate){
+				 stageTags.value.push(formatDateTimeMinute(itemDatas.value.submittedDate))
 			}
-
-			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
+			let arr1 = (data.attachmentList || []).map(item => {
 				return {
 					fileTagName: item.fileTagName,
 					fileName: item.fileName,
@@ -647,6 +627,9 @@
 			.info-value-left {
 				text-align: left;
 				margin-top: 10rpx;
+				white-space: normal;
+				word-break: break-all;
+				word-wrap: break-word;
 			}
 		}
 
