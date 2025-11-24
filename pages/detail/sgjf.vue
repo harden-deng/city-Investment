@@ -39,7 +39,7 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item" :class="{'info-item-border': (row.key === 'paymentAmount')}" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
 						<text class="info-value">{{ row.value || '--'}}</text>
 					</view>
@@ -50,7 +50,7 @@
 					
 					<view class="info-item" v-if="itemDatas.requestType === 'GnE'">
 						<text class="info-label">招待方式</text>
-						<text class="info-value">{{ vehiclePaymentContentList[0]?.gnEtype?.replace('|',',') || '--' }}</text>
+						<text class="info-value">{{ vehiclePaymentContentList[0]?.gnEtype?.replace('|','、') || '--' }}</text>
 					</view>
 					<view class="info-item" v-if="itemDatas.requestType === 'GnE'">
 						<text class="info-label">内容</text>
@@ -60,9 +60,21 @@
 						<text class="info-label">内容</text>
 						<text class="info-value">{{ itemDatas.content || '--' }}</text>
 					</view>
+					<view class="usage-details" v-if="itemDatas.requestType === 'GnE'" style="padding: 0;margin-top: 20rpx;">
+					     <view class="detail-row summary-row" style="padding: 20rpx 0 20rpx;">
+								<text class="detail-label summary-label">发票金额</text>
+								<text class="detail-value summary-value">{{ formatNumber(itemDatas.invoiceTotalAmountVat) }}</text>
+						 </view>
+					</view>
 					<view class="usage-details" v-if="itemDatas.requestType === 'GnE'" style="padding: 0;">
 					     <view class="detail-row summary-row" style="padding: 20rpx 0 20rpx;">
-								<text class="detail-label summary-label">本次用款小计</text>
+								<text class="detail-label summary-label">可报销金额</text>
+								<text class="detail-value summary-value">{{ formatNumber(itemDatas.claimAmount) }}</text>
+						 </view>
+					</view>
+					<view class="usage-details" v-if="itemDatas.requestType === 'GnE'" style="padding: 0;">
+					     <view class="detail-row summary-row" style="padding: 20rpx 0 0rpx;">
+								<text class="detail-label summary-label">实际报销金额</text>
 								<text class="detail-value summary-value">{{ formatNumber(itemDatas.paymentAmount) }}</text>
 						 </view>
 					</view>
@@ -80,16 +92,14 @@
 				</view>
 				<transition name="collapse">
 					<view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
-						<view class="contract-section">
-							<scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 1&&itemDatas.requestType === 'Vehicle'">
+						<!-- <view class="contract-section" :class="{'contract-section-vehicle': itemDatas.requestType === 'Vehicle'}"> -->
+						<view class="contract-section contract-section-vehicle">
+							<scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 0&&itemDatas.requestType === 'Vehicle'"  @touchmove.stop="handleTableTouchMove">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
 										   <td class="type font_w sticky-xz-1 bordr-none">{{ infoRows[0].value.slice(0,-3)}}明细</td>
                                            <td class="type font_w text_right sticky-xz-2 bordr-none bordr-right-none">合计</td> 
-										   <!-- <td class="type font_w text_right bordr-none" >合1计</td> 
-										   <td class="type font_w text_right bordr-none" >合2计</td> 
-										   <td class="type font_w text_right bordr-none" >合3计</td>  -->
 										   <td class="type font_w text_right bordr-none" v-for="(value,index) in itemDatas.vehiclePlateNo.split(';')" :key="index">
 												{{ value || '' }}</td>
 										</tr>
@@ -162,7 +172,7 @@
 										<tr>
 										   <td class="type font_w sticky-xz-1 bordr-none">{{ infoRows[0].value.slice(0,-3)}}明细</td>
 										   <td class="type font_w text_right bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												</td>
+											</td>
 										</tr>
 										<tr>
 											<td class="text sticky-xz-1 bordr-none">出差人数</td>
@@ -177,7 +187,7 @@
                                         <tr>
 											<td class="text sticky-xz-1 bordr-none">交通方式</td>
 											<td class="info bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
-												{{ value.transportationMethod?.replace('|',',') || '--' }}</td>
+												{{ value.transportationMethod?.replace('|','、') || '--' }}</td>
 										</tr>
                               
                                          <tr>
@@ -215,11 +225,82 @@
 								</table>
 							</scroll-view>
 							<view class="detail-row summary-row" v-if="vehiclePaymentContentList.length > 0 &&itemDatas.requestType != 'GnE'">
-								<text class="detail-label summary-label">本次用款小计</text>
+								<text class="detail-label summary-label">发票金额</text>
+								<text
+									class="detail-value summary-value">{{ formatNumber(itemDatas.invoiceTotalAmountVat) }}</text>
+							</view>
+							<view class="detail-row summary-row" v-if="vehiclePaymentContentList.length > 0 &&itemDatas.requestType != 'GnE'">
+								<text class="detail-label summary-label">可报销金额</text>
+								<text
+									class="detail-value summary-value">{{ formatNumber(itemDatas.claimAmount) }}</text>
+							</view>
+							<view class="detail-row summary-row" v-if="vehiclePaymentContentList.length > 0 &&itemDatas.requestType != 'GnE'">
+								<text class="detail-label summary-label">实际报销金额</text>
 								<text
 									class="detail-value summary-value">{{ formatNumber(itemDatas.paymentAmount) }}</text>
 							</view>
 						</view>
+					</view>
+				</transition>
+			</view>
+
+			<view class="section" v-if="(personnelListManager.length > 0 || personnelListStaff.length > 0)&&(itemDatas.requestType === 'GnE' || itemDatas.requestType === 'Travel')">
+				<view class="section-title-2" @click="setOptions(COLLECTION_ACCOUNT_INFORMATION)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">人员清单</text>
+					</view>
+					<view class="section-title-2-right" :class="{ 'active': getOptions(COLLECTION_ACCOUNT_INFORMATION) }">
+					</view>
+				</view>
+				<transition name="collapse">
+					<view class="usage-details" v-if="getOptions(COLLECTION_ACCOUNT_INFORMATION)">
+							<scroll-view scroll-x class="table-scroll-x">
+							    <view class="company-title-ry">领导</view>
+								<table cellspacing="0" cellpadding="0" class="table1 table2">
+									<tbody>
+										<tr>
+										   <td class="type font_w sticky-ry-1 bordr-none text-center">账号</td>
+										   <td class="type font_w sticky-ry-2 bordr-none text-center">姓名</td>
+										   <td class="type font_w sticky-ry-3 bordr-none text-center">职位</td>
+										</tr>
+										<tr v-for="(value,index) in personnelListManager" :key="index">
+											<td class="text bordr-none  sticky-ry-1 bordr-bottom-border text-center">
+												{{ value.userId || '--'  }}
+											</td>
+											<td class="text bordr-none sticky-ry-2 bordr-bottom-border text-center">
+												{{ value.userFullName || '--'  }}
+											</td>
+											<td class="text bordr-none sticky-ry-3 bordr-bottom-border text-center">
+												{{ value.userTitle || '--' }}
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<view style="width: 100%;margin: 10rpx 0;"></view>
+								<view class="company-title-ry">本公司人员</view>
+								<table cellspacing="0" cellpadding="0" class="table1 table2">
+									<tbody>
+										<tr>
+										   <td class="type font_w sticky-ry-1 bordr-none text-center">账号</td>
+										   <td class="type font_w sticky-ry-2 bordr-none text-center">姓名</td>
+										   <td class="type font_w sticky-ry-3 bordr-none text-center">职位</td>
+										</tr>
+										<tr v-for="(value,index) in personnelListStaff" :key="index">
+											<td class="text bordr-none sticky-ry-1 text-center bordr-bottom-border">
+												{{ value.userId || '--'  }}
+											</td>
+											<td class="text bordr-none sticky-ry-2 text-center bordr-bottom-border">
+												{{ value.userFullName || '--'  }}
+											</td>
+											<td class="text bordr-none sticky-ry-3 text-center bordr-bottom-border">
+												{{ value.userTitle || '--' }}
+											</td>
+										</tr>
+                               
+									</tbody>
+								</table>
+							</scroll-view>
 					</view>
 				</transition>
 			</view>
@@ -240,6 +321,10 @@
 								<view class="account-info-row">
 									<text class="account-info-label">发票系统编号</text>
 									<text class="account-info-value">{{ itemDatas.invoiceCloudId || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">专票金额(含税)</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vatamount) || '' }}</text>
 								</view>
 								<view class="account-info-row">
 									<text class="account-info-label">普票金额</text>
@@ -307,22 +392,23 @@
 	import {
 		ref,
 		reactive,
-		onMounted,
-		nextTick,
 		getCurrentInstance,
 		computed
 	} from 'vue'
 	import {
 		FUND_USAGE_STATUS,
 		PAYMENT_ACCOUNT_INFORMATION,
+		COLLECTION_ACCOUNT_INFORMATION,
 		APPROVAL_RECORD,
 		ATTACHMENT_LIST,
 		currentUrlObj
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,goBack
+		formatNumber,handleTableTouchMove
 	} from '@/utils/h5Bribge'
+	import { useListHeight } from '@/utils/useListHeight.js'
+	import { useApproval } from '@/utils/useApproval.js'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
@@ -331,7 +417,6 @@
 	onLoad(() => {
 		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
 		eventChannel.on('open-detail', (data) => {
-			console.log('open-detail', data);
 			currentType.value = data.type
 			itemDetail.value = data.order
 			getFormDataApproval()
@@ -346,25 +431,43 @@
 		'Travel': '差旅报销单',
 	})
 	const requestTypeSel = reactive({
-		'Vehicle': ['etc', 'parking', 'toll', 'fuel', 'repair', 'insurance', 'renting', 'wash', 'others'],
+		'Vehicle': ['etc', 'parking', 'toll', 'fuel', 'repair', 'insurance', 'renting', 'wash', 'others','total'],
 		'GnE': ['gnEtype','content'],
 		'Travel': ['travelExpense', 'accommodationFee', 'missedMealFee', 'meetingExpense', 'travelPeopleCount', 'travelDays','transportationMethod','content'],
 	})
-	const inputDialogRef = ref(null)
-	const inputDialogRequired = ref(false)
-	const inputDialogTitle = ref('')
-	const inputDialogPlaceholder = ref('')
-	const inputDialogValue = ref('')
-	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	const stageTags = ref([])
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
 	const attachmentData = ref([])
+	const { listHeight } = useListHeight({
+	     headerSelector: '.header-stickt', // 可选，默认就是这个值
+		 iosFit: true,
+	})
+	const {
+		inputDialogRef,
+		inputDialogRequired,
+		inputDialogTitle,
+		inputDialogPlaceholder,
+		handleInputConfirm,
+		handleInputCancel,
+		onReject,
+		onApprove,
+		approvalRecordList,
+		getApprovalRecord
+		} = useApproval({
+			itemDetail,
+			currentType,
+			successMessage: '已审批',
+			autoGoBack: true,
+			autoRefresh: true
+		})
+
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
 		[PAYMENT_ACCOUNT_INFORMATION]: true,
+		[COLLECTION_ACCOUNT_INFORMATION]: true,
 		[APPROVAL_RECORD]: true,
 		[ATTACHMENT_LIST]: true,
 	})
@@ -398,14 +501,6 @@
 			label: '付款单位',
 			value: '',
 			key: 'paymentCompanyName'
-		},{
-			label: '报销金额',
-			value: '',
-			key: 'claimAmount' 
-		},{
-			label: '支付金额',
-			value: '',
-			key: 'paymentAmount'
 		},
 		{
 			label: '用款部门',
@@ -415,12 +510,12 @@
 		{
 			label: '收款名称',
 			value: '',
-			key: 'receivingBankName'
+			key: 'receivingBankAccountName'
 		},
 		{
 			label: '收款开户银行',
 			value: '',
-			key: 'receivingBankAccountName'
+			key: 'receivingBankName'
 		},
 		{
 			label: '收款账号',
@@ -428,98 +523,17 @@
 			key: 'receivingBankAccountNumber'
 		},
 	])
-
-	// let cccc = reactive({
-	// 	createdBy:"super",
-	// 	createdByName:"super",
-	// 	createdDate:"2025-08-12 13:56:38",
-	// 	etc:100,
-	// 	fuel:100,
-	// 	id:51,
-	// 	insurance:0,
-	// 	lastModifiedBy:"super",
-	// 	lastModifiedByName:"super",
-	// 	lastModifiedDate:"2025-08-12 13:56:38",
-	// 	others:0,
-	// 	parking:0,
-	// 	renting:0,
-	// 	repair:0,
-	// 	requestId:"49fe229246214a05b3ae508dcc4568c4",
-	// 	seqNo:1,
-	// 	toll:0,
-	// 	vehiclePlateNo:"沪AK741211",
-	// 	wash:0
-	// })
-	// let cccc3 = reactive({
-	// 	createdBy:"super",
-	// 	createdByName:"super",
-	// 	createdDate:"2025-08-12 13:56:38",
-	// 	etc:100,
-	// 	fuel:100,
-	// 	id:53,
-	// 	insurance:0,
-	// 	lastModifiedBy:"super",
-	// 	lastModifiedByName:"super",
-	// 	lastModifiedDate:"2025-08-12 13:56:38",
-	// 	others:0,
-	// 	parking:0,
-	// 	renting:0,
-	// 	repair:0,
-	// 	requestId:"49fe229246214a05b3ae508dcc4568c4",
-	// 	seqNo:1,
-	// 	toll:0,
-	// 	vehiclePlateNo:"沪AK741211",
-	// 	wash:0
-	// })
-	// let cccc4 = reactive({
-	// 	createdBy:"super",
-	// 	createdByName:"super",
-	// 	createdDate:"2025-08-12 13:56:38",
-	// 	etc:100,
-	// 	fuel:100,
-	// 	id:54,
-	// 	insurance:0,
-	// 	lastModifiedBy:"super",
-	// 	lastModifiedByName:"super",
-	// 	lastModifiedDate:"2025-08-12 13:56:38",
-	// 	others:0,
-	// 	parking:0,
-	// 	renting:0,
-	// 	repair:0,
-	// 	requestId:"49fe229246214a05b3ae508dcc4568c4",
-	// 	seqNo:1,
-	// 	toll:0,
-	// 	vehiclePlateNo:"沪AK741211",
-	// 	wash:0
-	// })
-	// let cccc5 = reactive({
-	// 	createdBy:"super",
-	// 	createdByName:"super",
-	// 	createdDate:"2025-08-12 13:56:38",
-	// 	etc:100,
-	// 	fuel:100,
-	// 	id:55,
-	// 	insurance:0,
-	// 	lastModifiedBy:"super",
-	// 	lastModifiedByName:"super",
-	// 	lastModifiedDate:"2025-08-12 13:56:38",
-	// 	others:0,
-	// 	parking:0,
-	// 	renting:0,
-	// 	repair:0,
-	// 	requestId:"49fe229246214a05b3ae508dcc4568c4",
-	// 	seqNo:1,
-	// 	toll:0,
-	// 	vehiclePlateNo:"沪AK741211",
-	// 	wash:0
-	// })
 	const itemDatas = ref({});
 	const vehiclePaymentContentList = ref([]);
     const vehiclePaymentContentObj = reactive({});
+	const personnelListManager = ref([]);
+	const personnelListStaff = ref([]);
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			let data = res.data?.data || {}
 			itemDatas.value = data.wfrequestexpenseclaim || {}
+			personnelListManager.value = data.wfrequestexpenseclaimparticipants?.filter(item => item.userType === 'Manager') || []
+			personnelListStaff.value = data.wfrequestexpenseclaimparticipants?.filter(item => item.userType === 'Staff') || []
 			
 			infoRows.value.forEach(item => {
 				item.value = (typeof itemDatas.value[item.key] === 'number' || item.key === 'claimAmount' || item.key === 'paymentAmount') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
@@ -528,15 +542,9 @@
                 infoRows.value[0].value = requestTypeObj[infoRows.value[0].value] || ''
             }
             let arr = requestTypeSel[itemDatas.value.requestType] || []
-			if(data.wfrequestexpenseclaimvehicleitems){
+			// 公务用车报销单
+			if(data.wfrequestexpenseclaimvehicleitems && data.wfrequestexpenseclaimvehicleitems.length > 0){
 				 vehiclePaymentContentList.value = data.wfrequestexpenseclaimvehicleitems || []
-				//  if(itemDatas.value.requestType === 'Vehicle'){
-				// 	vehiclePaymentContentList.value.unshift({...cccc}) 
-				//     vehiclePaymentContentList.value.unshift({...cccc3})
-				//     vehiclePaymentContentList.value.unshift({...cccc4})
-				//     vehiclePaymentContentList.value.unshift({...cccc5})
-				//  }
-			
 				 vehiclePaymentContentList.value.forEach(item => {
 					item.total = sumNestedProperties(item, arr);
 				 }) 
@@ -554,8 +562,6 @@
                   vehiclePaymentContentObj[item] = itemDatas.value[item] || 0
                 })
 			}
-          
-			vehiclePaymentContentObj['total'] = itemDatas.value.paymentAmount || 0;
 			if(itemDatas.value.requestType != 'Vehicle'){
 				vehiclePaymentContentList.value.unshift({...vehiclePaymentContentObj})
 			}
@@ -586,7 +592,6 @@
 					parent.children.push(childItem)
 				}
 			})
-
 		})
 	}
 	
@@ -598,126 +603,6 @@
             return accumulator + currentValue[properties];
         }, 0);
     }
-	
-	const onReject = () => {
-		inputDialogRequired.value = true
-		openInputDialog('打回原因', '请输入打回原因')
-	}
-	
-	const onApprove = () => {
-		inputDialogRequired.value = false
-		openInputDialog('通过原因', '请输入通过原因')
-	}
-	
-	const openInputDialog = (title, placeholder) => {
-		inputDialogTitle.value = title
-		inputDialogPlaceholder.value = placeholder
-		inputDialogRef.value.open()
-	}
-	
-	const handleInputConfirm = (value, dialogType) => {
-		inputDialogValue.value = value
-		inputDialogRef.value.close()
-		doSubmitApproval(dialogType)
-	}
-	
-	const handleInputCancel = () => {
-		inputDialogRef.value.close()
-		inputDialogValue.value = ''
-	}
-	
-	const doSubmitApproval = (dialogType) => {
-		let params = {
-            wfInstanceId: itemDetail.value.wfinstanceId,
-			workItemId: itemDetail.value.workItemId,
-			approvalComment: inputDialogValue.value,
-			annotationComment: '',
-			pictureBaseData: '',
-			isApproval: dialogType,
-			procDefCode: itemDetail.value.procDefCode,
-		}
-		http.post('/WF/SubmitApproval', params).then(res => {
-			if (res.code === 0) {
-				uni.showToast({
-					title: '已审批',
-					icon: 'success'
-				})
-				setTimeout(() => {
-					if (currentType.value === 'pending') {
-						uni.$emit('refresh-pending')
-						uni.$emit('refresh-completed')
-					};
-					goBack();
-				}, 1000)
-			} else {
-				uni.showToast({
-					title: res.message,
-					icon: 'none'
-				})
-			}
-		})
-	}
-	
-	const approvalRecordList = ref([])
-	const getApprovalRecord = () => {
-		http.get('/WF/GetApprovalHistory', {
-			wfinstanceId: itemDetail.value.wfinstanceId,
-		}).then(res => {
-			console.log(res)
-			approvalRecordList.value = res.data || []
-		})
-	}
-	
-	function computeScrollHeight() {
-		try {
-			const {
-				windowHeight
-			} = uni.getSystemInfoSync()
-			const inst = getCurrentInstance()
-			const q = uni.createSelectorQuery().in(inst?.proxy)
-			
-			q.select('.header-stickt').boundingClientRect(data => {
-				const headerH = data?.height || 0
-				const h = Math.max(0, windowHeight - headerH)
-				scrollerHeight.value = `${h}px`
-			}).exec()
-		} catch (e) {
-			scrollerHeight.value = 'calc(100vh - 88rpx)'
-		}
-	}
-	
-	onMounted(() => {
-		nextTick(() => {
-			computeScrollHeight()
-		})
-		
-		const systemInfo = uni.getSystemInfoSync()
-		const isIOS = systemInfo.platform === 'ios'
-		const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
-		
-		if (isIOS && isH5) {
-			console.log('检测到 iOS H5 环境，添加滚动修复')
-			
-			document.addEventListener('focusout', () => {
-				setTimeout(() => {
-					window.scrollTo({
-						top: 0,
-						left: 0,
-						behavior: 'instant'
-					})
-				}, 20)
-			})
-		} else {
-			window.visualViewport?.addEventListener('resize', onResize)
-			window.addEventListener('resize', onResize)
-		}
-	})
-	
-	function onResize() {
-		setTimeout(() => {
-			computeScrollHeight()
-		}, 100)
-	}
 </script>
 
 <style lang="scss" scoped>
@@ -772,7 +657,7 @@
 		
 		.scroller {
 			box-sizing: border-box;
-			height: v-bind(scrollerHeight);
+			height: v-bind(listHeight);
 		}
 		
 		.hero-card {
@@ -1020,6 +905,11 @@
 			display: flex;
 			align-items: flex-start;
 			padding: 8rpx 0;
+			&.info-item-border {
+				border-bottom: 2rpx dashed #ddd;
+				padding-bottom: 22rpx !important;
+				margin-bottom: 12rpx;
+			}
 		}
 		
 		.info-item:last-child {
@@ -1056,6 +946,10 @@
 				border: 2rpx solid #ddd;
 				padding: 16rpx;
 				overflow: hidden;
+				&.contract-section-vehicle {
+					// border: none !important;
+					padding: 0 !important;
+				}
 			}
 			
 			.detail-row {
@@ -1084,15 +978,15 @@
 			
 			.summary-row {
 				border-top: 2rpx solid #ddd;
-				margin-top: 20rpx;
-				padding: 20rpx 16rpx 8rpx;
+				// margin-top: 20rpx;
+				padding: 20rpx 16rpx 20rpx;
 				height: auto !important;
 				
 				.summary-label {
 					display: flex;
 					align-items: center;
 					height: 48rpx;
-					font-size: 28rpx;
+					font-size: 26rpx;
 					color: #000000;
 					font-weight: bold;
 				}
@@ -1102,7 +996,7 @@
 					align-items: center;
 					justify-content: flex-end;
 					height: 48rpx;
-					font-size: 28rpx;
+					font-size: 26rpx;
 					color: #000000;
 					font-weight: bold;
 				}
@@ -1191,7 +1085,9 @@
 		background: #f6f8fc !important;
 		color: #000;
 	}
-	
+	.table1 .text-center {
+		text-align: center !important;
+	}
 	.table1 td {
 		box-sizing: border-box;
 		// border-left: 2rpx #ddd solid;
@@ -1202,6 +1098,12 @@
 	
 	.bordr-none{
 		border-top: none !important;
+	}
+	.bordr-bottom-none{
+		border-bottom: none !important;
+	}
+	.bordr-bottom-border{
+		border-bottom: 2rpx #ddd solid !important;
 	}
 	.bordr-right-none{
 		border-right: none !important;
@@ -1232,7 +1134,16 @@
 	
 	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 88px !important;background: #fff;}
 	.table1 td.sticky-xz-2 { position: sticky; left: 88px;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid; }
-	.table1 td.sticky-xz-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
+
+	.table1 td.sticky-ry-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 40%;background: #fff;  white-space: normal;
+                word-break: break-all;
+                word-wrap: break-word;}
+	.table1 td.sticky-ry-2 { position: sticky; width: 30%;  z-index: 4;background: #fff;  white-space: normal;
+                word-break: break-all;
+                word-wrap: break-word; }
+	.table1 td.sticky-ry-3 { position: sticky; width: 30%; z-index: 2;background: #fff;  white-space: normal;
+                word-break: break-all;
+                word-wrap: break-word; }
 	
 	.approval-record-section {
 		padding: 20rpx 32rpx 40rpx;
@@ -1241,5 +1152,13 @@
 	.attachment-section {
 		padding: 20rpx 32rpx 40rpx;
 		position: relative;
+	}
+
+	.company-title-ry {
+		font-size: 24rpx;
+		color: #666;
+		text-align: left;
+		font-weight: bold;
+		padding: 20rpx 0 20rpx 10rpx;
 	}
 </style>

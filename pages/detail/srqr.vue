@@ -252,8 +252,6 @@
 	import {
 		ref,
 		reactive,
-		onMounted,
-		nextTick,
 		getCurrentInstance,
 		computed
 	} from 'vue'
@@ -291,9 +289,6 @@
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
-	const amountArr = () => {
-		return [infoRows[0].value.includes('收入确认'),infoRows[0].value.includes('申请开票')]
-	}
 	const attachmentData = ref([])
 	const { listHeight } = useListHeight({
 	     headerSelector: '.header-stickt', // 可选，默认就是这个值

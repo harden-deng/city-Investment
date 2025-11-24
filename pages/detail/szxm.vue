@@ -16,7 +16,7 @@
 						<view class="amount-label">申请支付总金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								<!-- 潜在 bug: 这里应该是合同价 -->
+								<!--金额已确认 -->
 								{{ formatNumber(itemDatas.paymentAmount) }}</text></view>
 					</view>
 				</view>

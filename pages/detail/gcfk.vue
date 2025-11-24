@@ -43,7 +43,7 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" :class="{'info-item-column': row.value?.length > 34}" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item" :class="{'info-item-column': row.value?.length > 34,'info-item-border': (row.key === 'businessRemarkPr')}" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
 						<text class="info-value" :class="{'info-value-left': row.value?.length > 34}">{{ row.value || '--' }}</text>
 					</view>
@@ -108,18 +108,18 @@
 						</view>
 						<!-- 其他信息 -->
 						<view class="other-info">
-							<view class="detail-row">
+							<!-- <view class="detail-row">
 								<text class="detail-label">验工计价年月</text>
-								<text class="detail-value">{{ itemDatas.settlementYearMonth || '0.00' }}</text>
+								<text class="detail-value">{{ itemDatas.settlementYearMonth || '--' }}</text>
 							</view>
 							<view class="detail-row">
 								<text class="detail-label">验工计价期数</text>
-								<text class="detail-value">{{ itemDatas.settlementPhase || '0.00' }}</text>
-							</view>
+								<text class="detail-value">{{ itemDatas.settlementPhase || '--' }}</text>
+							</view> 
 							<view class="detail-row">
 								<text class="detail-label">对应工作量</text>
 								<text class="detail-value">{{ formatNumber(itemDatas.settlementWorkload) }}</text>
-							</view>
+							</view> -->
 						</view>
 						<view class="contract-section">
 							<!-- 用款性质 -->
@@ -635,65 +635,6 @@
 				<!-- 审批记录卡片 -->
 				<transition name="collapse">
 					<view class="approval-record-section" v-if="getOptions(APPROVAL_RECORD)">
-						<!-- <view class="approval-timeline">
-							<view class="approval-item" v-for="(item, index) in approvalRecordList" :key="index">
-								<view class="timeline-indicator-container">
-									<view class="timeline-indicator" :class="{
-									'status-pending': item.approvalActionType === 'vmPending',
-									'status-approved': item.approvalActionType === '已审批'&&item.approvalResult == '批准',
-									'status-rejected': item.approvalActionType === '已审批'&&item.approvalResult == '驳回',
-									'status-successed': item.approvalResult == '完成',
-									'status-submitted': item.approvalActionType === '提交'
-								}">
-										<view class="indicator-checkmark" v-if="item.approvalResult == '完成'">
-											<uni-icons type="smallcircle-filled" size="12" color="#07c160"></uni-icons>
-										</view>
-										<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批'&&item.approvalResult == '批准'">
-											<uni-icons type="checkmarkempty" size="10" color="#07c160"></uni-icons>
-										</view>
-										<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批'&&item.approvalResult == '驳回'">
-											<uni-icons type="checkmarkempty" size="10" color="#ffb800"></uni-icons>
-										</view>
-										<view class="indicator-loading"
-											v-else-if="item.approvalActionType === 'vmPending'"></view>
-										<view class="indicator-empty" v-else-if="item.approvalActionType === '提交'">
-										</view>
-									</view>
-								</view>
-								<view class="approval-content">
-									<view class="approval-header">
-										<view class="approval-title">
-											<text class="title-text">{{ item.stepName }}</text>
-											<text class="title-status" :class="{
-												'status-text-green': item.approvalActionType === '已审批' || item.approvalActionType === 'vmPending' || item.approvalActionType === '提交',
-											}">
-												{{ item.approvalActionType == 'vmPending' ? '审批中' : item.approvalActionType }}
-											</text>
-										</view>
-									</view>
-
-									<view class="approval-body">
-										<view class="approval-info"
-											style="display: flex; justify-content: flex-start;gap: 10rpx;">
-											<text class="approver-name">{{ item.approverDisplayName }}</text>
-											<view class="action-btn" :class="{
-													'btn-approved': item.approvalResult == '批准' || item.approvalResult == '提交',
-													'btn-pending': item.approvalResult == '待审批',
-													'btn-rejected': item.approvalResult == '驳回',
-												}">
-												{{ item.approvalResult }}
-											</view>
-											<text
-												class="approval-time">{{ formatDateTime(item.approvalResult == "待审批" ? item.approvalTime : item.createdDate) }}</text>
-										</view>
-										<view class="approval-remark" v-if="item.approvalComment">
-											<text class="remark-label">备注:</text>
-											<text class="remark-text">{{ item.approvalComment }}</text>
-										</view>
-									</view>
-								</view>
-							</view>
-						</view> -->
                         <approvalTimeline :list="approvalRecordList"></approvalTimeline>
 					</view>
 				</transition>
@@ -712,8 +653,6 @@
 	import {
 		ref,
 		reactive,
-		onMounted,
-		nextTick,
 		getCurrentInstance,
 		computed
 	} from 'vue'
@@ -727,7 +666,7 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,handleTableTouchMove
+		formatNumber,handleTableTouchMove,formatDateTimeMinute
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
@@ -883,6 +822,21 @@
 			value: '',
 			key: 'businessRemarkPr'
 		},
+		{
+			label: '是否有取得发票计划',
+			value: '',
+			key: 'hasInvoicePlan'
+		},
+		{
+			label: '验工计价年月',
+			value: '',
+			key: 'settlementYearMonth'
+		},
+		{
+			label: '验工计价期数',
+			value: '',
+			key: 'settlementPhase'
+		},
 	])
 
 	
@@ -1013,15 +967,17 @@
                 if(item.key === 'lv1AccountName'){
                     item.value = itemDatas.value.lv3AccountName || itemDatas.value.lv2AccountName || itemDatas.value.lv1AccountName || ''
                 }
+                if(item.key === 'guaranteeLetterValidTo'){
+                    item.value = formatDateTimeMinute(itemDatas.value[item.key])
+                }
+				if(item.key === 'hasInvoicePlan'){
+					item.value = itemDatas.value[item.key] == true ? '是' : '否'
+				}
 			})
-			if(itemDatas.value.businessCategory){
-				 stageTags.value.push(itemDatas.value.businessCategory)
-			}
-			if(itemDatas.value.businessUnitName){
-				 stageTags.value.push(itemDatas.value.businessUnitName)
-			}
-			if(itemDatas.value.budgetCategoryName){
-				 stageTags.value.push(itemDatas.value.budgetCategoryName)
+
+			const tagFields = ['businessCategory', 'businessUnitName', 'budgetCategoryName']
+			for(const field of tagFields){
+				itemDatas.value[field] && stageTags.value.push(itemDatas.value[field])
 			}
 			if(itemDatas.value.roadSectionList&&itemDatas.value.roadSectionList.length > 0){
 				roadSectionList.value = itemDatas.value.roadSectionList
@@ -1076,18 +1032,6 @@
 		display: none !important;
 		height: 0 !important;
 	}
-
-	// @media (min-aspect-ratio: 13/20) {
-	// //   ::v-deep .uni-tabbar-bottom {
-	// // 	display: none !important;
-	// // 	height: 0 !important;
-	// //   }
-	//   ::v-deep .bottom-nav-bar{
-	// 	  display: none !important;
-	// 	  height: 0 !important;
-	//   }
-	// }
-
 	.detail-page {
 		width: 100%;
 		height: 100vh;
@@ -1126,10 +1070,6 @@
 		.scroller {
 			box-sizing: border-box;
 			height: v-bind(listHeight);
-			// position: absolute;
-			// z-index: 19;
-			// top: 88rpx;
-			// border-radius: 16rpx;
 		}
 
 		.hero-card {
@@ -1397,6 +1337,11 @@
 			display: flex;
 			align-items: flex-start;
 			padding: 8rpx 0;
+			&.info-item-border {
+				border-bottom: 2rpx dashed #ddd;
+				padding-bottom: 22rpx !important;
+				margin-bottom: 12rpx;
+			}
 		}
 
 		.info-item:last-child {

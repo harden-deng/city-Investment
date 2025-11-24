@@ -6,9 +6,7 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							<!-- {{ itemDatas.businessUnitName }} -->
 							{{ itemDetail.taskName }}
-						
 						</view>
 						<view class="project-name-1">
 							上海城投公路投资（集团）有限公司
@@ -18,7 +16,7 @@
 						<view class="amount-label">调拨金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{  infoRows[6].value }}</text></view>
+								{{  formatNumber(itemDatas.transferAmount) }}</text></view>
 					</view>
 				</view>
 				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
@@ -137,8 +135,6 @@
 	import {
 		ref,
 		reactive,
-		onMounted,
-		nextTick,
 		getCurrentInstance,
 		computed
 	} from 'vue'
@@ -150,8 +146,10 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,goBack
+		formatNumber
 	} from '@/utils/h5Bribge'
+	import { useListHeight } from '@/utils/useListHeight.js'
+	import { useApproval } from '@/utils/useApproval.js'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
@@ -169,18 +167,34 @@
 	})
 	
 	const currentType = ref('')
-	const inputDialogRef = ref(null)
-	const inputDialogRequired = ref(false)
-	const inputDialogTitle = ref('')
-	const inputDialogPlaceholder = ref('')
-	const inputDialogValue = ref('')
-	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	const stageTags = ref([])
 	const attachmentData = ref([])
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
+	const { listHeight } = useListHeight({
+	     headerSelector: '.header-stickt', // 可选，默认就是这个值
+		 iosFit: true,
+	})
+	const {
+		inputDialogRef,
+		inputDialogRequired,
+		inputDialogTitle,
+		inputDialogPlaceholder,
+		handleInputConfirm,
+		handleInputCancel,
+		onReject,
+		onApprove,
+		approvalRecordList,
+		getApprovalRecord
+		} = useApproval({
+			itemDetail,
+			currentType,
+			successMessage: '已审批',
+			autoGoBack: true,
+			autoRefresh: true
+		})
 	const pullDownObj = reactive({
 		[PAYMENT_ACCOUNT_INFORMATION]: true,
 		[APPROVAL_RECORD]: true,
@@ -268,7 +282,6 @@
 					id: item.attachmentId
 				}
 			})
-			console.log('arr1=>',arr1)
 			attachmentData.value = [{fileTagName: '其他', children: []}]
 			const attachmentMap = new Map()
 			attachmentData.value.forEach(item => {
@@ -282,126 +295,6 @@
 			})
 
 		})
-	}
-	
-	const onReject = () => {
-		inputDialogRequired.value = true
-		openInputDialog('打回原因', '请输入打回原因')
-	}
-	
-	const onApprove = () => {
-		inputDialogRequired.value = false
-		openInputDialog('通过原因', '请输入通过原因')
-	}
-	
-	const openInputDialog = (title, placeholder) => {
-		inputDialogTitle.value = title
-		inputDialogPlaceholder.value = placeholder
-		inputDialogRef.value.open()
-	}
-	
-	const handleInputConfirm = (value, dialogType) => {
-		inputDialogValue.value = value
-		inputDialogRef.value.close()
-		doSubmitApproval(dialogType)
-	}
-	
-	const handleInputCancel = () => {
-		inputDialogRef.value.close()
-		inputDialogValue.value = ''
-	}
-	
-	const doSubmitApproval = (dialogType) => {
-		let params = {
-            wfInstanceId: itemDetail.value.wfinstanceId,
-			workItemId: itemDetail.value.workItemId,
-			approvalComment: inputDialogValue.value,
-			annotationComment: '',
-			pictureBaseData: '',
-			isApproval: dialogType,
-			procDefCode: itemDetail.value.procDefCode,
-		}
-		http.post('/WF/SubmitApproval', params).then(res => {
-			if (res.code === 0) {
-				uni.showToast({
-					title: '已审批',
-					icon: 'success'
-				})
-				setTimeout(() => {
-					if (currentType.value === 'pending') {
-						uni.$emit('refresh-pending')
-						uni.$emit('refresh-completed')
-					};
-					goBack();
-				}, 1000)
-			} else {
-				uni.showToast({
-					title: res.message,
-					icon: 'none'
-				})
-			}
-		})
-	}
-	
-	const approvalRecordList = ref([])
-	const getApprovalRecord = () => {
-		http.get('/WF/GetApprovalHistory', {
-			wfinstanceId: itemDetail.value.wfinstanceId,
-		}).then(res => {
-			console.log(res)
-			approvalRecordList.value = res.data || []
-		})
-	}
-	
-	function computeScrollHeight() {
-		try {
-			const {
-				windowHeight
-			} = uni.getSystemInfoSync()
-			const inst = getCurrentInstance()
-			const q = uni.createSelectorQuery().in(inst?.proxy)
-			
-			q.select('.header-stickt').boundingClientRect(data => {
-				const headerH = data?.height || 0
-				const h = Math.max(0, windowHeight - headerH)
-				scrollerHeight.value = `${h}px`
-			}).exec()
-		} catch (e) {
-			scrollerHeight.value = 'calc(100vh - 88rpx)'
-		}
-	}
-	
-	onMounted(() => {
-		nextTick(() => {
-			computeScrollHeight()
-		})
-		
-		const systemInfo = uni.getSystemInfoSync()
-		const isIOS = systemInfo.platform === 'ios'
-		const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
-		
-		if (isIOS && isH5) {
-			console.log('检测到 iOS H5 环境，添加滚动修复')
-			
-			document.addEventListener('focusout', () => {
-				setTimeout(() => {
-					window.scrollTo({
-						top: 0,
-						left: 0,
-						behavior: 'instant'
-					})
-				}, 20)
-			})
-		} else {
-			window.visualViewport?.addEventListener('resize', onResize)
-			window.addEventListener('resize', onResize)
-		}
-	})
-	
-	function onResize() {
-		setTimeout(() => {
-			computeScrollHeight()
-		}, 100)
 	}
 </script>
 
@@ -429,35 +322,11 @@
 			position: sticky;
 			top: 0;
 			z-index: 19;
-			
-			.status_bar {
-				background: #fff;
-				width: 100%;
-			}
-		}
-		
-		.nav-bar-top {
-			::v-deep .uni-navbar__header {
-				background: #fff !important;
-			}
-			
-			.back-btn {
-				width: 100rpx;
-				height: 100rpx;
-				background: url('../../static/images/back.svg') center center no-repeat;
-				background-size: 24rpx;
-			}
-			
-			.nav-title {
-				font-size: 32rpx;
-				font-weight: bold;
-				color: #000;
-			}
 		}
 		
 		.scroller {
 			box-sizing: border-box;
-			height: v-bind(scrollerHeight);
+			height: v-bind(listHeight);
 		}
 		
 		.hero-card {
@@ -700,13 +569,6 @@
 			padding: 0 32rpx 40rpx;
 			
 			.account-card {
-				.account-company-title {
-					font-size: 24rpx;
-					color: #000;
-					margin-bottom: 20rpx;
-					text-align: left;
-				}
-				
 				.account-info-block {
 					background: #f6f8fc;
 					border: 2rpx solid #ddd;

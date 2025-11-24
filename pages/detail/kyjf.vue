@@ -102,17 +102,11 @@
 						<text class="section-title-vertical"></text>
 						<text class="section-title-text">课题信息</text>
 					</view>
-					<!-- <image class="section-title-2-right" src="../../static/images/c2.png" mode="scaleToFill"
-						style=" width: 28rpx;height: 16rpx;" /> -->
 					<view class="section-title-2-right" :class="{ 'active': getOptions(FUND_USAGE_STATUS) }">
 
 					</view>
 				</view>
 				<transition name="collapse">
-					<!-- <view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
-						 <view class="contract-section">
-						</view> 
-					</view> -->
                     <view class="info-list" v-if="getOptions(FUND_USAGE_STATUS)">
                         <view class="info-item" :class="{ 'info-item-border': (row.key === 'remainAccountFundExcludeCurrent' || row.key === 'availableBudgetAmount') }" v-for="(row, idx) in infoRows2" :key="idx">
                             <text class="info-label" :class="{ 'info-label-width': row.key === 'projectTopicName' }">{{ row.label }}</text>
@@ -139,6 +133,10 @@
 								<view class="account-info-row">
 									<text class="account-info-label">发票系统编号</text>
 									<text class="account-info-value">{{ itemDatas.invoiceCloudId || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">专票金额(含税)</text>
+									<text class="account-info-value"> {{ formatNumber(itemDatas.vatamount) || '' }} </text>
 								</view>
 								<view class="account-info-row">
 									<text class="account-info-label">普票金额</text>
@@ -208,8 +206,6 @@
 	import {
 		ref,
 		reactive,
-		onMounted,
-		nextTick,
 		getCurrentInstance,
 		computed
 	} from 'vue'
@@ -222,8 +218,10 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,goBack
+		formatNumber
 	} from '@/utils/h5Bribge'
+	import { useListHeight } from '@/utils/useListHeight.js'
+	import { useApproval } from '@/utils/useApproval.js'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
@@ -232,7 +230,6 @@
 	onLoad(() => {
 		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
 		eventChannel.on('open-detail', (data) => {
-			console.log('open-detail', data);
 			currentType.value = data.type
 			itemDetail.value = data.order
 			getFormDataApproval()
@@ -240,18 +237,34 @@
 		})
 	})
 	const currentType = ref('')
-	const inputDialogRef = ref(null)
-	const inputDialogRequired = ref(false)
-	const inputDialogTitle = ref('')
-	const inputDialogPlaceholder = ref('')
-	const inputDialogValue = ref('')
-	const scrollerHeight = ref('0px')
 	const itemDetail = ref({})
 	const stageTags = ref([])
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
 	const attachmentData = ref([])
+	const { listHeight } = useListHeight({
+	     headerSelector: '.header-stickt', // 可选，默认就是这个值
+		 iosFit: true,
+	})
+	const {
+		inputDialogRef,
+		inputDialogRequired,
+		inputDialogTitle,
+		inputDialogPlaceholder,
+		handleInputConfirm,
+		handleInputCancel,
+		onReject,
+		onApprove,
+		approvalRecordList,
+		getApprovalRecord
+		} = useApproval({
+			itemDetail,
+			currentType,
+			successMessage: '已审批',
+			autoGoBack: true,
+			autoRefresh: true
+		})
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
 		[APPROVAL_RECORD]: true,
@@ -379,7 +392,6 @@
 	])
     const infoRows2Flag = ref(['remainFundExcludeCurrent','remainAccountFundExcludeCurrent','planToPay','planToPayTotal','occBudgetAmount','availableBudgetAmount']);
 	const itemDatas = ref({});
-	// const vehiclePaymentContentList = ref([]);
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			let data = res.data?.data || {}
@@ -390,7 +402,6 @@
 			infoRows2.value.forEach(item => {
 				item.value = (typeof itemDatas.value[item.key] === 'number' || infoRows2Flag.value.includes(item.key)) ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
-            // vehiclePaymentContentList.value = res.data?.data?.wfrequestexpenseclaimvehicleitems || []
 			if(itemDatas.value.projectApprovalUnit){
 				 stageTags.value.push(itemDatas.value.projectApprovalUnit)
 			}
@@ -419,133 +430,6 @@
 			})
 
 		})
-	}
-
-	const onReject = () => {
-		inputDialogRequired.value = true
-		openInputDialog('打回原因', '请输入打回原因')
-	}
-
-	const onApprove = () => {
-		inputDialogRequired.value = false
-		openInputDialog('通过原因', '请输入通过原因')
-	}
-	const openInputDialog = (title, placeholder) => {
-		inputDialogTitle.value = title
-		inputDialogPlaceholder.value = placeholder
-		inputDialogRef.value.open()
-	}
-	const handleInputConfirm = (value, dialogType) => {
-		inputDialogValue.value = value
-		inputDialogRef.value.close()
-		doSubmitApproval(dialogType)
-	}
-	const handleInputCancel = () => {
-		inputDialogRef.value.close()
-		inputDialogValue.value = ''
-	}
-	const doSubmitApproval = (dialogType) => {
-		let params = {
-            wfInstanceId: itemDetail.value.wfinstanceId,
-			workItemId: itemDetail.value.workItemId,
-			approvalComment: inputDialogValue.value,
-			annotationComment: '',
-			pictureBaseData: '',
-			isApproval: dialogType,
-			procDefCode: itemDetail.value.procDefCode, //ZC01和GC01两个类型的可以了
-		}
-		http.post('/WF/SubmitApproval', params).then(res => {
-			if (res.code === 0) {
-				uni.showToast({
-					title: '已审批',
-					icon: 'success'
-				})
-				setTimeout(() => {
-					if (currentType.value === 'pending') {
-						uni.$emit('refresh-pending')
-						uni.$emit('refresh-completed')
-					};
-					goBack();
-				}, 1000)
-			} else {
-				uni.showToast({
-					title: res.message,
-					icon: 'none'
-				})
-			}
-		})
-	}
-	//获取审批记录接口 start
-	const approvalRecordList = ref([]);
-	const getApprovalRecord = () => {
-		http.get('/WF/GetApprovalHistory', {
-			wfinstanceId: itemDetail.value.wfinstanceId,
-		}).then(res => {
-			console.log(res)
-			// 假设接口返回的数据在res.data中，需要根据实际接口调整
-			approvalRecordList.value = res.data || []
-		})
-	}
-	//获取审批记录接口 end
-	// 计算 scroll-view 高度 = 设备窗口高 - 头部实际高
-	function computeScrollHeight() {
-		try {
-			const {
-				windowHeight
-			} = uni.getSystemInfoSync() // px
-			const inst = getCurrentInstance()
-			const q = uni.createSelectorQuery().in(inst?.proxy)
-
-			q.select('.header-stickt').boundingClientRect(data => {
-				const headerH = data?.height || 0
-				const h = Math.max(0, windowHeight - headerH)
-				scrollerHeight.value = `${h}px`
-			}).exec()
-		} catch (e) {
-			// 兜底：若获取失败，至少不挡住页面
-			scrollerHeight.value = 'calc(100vh - 88rpx)'
-		}
-	}
-	onMounted(() => {
-		nextTick(() => {
-			computeScrollHeight()
-		})
-		// 获取系统信息
-		const systemInfo = uni.getSystemInfoSync()
-		const isIOS = systemInfo.platform === 'ios'
-		const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
-
-		// 只在 iOS H5 环境下添加滚动修复
-		if (isIOS && isH5) {
-			console.log('检测到 iOS H5 环境，添加滚动修复')
-
-			// 添加失焦滚动修复
-			document.addEventListener('focusout', () => {
-				setTimeout(() => {
-					window.scrollTo({
-						top: 0,
-						left: 0,
-						behavior: 'instant'
-					})
-				}, 20)
-			})
-
-			// // 可选：添加其他 iOS H5 特有的修复
-			// document.addEventListener('touchstart', () => {
-			// // iOS H5 触摸开始时的处理
-			// })
-		} else {
-			window.visualViewport?.addEventListener('resize', onResize)
-			window.addEventListener('resize', onResize) // 部分浏览器兼容
-		}
-
-
-	})
-
-	function onResize() {
-		setTimeout(() => {
-			computeScrollHeight()
-		}, 100)
 	}
 </script>
 
@@ -601,7 +485,7 @@
 
 		.scroller {
 			box-sizing: border-box;
-			height: v-bind(scrollerHeight);
+			height: v-bind(listHeight);
 		}
 
 		.hero-card {
