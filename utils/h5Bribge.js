@@ -142,12 +142,6 @@ export function goBack() {
 	}
 }
 
-export function totalNestedValue(array,properties) {
-	return array.reduce((accumulator, currentValue) => {
-		return accumulator + currentValue[properties];
-	}, 0);
-}
-
 	// 处理表格横向滚动时的 touchmove 事件
 export	const handleTableTouchMove = (e) => {
 		// 阻止事件冒泡到外层 scroll-view
@@ -174,3 +168,15 @@ export	const handleTableTouchMove = (e) => {
 			maximumFractionDigits: 2
 		});
 	}
+
+
+	export const sumNestedProperties = (obj, properties) => {
+        return properties.reduce((sum, prop) => sum + (obj[prop] || 0), 0);
+    }
+    export const totalNestedValue = (array,properties) => {
+        return array.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue[properties];
+        }, 0);
+    }
+
+

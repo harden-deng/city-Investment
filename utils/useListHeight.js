@@ -1,4 +1,5 @@
-import { ref, nextTick, onMounted, getCurrentInstance } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted, getCurrentInstance } from 'vue'
+
 /**
  * 计算列表高度的 composable
  * 类似 Vue 2 的 mixin，可以在多个组件中复用
@@ -30,7 +31,7 @@ export function useListHeight(options = {}) {
       const { windowHeight } = uni.getSystemInfoSync() // px
       const inst = getCurrentInstance()
       const q = uni.createSelectorQuery().in(inst?.proxy)
-      
+
       q.select(headerSelector).boundingClientRect(rect => {
         const headerH = rect?.height || 0
         const h = Math.max(0, windowHeight - headerH)
@@ -43,45 +44,88 @@ export function useListHeight(options = {}) {
     }
   }
 
+  // 保存清理函数引用
+  let resizeHandler = null
+  let focusoutHandler = null
+  let visualViewportResizeHandler = null
+  let windowResizeHandler = null
+
   // 页面显示时重新计算高度
   if (autoCompute) {
     // 页面挂载时计算高度
     onMounted(() => {
       console.log('页面加载完成，计算列表高度')
       nextTick(() => computeScrollHeight())
-      
+
       // 横竖屏切换/窗口改变时重算（H5 有效）
       if (enableResize) {
-        uni.onWindowResize?.(() => computeScrollHeight())
-      }
-      //这块适用于详情审批
-      if(iosFit){
-        const systemInfo = uni.getSystemInfoSync()
-		const isIOS = systemInfo.platform === 'ios'
-		const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
-		if (isIOS && isH5) {
-			// 这段代码是一个针对移动端浏览器（特别是iOS）的适配处理，主要解决的是移动端输入框唤起键盘后页面滚动的问题
-			// 监听'focusout'事件（输入框失去焦点时触发）
-			// 使用setTimeout延迟20ms执行滚动操作
-			// 将页面滚动回顶部（top: 0）
-			// behavior: 'instant' 表示立即滚动，不带动画
-			document.addEventListener('focusout', () => {
-				setTimeout(() => {
-					window.scrollTo({
-						top: 0,
-						left: 0,
-						behavior: 'instant'
-					})
-				}, 20)
-			})
-		} else {
-			window.visualViewport?.addEventListener('resize', ()=> computeScrollHeight())
-			window.addEventListener('resize', ()=> computeScrollHeight())
-		}
+        resizeHandler = () => computeScrollHeight()
+        uni.onWindowResize?.(resizeHandler)
       }
       
+      //这块适用于详情审批
+      if (iosFit) {
+        const systemInfo = uni.getSystemInfoSync()
+        const isIOS = systemInfo.platform === 'ios'
+        const isH5 = systemInfo.platform === 'h5' || process.env.UNI_PLATFORM === 'h5'
+        
+        if (isIOS && isH5) {
+          // 这段代码是一个针对移动端浏览器（特别是iOS）的适配处理，主要解决的是移动端输入框唤起键盘后页面滚动的问题
+          // 监听'focusout'事件（输入框失去焦点时触发）
+          // 使用setTimeout延迟20ms执行滚动操作
+          // 将页面滚动回顶部（top: 0）
+          // behavior: 'instant' 表示立即滚动，不带动画
+          focusoutHandler = () => {
+            setTimeout(() => {
+              window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: 'instant'
+              })
+            }, 20)
+          }
+          document.addEventListener('focusout', focusoutHandler)
+        } else {
+          visualViewportResizeHandler = () => computeScrollHeight()
+          windowResizeHandler = () => computeScrollHeight()
+          
+          window.visualViewport?.addEventListener('resize', visualViewportResizeHandler)
+          window.addEventListener('resize', windowResizeHandler)
+        }
+      }
+    })
+
+    // 组件卸载时清理所有事件监听器
+    onUnmounted(() => {
+      // 清理 uni.onWindowResize（如果有对应的 off 方法）
+      if (resizeHandler && typeof uni.offWindowResize === 'function') {
+        uni.offWindowResize(resizeHandler)
+        resizeHandler = null
+      }
+      
+      // 清理 focusout 事件
+      if (focusoutHandler) {
+        document.removeEventListener('focusout', focusoutHandler)
+        focusoutHandler = null
+      }
+      
+      // 清理 visualViewport resize 事件
+      if (visualViewportResizeHandler) {
+        window.visualViewport?.removeEventListener('resize', visualViewportResizeHandler)
+        visualViewportResizeHandler = null
+      }
+      
+      // 清理 window resize 事件
+      if (windowResizeHandler) {
+        window.removeEventListener('resize', windowResizeHandler)
+        windowResizeHandler = null
+      }
+      
+      // 清理引用
+      resizeHandler = null
     })
   }
+  
   return {
     listHeight,
     computeScrollHeight

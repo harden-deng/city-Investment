@@ -33,6 +33,7 @@
 </template>
 
 <script>
+	let navigateBackTimeoutId = null
 	export default {
 		data() {
 			return {
@@ -120,6 +121,12 @@
 				this.signatureData.url = decodeURIComponent(options.signatureUrl);
 			}
 		},
+		onUnmounted() {
+			if (navigateBackTimeoutId) {
+				clearTimeout(navigateBackTimeoutId);
+				navigateBackTimeoutId = null;
+			}
+		},
 		methods: {
 			// 处理签名数据更新
 			handleSignatureUpdate(newData) {
@@ -177,7 +184,7 @@
 						});
 
 						// 返回上一页并传递签名结果
-						setTimeout(() => {
+						navigateBackTimeoutId = setTimeout(() => {
 							uni.navigateBack({
 								delta: 1
 							});

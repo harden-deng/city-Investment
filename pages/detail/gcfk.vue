@@ -654,7 +654,8 @@
 		ref,
 		reactive,
 		getCurrentInstance,
-		computed
+		computed,
+		onUnmounted
 	} from 'vue'
 	import {
 		FUND_USAGE_STATUS,
@@ -675,14 +676,24 @@
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
 	let eventChannel
+	let handleOpenDetail = null
+
 	onLoad(() => {
 		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
-		eventChannel.on('open-detail', (data) => {
+		handleOpenDetail = (data) => {
 			currentType.value = data.type
 			itemDetail.value = data.order
 			getFormDataApproval()
 			getApprovalRecord()
-		})
+		}
+		eventChannel.on('open-detail', handleOpenDetail)
+	})
+
+	onUnmounted(() => {
+		if (eventChannel && handleOpenDetail) {
+			eventChannel.off('open-detail', handleOpenDetail)
+		}
+		handleOpenDetail = null
 	})
 	const currentType = ref('')
 	const itemDetail = ref({})

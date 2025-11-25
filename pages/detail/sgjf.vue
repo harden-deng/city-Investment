@@ -100,7 +100,7 @@
 										<tr>
 										   <td class="type font_w sticky-xz-1 bordr-none">{{ infoRows[0].value.slice(0,-3)}}明细</td>
                                            <td class="type font_w text_right sticky-xz-2 bordr-none bordr-right-none">合计</td> 
-										   <td class="type font_w text_right bordr-none" v-for="(value,index) in itemDatas.vehiclePlateNo.split(';')" :key="index">
+										   <td class="type font_w text_right bordr-none" v-for="(value,index) in vehiclePlateNoList" :key="index">
 												{{ value || '' }}</td>
 										</tr>
 										<tr>
@@ -393,7 +393,8 @@
 		ref,
 		reactive,
 		getCurrentInstance,
-		computed
+		computed,
+		onUnmounted
 	} from 'vue'
 	import {
 		FUND_USAGE_STATUS,
@@ -405,7 +406,7 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,handleTableTouchMove
+		formatNumber,handleTableTouchMove,sumNestedProperties,totalNestedValue
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
@@ -414,32 +415,44 @@
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
 	import detailNavBar from '@/components/navBar/detailNavBar.vue'
 	let eventChannel
+	let handleOpenDetail = null
+
 	onLoad(() => {
 		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
-		eventChannel.on('open-detail', (data) => {
+		handleOpenDetail = (data) => {
 			currentType.value = data.type
 			itemDetail.value = data.order
 			getFormDataApproval()
 			getApprovalRecord()
-		})
+		}
+		eventChannel.on('open-detail', handleOpenDetail)
 	})
-	
+
+	onUnmounted(() => {
+		if (eventChannel && handleOpenDetail) {
+			eventChannel.off('open-detail', handleOpenDetail)
+		}
+		handleOpenDetail = null
+	})
 	const currentType = ref('')
-	const requestTypeObj = reactive({
+	const requestTypeObj = {
 		'Vehicle': '公务用车报销单',
 		'GnE': '业务招待报销单',
 		'Travel': '差旅报销单',
-	})
-	const requestTypeSel = reactive({
+	}
+	const requestTypeSel = {
 		'Vehicle': ['etc', 'parking', 'toll', 'fuel', 'repair', 'insurance', 'renting', 'wash', 'others','total'],
 		'GnE': ['gnEtype','content'],
 		'Travel': ['travelExpense', 'accommodationFee', 'missedMealFee', 'meetingExpense', 'travelPeopleCount', 'travelDays','transportationMethod','content'],
-	})
+	}
 	const itemDetail = ref({})
 	const stageTags = ref([])
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
+	const vehiclePlateNoList = computed(() => {
+	   return itemDatas.value.vehiclePlateNo?.split(';') || []
+    })
 	const attachmentData = ref([])
 	const { listHeight } = useListHeight({
 	     headerSelector: '.header-stickt', // 可选，默认就是这个值
@@ -534,13 +547,19 @@
 			itemDatas.value = data.wfrequestexpenseclaim || {}
 			personnelListManager.value = data.wfrequestexpenseclaimparticipants?.filter(item => item.userType === 'Manager') || []
 			personnelListStaff.value = data.wfrequestexpenseclaimparticipants?.filter(item => item.userType === 'Staff') || []
-			
-			infoRows.value.forEach(item => {
-				item.value = (typeof itemDatas.value[item.key] === 'number' || item.key === 'claimAmount' || item.key === 'paymentAmount') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
-			})
-            if(infoRows.value[0].value) {
-                infoRows.value[0].value = requestTypeObj[infoRows.value[0].value] || ''
-            }
+	
+            // 批量更新 infoRows，避免多次响应式触发
+			const newInfoRows = infoRows.value.map(item => ({
+				...item,
+				value: (typeof itemDatas.value[item.key] === 'number') 
+					? formatNumber(itemDatas.value[item.key]) 
+					: itemDatas.value[item.key] || ''
+			}))
+			if(newInfoRows[0].value) {
+				newInfoRows[0].value = requestTypeObj[newInfoRows[0].value] || ''
+			}
+			infoRows.value = newInfoRows
+
             let arr = requestTypeSel[itemDatas.value.requestType] || []
 			// 公务用车报销单
 			if(data.wfrequestexpenseclaimvehicleitems && data.wfrequestexpenseclaimvehicleitems.length > 0){
@@ -552,19 +571,13 @@
                   vehiclePaymentContentObj[item] = totalNestedValue(vehiclePaymentContentList.value, item)
                 })
 			}
-			if(itemDatas.value.requestType === 'Travel'){
+
+			if(itemDatas.value.requestType !== 'Vehicle'){
 				arr.forEach(item => {
-                  vehiclePaymentContentObj[item] = itemDatas.value[item] || 0
-                })
-			}
-			if(itemDatas.value.requestType === 'GnE'){
-				arr.forEach(item => {
-                  vehiclePaymentContentObj[item] = itemDatas.value[item] || 0
-                })
-			}
-			if(itemDatas.value.requestType != 'Vehicle'){
+					vehiclePaymentContentObj[item] = itemDatas.value[item] || 0
+				})
 				vehiclePaymentContentList.value.unshift({...vehiclePaymentContentObj})
-			}
+            }
 			
 			if(infoRows.value[0].value){
 				 stageTags.value.push(infoRows.value[0].value)
@@ -595,14 +608,7 @@
 		})
 	}
 	
-    const sumNestedProperties = (obj, properties) => {
-        return properties.reduce((sum, prop) => sum + (obj[prop] || 0), 0);
-    }
-    const totalNestedValue = (array,properties) => {
-        return array.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue[properties];
-        }, 0);
-    }
+
 </script>
 
 <style lang="scss" scoped>

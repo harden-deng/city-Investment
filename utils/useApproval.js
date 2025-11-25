@@ -1,5 +1,5 @@
 // utils/composables/useApproval.js
-import { ref } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import http from '@/utils/request.js'
 import {
   goBack
@@ -37,6 +37,9 @@ export function useApproval(options = {}) {
   const inputDialogValue = ref('')
   //获取审批记录相关
   const approvalRecordList = ref([])
+
+   // 保存定时器 ID
+   let timeoutId = null
 	const getApprovalRecord = () => {
 		http.get('/WF/GetApprovalHistory', {
 			wfinstanceId: itemDetail.value.wfinstanceId,
@@ -119,7 +122,7 @@ export function useApproval(options = {}) {
           onSuccess(res)
         }
 
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           // 自动刷新列表
           if (autoRefresh && currentType?.value === 'pending') {
             uni.$emit('refresh-pending')
@@ -155,6 +158,14 @@ export function useApproval(options = {}) {
       }
     })
   }
+  // 组件卸载时清理定时器
+  onUnmounted(() => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  })
+
   return {
     // 输入对话框相关
     inputDialogRef,

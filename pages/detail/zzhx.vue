@@ -10,14 +10,14 @@
 							{{ itemDetail.taskName  }}
 						</view>
 						<view class="project-name-1">
-							{{ itemDatas.contractName }}
+							{{ itemDatas.businessUnitName }}
 						</view>
 					</view>
 					<view class="amount-box">
-						<view class="amount-label">申请金额</view>
+						<view class="amount-label">暂支金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{ formatNumber(itemDatas.confirmedCostAmountVat) }}</text></view>
+								{{ formatNumber(itemDatas.amount) }}</text></view>
 					</view>
 				</view>
 				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
@@ -46,102 +46,98 @@
 						<text class="info-value" :class="{'info-value-left': row.value?.length > 34}">{{ row.value || '--' }}</text>
 					</view>
 				</view>
-			</view>
-			<!-- 发票信息 -->
-			<view class="section" v-if="itemDatas.invoiceReceived == 1">
-				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
-					<view class="section-title-2-left">
-						<text class="section-title-vertical"></text>
-						<text class="section-title-text">发票信息</text>
-					</view>
-					<view class="section-title-2-right" :class="{ 'active': getOptions(FUND_USAGE_STATUS) }">
+			</view>	
 
-					</view>
-				</view>
-				<transition name="collapse">
-                    <view class="info-list" v-if="getOptions(FUND_USAGE_STATUS)">
-                        <view class="info-item"  v-for="(row, idx) in infoRows2" :key="idx">
-                            <text class="info-label">{{ row.label }}</text>
-                            <text class="info-value">{{ row.value || '--' }}</text>
-                        </view>
-				    </view>
-				</transition>
-			</view>
-            <!-- 确认成本信息 -->
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
-						<text class="section-title-text">确认成本信息</text>
+						<text class="section-title-text">暂支内容</text>
 					</view>
 					<view class="section-title-2-right" :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
-
 					</view>
 				</view>
 				<transition name="collapse">
-                    <!-- <view class="info-list" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
-                        <view class="info-item" v-for="(row, idx) in infoRows3" :key="idx">
-                            <text class="info-label">{{ row.label }}</text>
-                            <text class="info-value">{{ row.value || '--' }}</text>
-                        </view>
-				    </view> -->
-					<view class="usage-details" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
-							<scroll-view scroll-x class="table-scroll-x" @touchmove.stop="handleTableTouchMove">
-								<table cellspacing="0" cellpadding="0" class="table1">
-									<tbody>
-										<tr>
-											<td class="type sticky-xz-1">{{ infoRows3[0].label }}</td>
-											<td class="info info-plus">
-												{{ infoRows3[0].value }}
-											</td>
-										</tr>
-										<tr>
-											<td class="type sticky-xz-1">{{ infoRows3[1].label }}</td>
-											<td class="info info-plus">
-												{{ infoRows3[1].value }}</td>
-										</tr>
-                                        <tr>
-											<td class="type sticky-xz-1">{{ infoRows3[2].label }}</td>
-											<td class="info info-plus">
-												{{ infoRows3[2].value }}</td>
-										</tr>
-                                        <tr>
-											<td class="type sticky-xz-1">{{ infoRows3[3].label }}</td>
-											<td class="info info-plus">
-												{{ infoRows3[3].value }}</td>
-										</tr>
-                                        <tr>
-											<td class="type sticky-xz-1">{{ infoRows3[4].label }}</td>
-											<td class="info info-plus">
-												{{ infoRows3[4].value }}</td>
-										</tr>
-                                        <tr>
-											<td class="type sticky-xz-1">{{ infoRows3[5].label }}</td>
-											<td class="info info-plus">
-												{{ infoRows3[5].value }}</td>
-										</tr>
-                                        <tr>
-											<td class="type sticky-xz-1">{{ infoRows3[6].label }}</td>
-											<td class="info info-plus">
-												{{ infoRows3[6].value }}</td>
-										</tr>
-                                        <tr>
-											<td class="type sticky-xz-1">{{ infoRows3[7].label }}</td>
-											<td class="info info-plus">
-												{{ infoRows3[7].value }}</td>
-										</tr>
-                                        <tr>
-											<td class="type sticky-xz-1">{{ infoRows3[8].label }}</td>
-											<td class="info info-plus">
-												{{ infoRows3[8].value }}</td>
-										</tr>
-									</tbody>
-								</table>
-							</scroll-view>
+					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
+						<view class="account-card">
+							<view class="account-info-block">
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[0].label }}</text>
+									<text class="account-info-value">{{ infoRows2[0].value || '' }}</text>
+								</view>
+							</view>
+							<view class="account-info-block" style="margin-top: 20rpx;">
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[1].label }}</text>
+									<text class="account-info-value">{{ infoRows2[1].value || '' }}</text>
+								</view>
+							<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[2].label }}</text>
+									<text class="account-info-value">{{ infoRows2[2].value || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[3].label }}</text>
+									<text class="account-info-value">{{ infoRows2[3].value || '' }}</text>
+								</view>
+							</view>
+							<view class="account-info-block" style="margin-top: 20rpx;">
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[4].label }}</text>
+									<text class="account-info-value">{{ infoRows2[4].value || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[5].label }}</text>
+									<text class="account-info-value">{{ infoRows2[5].value || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[6].label }}</text>
+									<text class="account-info-value">{{ infoRows2[6].value || '' }}</text>
+								</view>
+							</view>
+						</view>
 					</view>
 				</transition>
 			</view>
 
+            <view class="section">
+				<view class="section-title-2" @click="setOptions(COLLECTION_ACCOUNT_INFORMATION)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">关联发票</text>
+					</view>
+					<view class="section-title-2-right" :class="{ 'active': getOptions(COLLECTION_ACCOUNT_INFORMATION) }">
+					</view>
+				</view>
+				<transition name="collapse">
+					<view class="account-info-section" v-if="getOptions(COLLECTION_ACCOUNT_INFORMATION)">
+						<view class="account-card">
+							<view class="account-info-block">
+								<view class="account-info-row">
+									<text class="account-info-label">发票系统编号</text>
+									<text class="account-info-value">{{ itemDatas.invoiceCloudId || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">专票金额(含税)</text>
+									<text class="account-info-value">{{ itemDatas.vatamount || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">可抵扣票据</text>
+									<text class="account-info-value">{{ itemDatas.vatamountNet || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">普票金额</text>
+									<text class="account-info-value">{{ itemDatas.vatoamount || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">进项税额</text>
+									<text class="account-info-value">{{ itemDatas.vattaxAmount || '' }}</text>
+								</view>
+							</view>
+						</view>
+					</view>
+				</transition>
+			</view>
+            
 			<!-- 附件 -->
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(ATTACHMENT_LIST)">
@@ -200,12 +196,13 @@
 		FUND_USAGE_STATUS,
 		APPROVAL_RECORD,
 		PAYMENT_ACCOUNT_INFORMATION,
+        COLLECTION_ACCOUNT_INFORMATION,
 		ATTACHMENT_LIST,
 		currentUrlObj
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,formatDateTimeMinute,handleTableTouchMove
+		formatNumber,formatDateTimeMinute
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
@@ -239,7 +236,7 @@
 	const wfstatusText = computed(() => {
 		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
 	})
-	const attachmentData = ref([])
+	const attachmentData = ref([]);
 
 	const { listHeight } = useListHeight({
 	     headerSelector: '.header-stickt', // 可选，默认就是这个值
@@ -264,11 +261,11 @@
 			autoGoBack: true,
 			autoRefresh: true
 		})
-
 	const pullDownObj = reactive({
 		[FUND_USAGE_STATUS]: true,
 		[APPROVAL_RECORD]: true,
 		[PAYMENT_ACCOUNT_INFORMATION]: true,
+		[COLLECTION_ACCOUNT_INFORMATION]: true,
 		[ATTACHMENT_LIST]: true,
 	})
 	const setOptions = (name) => {
@@ -293,145 +290,85 @@
 	})
 
 	const infoRows = ref([{
-			label: '合同名称',
+			label: '申请人',
 			value: '',
-			key: 'relatedContractName'
-		},{
-			label: '合同编号',
-			value: '',
-			key: 'contractNo'
+			key: 'applicantName'
 		},
 		{
-			label: '合同子项',
+			label: '核销部门',
 			value: '',
-			key: 'relatedContractItemName' 
+			key: 'businessUnitName'
+		}
+	])
+	const infoRows2 = ref([{
+			label: '对应暂支单',
+			value: '',
+			key: 'requestFormNos'
 		},
 		{
-			label: '项目名称',
+			label: '未结暂支金额',
 			value: '',
-			key: 'projectName'
-		},{
-			label: '所属部门',
+			key: 'remainAdvancePaymentAmount'
+		},
+		{
+			label: '差额',
 			value: '',
-			key: 'businessUnitName' 
-		},{
-			label: '对方单位',
+			key: 'diffExpense'
+		},
+        {
+            label: '核销金额',
+            value: '',
+            key: 'writeOffAmount'
+        },
+        // {
+		// 	label: '收款名称',
+		// 	value: '',
+		// 	key: 'receivingBankName'
+		// },
+		// {
+		// 	label: '开户银行',
+		// 	value: '',
+		// 	key: 'receivingBankAccountName'
+		// },{
+		// 	label: '帐号',
+		// 	value: '',
+		// 	key: 'receivingBankAccountNumber'
+		// },
+		{
+			label: '预算栏目',
 			value: '',
-			key: 'partyName'
-		},{
-			label: '合同金额',
+			key: 'claimCategoryName'
+		},
+		{
+			label: '核销内容',
 			value: '',
-			key: 'contractAmountVat'
-		},{
-			label: '对应收入合同编号',
+			key: 'content'
+		},
+		{
+			label: '暂支金额',
 			value: '',
-			key: 'receivingContractNo'
-		},{
-			label: '是否已收到发票',
-			value: '',
-			key: 'invoiceReceived'
+			key: 'originalAdvancePaymentAmount' 
 		}
 	])
 
-    
-	const infoRows2 = ref([{
-			label: '发票号',
-			value: '',
-			key: 'invoiceId'
-		},{
-			label: '专票含税金额',
-			value: '',
-			key: 'invoiceAmountVat'
-		},
-		
-		{
-			label: '专票不含税金额',
-			value: '',
-			key: 'invoiceAmountNet'
-		},
-		{
-			label: '专票税额',
-			value: '',
-			key: 'invoiceAmountTax' 
-		},{
-			label: '普票金额',
-			value: '',
-			key: 'invoiceAmountVato'
-		}
-	])
-    const infoRows3 = ref([{
-			label: '确认日期',
-			value: '',
-			key: 'confirmedDate'
-		},
-		{
-			label: '本期确认成本量',
-			value: '',
-			key: 'confirmedCostVat'
-		},
-		{
-			label: '本期成本量占合同比% ',
-			value: '',
-			key: 'contractRatio'
-		},
-		{
-			label: '确认金额(含税)',
-			value: '',
-			key: 'confirmedCostAmountVat'
-		},
-		{
-			label: '增值税税额',
-			value: '',
-			key: 'confirmedCostTaxAmount' 
-		},
-		{
-			label: '确认金额(不含税)',
-			value: '',
-			key: 'confirmedCostAmountNet'
-		},	{
-			label: '累计确认金额(含税)',
-			value: '',
-			key: 'accuredConfirmedCostAmountVat'
-		},	{
-			label: '内容',
-			value: '',
-			key: 'content'
-		},	{
-			label: '确认依据',
-			value: '',
-			key: 'remark'
-		}
-	])
 	const itemDatas = ref({});
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			let data = res.data?.data || {}
 			itemDatas.value = data || {}
 			infoRows.value.forEach(item => {
-				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key]
-                if(item.key == 'invoiceReceived' && [0,1].includes(itemDatas.value[item.key])){
-					item.value = itemDatas.value[item.key] == 0 ? '否' : '是'
-				}
-			});
-
+				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
+			})
 			infoRows2.value.forEach(item => {
-				item.value = (typeof itemDatas.value[item.key] === 'number') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key];
-			});
-
-			infoRows3.value.forEach(item => {
-				item.value = (typeof itemDatas.value[item.key] === 'number' && item.key != 'contractRatio') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key];
-                if(item.key == 'contractRatio'){
-					item.value = itemDatas.value[item.key] + '%' || ''
-				}
-				if(item.key == 'confirmedDate'){
-					item.value = formatDateTimeMinute(itemDatas.value[item.key]) || ''
-				}
-                
-			});
-			if(itemDatas.value.businessUnitName){
-				 stageTags.value.push(itemDatas.value.businessUnitName)
+				item.value = (typeof itemDatas.value[item.key] === 'number') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
+			})
+			// if(itemDatas.value.businessUnitName){
+			// 	 stageTags.value.push(itemDatas.value.businessUnitName)
+			// }
+			if(itemDatas.value.submittedDate){
+				 stageTags.value.push(formatDateTimeMinute(itemDatas.value.submittedDate))
 			}
-			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
+			let arr1 = (data.attachmentList || []).map(item => {
 				return {
 					fileTagName: item.fileTagName,
 					fileName: item.fileName,
@@ -439,7 +376,7 @@
 					id: item.attachmentId
 				}
 			})
-			attachmentData.value = [{fileTagName: '合同', children: []}, {fileTagName: '发票/收据', children: []}, {fileTagName: '合同要求其他资料', children: []}, {fileTagName: '其他', children: []}]
+			attachmentData.value = [{fileTagName: '发票', children: []}, {fileTagName: '其他', children: []}]
 			const attachmentMap = new Map()
 			attachmentData.value.forEach(item => {
 				attachmentMap.set(item.fileTagName, item)
@@ -456,15 +393,6 @@
 </script>
 
 <style lang="scss" scoped>
-	::v-deep .uni-navbar__header-container {
-		justify-content: center !important;
-		align-items: center !important;
-	}
-
-	::v-deep .uni-navbar__header {
-		padding: 0 !important;
-	}
-
 	::v-deep .uni-tabbar-bottom {
 		display: none !important;
 		height: 0 !important;
@@ -480,30 +408,30 @@
 			top: 0;
 			z-index: 19;
 
-			.status_bar {
-				background: #fff;
-				width: 100%;
-			}
+			// .status_bar {
+			// 	background: #fff;
+			// 	width: 100%;
+			// }
 		}
 
-		.nav-bar-top {
-			::v-deep .uni-navbar__header {
-				background: #fff !important;
-			}
+		// .nav-bar-top {
+		// 	::v-deep .uni-navbar__header {
+		// 		background: #fff !important;
+		// 	}
 
-			.back-btn {
-				width: 100rpx;
-				height: 100rpx;
-				background: url('../../static/images/back.svg') center center no-repeat;
-				background-size: 24rpx;
-			}
+		// 	.back-btn {
+		// 		width: 100rpx;
+		// 		height: 100rpx;
+		// 		background: url('../../static/images/back.svg') center center no-repeat;
+		// 		background-size: 24rpx;
+		// 	}
 
-			.nav-title {
-				font-size: 32rpx;
-				font-weight: bold;
-				color: #000;
-			}
-		}
+		// 	.nav-title {
+		// 		font-size: 32rpx;
+		// 		font-weight: bold;
+		// 		color: #000;
+		// 	}
+		// }
 
 		.scroller {
 			box-sizing: border-box;
@@ -758,11 +686,11 @@
 
 		.info-list {
 			padding: 0 32rpx 20rpx;
-			.info-item-column{
+			.info-item-column {
                 flex-direction: column;
 
 			}
-			.info-value-left{
+			.info-value-left {
 				text-align: left;
 				margin-top: 10rpx;
 				white-space: normal;
@@ -775,7 +703,6 @@
 			display: flex;
 			align-items: flex-start;
 			padding: 8rpx 0;
-			flex-wrap: wrap;
 			&.info-item-border {
 				border-bottom: 2rpx dashed #ddd;
 				padding-bottom: 22rpx !important;
@@ -788,7 +715,7 @@
 		}
 
 		.info-label {
-			min-width: 120rpx;
+			min-width: 180rpx;
 			max-width: 280rpx;
 			padding-right: 10rpx;
 			line-height: 40rpx;
@@ -806,10 +733,7 @@
 			font-size: 24rpx;
 			color: #666;
 			line-height: 40rpx;
-			text-align: right;	
-			white-space: normal;
-			word-break: break-all;
-			word-wrap: break-word;
+			text-align: right;
 		}
 
 		// 用款情况样式
@@ -984,8 +908,7 @@
 	.table1 {
 		box-sizing: border-box;
 		width: 100%;
-		// border-bottom: 2rpx #ddd solid;
-		border-top: 2rpx #ddd solid;
+		border-bottom: 2rpx #ddd solid;
 	}
 
 	.table2 {
@@ -1005,10 +928,8 @@
 
 	.table1 td {
 		box-sizing: border-box;
-		// border-left: 2rpx #ddd solid;
-		// border-top: 2rpx #ddd solid;
-		border-bottom: 2rpx #ddd solid;
-		border-right: 2rpx #ddd solid;
+		border-left: 2rpx #ddd solid;
+		border-top: 2rpx #ddd solid;
 		padding: 8px;
 		font-size: 12px;
 	}
@@ -1016,9 +937,6 @@
 	.table1 .info {
 		text-align: right;
 		color: #666;
-		padding: 8px !important;
-		max-width: 350px;
-		white-space: wrap !important;
 	}
 
 	.table1 .text {
@@ -1046,9 +964,8 @@
 	.table1 td.sticky-2 { position: sticky; left: 109.02px;  z-index: 4;box-sizing: border-box; }
 	.table1 td.sticky-3 { position: sticky; left: 220px;  z-index: 2;box-sizing: border-box; }
 
-	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;	max-width: 176px !important;
-		min-width: 176px !important;width: 176px !important; border-left: 2rpx #ddd solid;box-sizing: border-box;background: #fff;}
-	.table1 td.sticky-xz-2 { position: sticky; left: 176px;  z-index: 4;;background: #fff; }
+	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 55.5px !important; ;background: #fff;}
+	.table1 td.sticky-xz-2 { position: sticky; left: 55.5px;  z-index: 4;;background: #fff; }
 	.table1 td.sticky-xz-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
 
 	.table1 td.sticky-lx-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 76px !important;background: #fff; }
