@@ -28,6 +28,28 @@
 		box-sizing: border-box;
 	}
 
+	/* @media (min-aspect-ratio: 13/20) {
+        ::v-deep .uni-tabbar-bottom {
+          display: none !important;
+          height: 0 !important;
+        }
+        ::v-deep .uni-tabbar{
+          display: none !important;
+          height: 0 !important;
+        }
+      } */
+	/* @media (min-aspect-ratio: 13/20) {
+	  ::v-deep .uni-tabbar-bottom {
+		display: none !important;
+		height: 0 !important;
+		background-color: #fff !important;
+	  }
+	  ::v-deep .uni-tabbar{
+		  display: none !important;
+		  height: 0 !important;
+	  }
+	} */
+
 	/* H5 内置 tabbar 强制固定底部，避免被布局挤压 */
 	/* ::v-deep .kb-open .uni-tabbar {
 		transform: translateY(100%);

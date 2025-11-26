@@ -7,21 +7,21 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ itemDetail.taskName  }}
+							{{ itemDetail.taskName || '暂支核销申请'  }}
 						</view>
 						<view class="project-name-1">
 							{{ itemDatas.businessUnitName }}
 						</view>
 					</view>
 					<view class="amount-box">
-						<view class="amount-label">暂支金额</view>
+						<view class="amount-label">申请核销金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
-								{{ formatNumber(itemDatas.amount) }}</text></view>
+								{{ formatNumber(itemDatas.writeOffAmount) }}</text></view>
 					</view>
 				</view>
 				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
-					<view class="tag" v-for="(t, i) in stageTags" :key="i">{{ t }}</view>
+					<view class="tag" v-for="(t, i) in stageTags" :key="`tag-${i}-${t}`">{{ t }}</view>
 				</view>
 				<view class="hero-actions" v-show="currentType === 'pending'">
 					<view class="btn outline" @click="onReject">打回</view>
@@ -63,35 +63,52 @@
 							<view class="account-info-block">
 								<view class="account-info-row">
 									<text class="account-info-label">{{ infoRows2[0].label }}</text>
-									<text class="account-info-value">{{ infoRows2[0].value || '' }}</text>
+									<text class="account-info-value">{{ infoRows2[0].value || '--' }}</text>
 								</view>
 							</view>
 							<view class="account-info-block" style="margin-top: 20rpx;">
 								<view class="account-info-row">
 									<text class="account-info-label">{{ infoRows2[1].label }}</text>
-									<text class="account-info-value">{{ infoRows2[1].value || '' }}</text>
+									<text class="account-info-value">{{ infoRows2[1].value || '--' }}</text>
 								</view>
 							<view class="account-info-row">
 									<text class="account-info-label">{{ infoRows2[2].label }}</text>
-									<text class="account-info-value">{{ infoRows2[2].value || '' }}</text>
+									<text class="account-info-value">{{ infoRows2[2].value || '--' }}</text>
 								</view>
 								<view class="account-info-row">
 									<text class="account-info-label">{{ infoRows2[3].label }}</text>
-									<text class="account-info-value">{{ infoRows2[3].value || '' }}</text>
+									<text class="account-info-value">{{ infoRows2[3].value || '--' }}</text>
 								</view>
-							</view>
-							<view class="account-info-block" style="margin-top: 20rpx;">
 								<view class="account-info-row">
 									<text class="account-info-label">{{ infoRows2[4].label }}</text>
-									<text class="account-info-value">{{ infoRows2[4].value || '' }}</text>
+									<text class="account-info-value">{{ infoRows2[4].value || '--' }}</text>
+								</view>
+								<view class="account-info-row" v-if="infoRows2[5].value">
+									<text class="account-info-label">{{ infoRows2[5].label }}</text>
+									<text class="account-info-value">{{ infoRows2[5].value || '--' }}</text>
+								</view>
+							</view>
+                            
+							<view class="account-info-block" style="margin-top: 20rpx;" v-if="itemDatas.receivingBankName || itemDatas.receivingBankAccountName || itemDatas.receivingBankAccountNumber">
+								<view class="account-info-row">
+									<text class="account-info-label">收款名称</text>
+									<text class="account-info-value">{{ itemDatas.receivingBankName || '--' }}</text>
 								</view>
 								<view class="account-info-row">
-									<text class="account-info-label">{{ infoRows2[5].label }}</text>
-									<text class="account-info-value">{{ infoRows2[5].value || '' }}</text>
+									<text class="account-info-label">开户银行</text>
+									<text class="account-info-value">{{ itemDatas.receivingBankAccountName || '--' }}</text>
 								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">帐号</text>
+									<text class="account-info-value">{{ itemDatas.receivingBankAccountNumber || '--' }}</text>
+								</view>
+							</view>
+
+							<view class="account-info-block" style="margin-top: 20rpx;">
+								
 								<view class="account-info-row">
 									<text class="account-info-label">{{ infoRows2[6].label }}</text>
-									<text class="account-info-value">{{ infoRows2[6].value || '' }}</text>
+									<text class="account-info-value">{{ infoRows2[6].value || '--' }}</text>
 								</view>
 							</view>
 						</view>
@@ -114,30 +131,29 @@
 							<view class="account-info-block">
 								<view class="account-info-row">
 									<text class="account-info-label">发票系统编号</text>
-									<text class="account-info-value">{{ itemDatas.invoiceCloudId || '' }}</text>
+									<text class="account-info-value">{{ itemDatas.invoiceCloudId || '--' }}</text>
 								</view>
 								<view class="account-info-row">
 									<text class="account-info-label">专票金额(含税)</text>
-									<text class="account-info-value">{{ itemDatas.vatamount || '' }}</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vatamount) || '' }}</text>
 								</view>
 								<view class="account-info-row">
 									<text class="account-info-label">可抵扣票据</text>
-									<text class="account-info-value">{{ itemDatas.vatamountNet || '' }}</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vatamountNet) || '' }}</text>
 								</view>
 								<view class="account-info-row">
 									<text class="account-info-label">普票金额</text>
-									<text class="account-info-value">{{ itemDatas.vatoamount || '' }}</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vatoamount) || '' }}</text>
 								</view>
 								<view class="account-info-row">
 									<text class="account-info-label">进项税额</text>
-									<text class="account-info-value">{{ itemDatas.vattaxAmount || '' }}</text>
+									<text class="account-info-value">{{ formatNumber(itemDatas.vattaxAmount) || '' }}</text>
 								</view>
 							</view>
 						</view>
 					</view>
 				</transition>
 			</view>
-            
 			<!-- 附件 -->
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(ATTACHMENT_LIST)">
@@ -187,13 +203,10 @@
 	} from '@dcloudio/uni-app'
 	import {
 		ref,
-		reactive,
 		getCurrentInstance,
-		computed,
 		onUnmounted
 	} from 'vue'
 	import {
-		FUND_USAGE_STATUS,
 		APPROVAL_RECORD,
 		PAYMENT_ACCOUNT_INFORMATION,
         COLLECTION_ACCOUNT_INFORMATION,
@@ -206,13 +219,13 @@
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
+	import { useDetailCommon } from '@/utils/useDetailCommon.js'
 	import detailNavBar from '@/components/navBar/detailNavBar.vue'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
 	let eventChannel
 	let handleOpenDetail = null
-
 	onLoad(() => {
 		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
 		handleOpenDetail = (data) => {
@@ -230,14 +243,18 @@
 		}
 		handleOpenDetail = null
 	})
-	const currentType = ref('')
-	const itemDetail = ref({})
-	const stageTags = ref([])
-	const wfstatusText = computed(() => {
-		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
-	})
+	const currentType = ref('');
+	const itemDetail = ref({});
+	const itemDatas = ref({});
+	const stageTags = ref([]);
 	const attachmentData = ref([]);
-
+	const {   
+		urlParams, wfstatusText,setOptions,getOptions
+    } = useDetailCommon({
+		itemDetail,
+		currentType,
+		itemDatas,
+	})
 	const { listHeight } = useListHeight({
 	     headerSelector: '.header-stickt', // 可选，默认就是这个值
 		 iosFit: true,
@@ -261,33 +278,6 @@
 			autoGoBack: true,
 			autoRefresh: true
 		})
-	const pullDownObj = reactive({
-		[FUND_USAGE_STATUS]: true,
-		[APPROVAL_RECORD]: true,
-		[PAYMENT_ACCOUNT_INFORMATION]: true,
-		[COLLECTION_ACCOUNT_INFORMATION]: true,
-		[ATTACHMENT_LIST]: true,
-	})
-	const setOptions = (name) => {
-		pullDownObj[name] = pullDownObj[name] ? false : true
-	}
-
-	const getOptions = (name) => {
-		return pullDownObj[name]
-	}
-	const urlParams = computed(() => {
-		let params = {
-			pending: {
-				procCode: itemDetail.value.procDefCode,
-				workitemid: itemDetail.value.workItemId
-			},
-			completed: {
-				procCode: itemDetail.value.procDefCode,
-				wfInstanceId: itemDetail.value.wfinstanceId
-			}
-		}
-		return params[currentType.value]
-	})
 
 	const infoRows = ref([{
 			label: '申请人',
@@ -304,54 +294,39 @@
 			label: '对应暂支单',
 			value: '',
 			key: 'requestFormNos'
-		},
-		{
-			label: '未结暂支金额',
-			value: '',
-			key: 'remainAdvancePaymentAmount'
-		},
-		{
-			label: '差额',
-			value: '',
-			key: 'diffExpense'
-		},
-        {
-            label: '核销金额',
-            value: '',
-            key: 'writeOffAmount'
-        },
-        // {
-		// 	label: '收款名称',
-		// 	value: '',
-		// 	key: 'receivingBankName'
-		// },
-		// {
-		// 	label: '开户银行',
-		// 	value: '',
-		// 	key: 'receivingBankAccountName'
-		// },{
-		// 	label: '帐号',
-		// 	value: '',
-		// 	key: 'receivingBankAccountNumber'
-		// },
-		{
+		},{
 			label: '预算栏目',
 			value: '',
 			key: 'claimCategoryName'
 		},
 		{
-			label: '核销内容',
-			value: '',
-			key: 'content'
-		},
-		{
 			label: '暂支金额',
 			value: '',
 			key: 'originalAdvancePaymentAmount' 
+		},
+		{
+			label: '未结暂支金额',
+			value: '',
+			key: 'remainAdvancePaymentAmount'
+		},{
+            label: '核销金额',
+            value: '',
+            key: 'writeOffAmount'
+        },
+		{
+			label: '差额',
+			value: '',
+			key: 'diffExpense'
+		},
+		
+		{
+			label: '核销内容',
+			value: '',
+			key: 'content'
 		}
 	])
 
-	const itemDatas = ref({});
+
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			let data = res.data?.data || {}
@@ -362,12 +337,11 @@
 			infoRows2.value.forEach(item => {
 				item.value = (typeof itemDatas.value[item.key] === 'number') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key] || ''
 			})
-			// if(itemDatas.value.businessUnitName){
-			// 	 stageTags.value.push(itemDatas.value.businessUnitName)
-			// }
+		
 			if(itemDatas.value.submittedDate){
 				 stageTags.value.push(formatDateTimeMinute(itemDatas.value.submittedDate))
 			}
+
 			let arr1 = (data.attachmentList || []).map(item => {
 				return {
 					fileTagName: item.fileTagName,

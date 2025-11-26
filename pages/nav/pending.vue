@@ -233,8 +233,9 @@
 	  ::v-deep .uni-tabbar-bottom {
 		display: none !important;
 		height: 0 !important;
+		background-color: #fff !important;
 	  }
-	  ::v-deep .bottom-nav-bar{
+	  ::v-deep .uni-tabbar{
 		  display: none !important;
 		  height: 0 !important;
 	  }

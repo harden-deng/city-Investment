@@ -4,8 +4,8 @@
 			<view class="card__header">
 				<text class="card__company">上海公路投资建设发展有限公司</text>
 				<view class="card__body">
-					<text class="card__name">{{ userInfo?.userFullName || '' }}</text>
-					<text class="card__dept">{{ userInfo?.departmentName || '' }}</text>
+					<text class="card__name">{{ userInfo?.userFullName || '暂无姓名' }}</text>
+					<text class="card__dept">{{ userInfo?.departmentName || '暂无部门' }}</text>
 				</view>
 			</view>
 			<image class="card__avatar" src="../../static/images/user.jpg" mode="aspectFill" loading="lazy"></image>
@@ -85,34 +85,16 @@
 		})
 	}
 	const goMessage = () => {
-		// 这里可替换为实际业务页面
-		// uni.showToast({
-		// 	title: '消息中心开发中',
-		// 	icon: 'none'
-		// })
 		uni.navigateTo({
 			url: '/pages/info/msg'
 		})
 	}
 	const goSign = () => {
-		// uni.showToast({
-		// 	title: '签名维护开发中',
-		// 	icon: 'none'
-		// })
-		
 		uni.navigateTo({
 			url: '/pages/signature/index'
 		})
-		// uni.navigateTo({
-		// 	url: '/uni_modules/rn-signature/pages/rn-canvas'
-		// })
-		
 	}
 	const goHelp = () => {
-		// uni.showToast({
-		// 	title: '在线帮助开发中',
-		// 	icon: 'none'
-		// })
 		uni.navigateTo({
 			url: '/pages/info/help'
 		})

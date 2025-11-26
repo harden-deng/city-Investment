@@ -28,7 +28,7 @@ export function useApproval(options = {}) {
     autoGoBack = true,
     autoRefresh = true
   } = options
-
+  console.log('来了这里了吗22222',itemDetail.value)
   // 输入对话框相关
   const inputDialogRef = ref(null)
   const inputDialogRequired = ref(false)

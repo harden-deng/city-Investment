@@ -30,7 +30,7 @@
 
 <script setup>
 	import { onLoad } from '@dcloudio/uni-app'
-	import { ref, onMounted, computed } from 'vue'
+	import { ref } from 'vue'
 	import http from '@/utils/request.js'
 	const styles = {
 	    placeholderColor: '#999999',
@@ -69,10 +69,7 @@
 			return
 		}
 		if(uni.getStorageSync('token')){
-			uni.switchTab({
-				url: '/pages/nav/home'
-			})
-			return
+			uni.clearStorageSync()
 		}
 		// 登录逻辑
 		http.post('/Auth/accountlogin', {
@@ -83,7 +80,6 @@
 			if (res.code == 0) {
 				uni.setStorageSync('token', res.data.accessToken)
 				uni.setStorageSync('userFullName', res.data.userFullName)
-				getUserInfo()
 				uni.switchTab({
 					url: '/pages/nav/home'
 				})
@@ -97,15 +93,6 @@
 			console.log('登录失败', err)
 		})
 	}
-    //获取用户信息
-	const getUserInfo = () => {
-		http.get('/Users/GetUserInfo').then(res => {
-			if(res.code == 0){
-				uni.setStorageSync('userInfo', res.data)
-			}
-		})
-	}
-	
 </script>
 
 <style lang="scss" scoped>

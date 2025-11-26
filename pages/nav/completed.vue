@@ -237,17 +237,14 @@
 		height: 50px !important;
 		padding: 0 !important;
 	}
-
-	// ::v-deep .z-paging-content-fixed {
-	// 	top: 85px !important;
-	// }
 	
 	@media (min-aspect-ratio: 13/20) {
-	//   ::v-deep .uni-tabbar-bottom {
-	// 	display: none !important;
-	// 	height: 0 !important;
-	//   }
-	  ::v-deep .bottom-nav-bar{
+	  ::v-deep .uni-tabbar-bottom {
+		display: none !important;
+		height: 0 !important;
+		background-color: #fff !important;
+	  }
+	  ::v-deep .uni-tabbar{
 		  display: none !important;
 		  height: 0 !important;
 	  }

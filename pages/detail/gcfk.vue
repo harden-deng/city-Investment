@@ -616,8 +616,6 @@
 				<!-- 附件卡片 -->
 				<transition name="collapse">
 					<view class="attachment-section" v-if="getOptions(ATTACHMENT_LIST)">
-						<view style="height: 10rpx;"></view>
-					
 						<attachmentList :list="attachmentData"></attachmentList>
 					</view>
 				</transition>
@@ -1536,7 +1534,7 @@
 
 
 	.attachment-section {    
-		padding: 0 32rpx 24rpx;
+		padding: 20rpx 32rpx 40rpx;
 	}
 	.attachment-list {    
 		display: flex;    

@@ -19,7 +19,7 @@ export function useListHeight(options = {}) {
     enableResize = true,
     iosFit = false,
   } = options
-
+  console.log('来了这里了吗0000',headerSelector)
   // 列表高度
   const listHeight = ref('')
 
