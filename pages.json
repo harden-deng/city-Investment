@@ -7,40 +7,15 @@
 			}
 		},
 		{
-			"path": "pages/nav/home",
+			"path": "pages/nav/layoutHome",
 			"style": {
 				"navigationStyle": "custom",
-				"disableScroll": true //设置为 true 则页面整体不能上下滚动
-			}
-		},
-		{
-			"path": "pages/nav/pending",
-			"style": {
-				"navigationStyle": "custom",
-				// "safeAreaInsets": true,
+				"safeAreaInsets": true,
 				"disableScroll": true,
-				// "softinputMode": "adjustResize"
-				"app-plus": {
-					"softinputMode": "adjustResize"
-				}
+				"softinputMode": "adjustResize"
 			}
 		},
-		{
-			"path": "pages/nav/completed",
-			"style": {
-				"navigationStyle": "custom",
-				// "safeAreaInsets": true,
-				"disableScroll": true
-				// "softinputMode": "adjustResize"
-			}
-		},
-		{
-			"path": "pages/nav/profile",
-			"style": {
-				"navigationStyle": "custom",
-				"disableScroll": true
-			}
-		},
+		
 		{
 			"path": "pages/search/index",
 			"style": {
@@ -167,35 +142,20 @@
 	},
 	"uniIdRouter": {},
 	"tabBar": {
-		// "height": "0",
+		"height": "0",
 		// "height": "50px",
-		"fontSize": "10px",
-		"iconWidth": "24px",
-		"spacing": "3px",
-		"color": "#000",
-		"selectedColor": "#3e65f6",
-		"borderStyle": "white",
-		"backgroundColor": "#ffffff",
+		// "fontSize": "10px",
+		// "iconWidth": "24px",
+		// "spacing": "3px",
+		// "color": "#000",
+		// "selectedColor": "#3e65f6",
+		// "borderStyle": "white",
+		// "backgroundColor": "#ffffff",
 		"list": [{
-			"pagePath": "pages/nav/home",
-			"iconPath": "/static/images/menu_1_1.svg",
-			"selectedIconPath": "/static/images/menu_1_2.svg",
-			"text": "首页"
-		}, {
-			"pagePath": "pages/nav/pending",
-			"iconPath": "static/images/menu_2_1.svg",
-			"selectedIconPath": "static/images/menu_2_2.svg",
-			"text": "待办流程"
-		}, {
-			"pagePath": "pages/nav/completed",
-			"iconPath": "static/images/menu_3_1.svg",
-			"selectedIconPath": "static/images/menu_3_2.svg",
-			"text": "已办流程"
-		}, {
-			"pagePath": "pages/nav/profile",
-			"iconPath": "static/images/menu_4_1.svg",
-			"selectedIconPath": "static/images/menu_4_2.svg",
-			"text": "个人中心"
+			"pagePath": "pages/nav/layoutHome"
+			// "iconPath": "/static/images/menu_1_1.svg",
+			// "selectedIconPath": "/static/images/menu_1_2.svg",
+			// "text": "首页"
 		}]
 	}
 }

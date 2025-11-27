@@ -43,9 +43,9 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" :class="{'info-item-column': row.value?.length > 34,'info-item-border': (row.key === 'businessRemarkPr')}" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item" :class="{'info-item-column': (row.value?.length > 34&&row.key === 'businessRemarkPr'),'info-item-border': (row.key === 'businessRemarkPr')}" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value" :class="{'info-value-left': row.value?.length > 34}">{{ row.value || '--' }}</text>
+						<text class="info-value" :class="{'info-value-left': (row.value?.length > 34&&row.key === 'businessRemarkPr')}">{{ row.value || '--' }}</text>
 					</view>
 				</view>
 			</view>
@@ -248,8 +248,9 @@
 							</view>
 						</view>
 
-						<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length == 0">
-							<table cellspacing="0" cellpadding="0" class="table1 margin_1 table1—left-border">
+						<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length == 0" @touchmove.stop="handleTableTouchMove">
+							<!-- <table cellspacing="0" cellpadding="0" class="table1 margin_1 table1—left-border"> -->
+							<table cellspacing="0" cellpadding="0" class="table1 margin_1">
 								<tbody>
 									<tr>
 										<td colspan="2" class="type font_w sticky-1">支付渠道</td>
@@ -1416,7 +1417,7 @@
 			.detail-row {
 				box-sizing: border-box;
 				width: 100%;
-				height: 48rpx;
+				min-height: 48rpx;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
@@ -1434,6 +1435,7 @@
 					font-size: 24rpx;
 					color: #666;
 					text-align: right;
+                    word-break: break-all;
 				}
 			}
 
@@ -1667,7 +1669,7 @@
 	}
 
 	/* 需要给表格的前几列设置 sticky 和 left 偏移，按你的列宽自行调整 */
-	.table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 109.02px !important;box-sizing: border-box;  }
+	.table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 109.02px !important;min-width: 109.02px !important;box-sizing: border-box;  border-left: 2rpx #ddd solid; /* 解决左右滑动时，边框不显示 */ }
 	.table1 td.sticky-2 { position: sticky; left: 109.02px;  z-index: 4;box-sizing: border-box; }
 	.table1 td.sticky-3 { position: sticky; left: 220px;  z-index: 2;box-sizing: border-box; }
 

@@ -65,6 +65,8 @@
 	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	
 	import http from '@/utils/request.js'
+	// Emits定义
+	const emit = defineEmits(['change'])
 	const statusBarHeight = ref(0)
 	const tabBarHeight = ref(0) // 如有实际高度可替换
 	const windowHeight = ref(0)
@@ -88,14 +90,16 @@
 			imgUrl: '../../static/images/index_menu_1.svg',
 			path: '/pages/nav/pending',
 			bjColor: '#6599ff',
-			isTab: true
+			isTab: true,
+			indexFlag: 1
 		},
 		{
 			label: '已办流程',
 			imgUrl: '../../static/images/index_menu_2.svg',
 			path: '/pages/nav/completed',
 			bjColor: '#9933ff',
-			isTab: true
+			isTab: true,
+			indexFlag: 2
 		},
 		{
 			label: '掌上看板',
@@ -120,9 +124,7 @@
 			})
 			return
 		}
-		item.isTab ? uni.switchTab({
-			url: item.path
-		}) : uni.navigateTo({
+		item.isTab ? emit('change', item.indexFlag, {}) : uni.navigateTo({
 			url: item.path
 		})
 	}
@@ -132,7 +134,7 @@
 		})
 	}
 	const scrollViewHeight = computed(() => {
-		return `${Math.max(0, windowHeight.value - tabBarHeight.value)}px`
+		return `${Math.max(0, windowHeight.value - tabBarHeight.value - 50)}px`
 	})
 	onMounted(() => {
 		try {

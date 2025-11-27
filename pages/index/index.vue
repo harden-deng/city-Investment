@@ -38,12 +38,12 @@
 	const statusBarHeight = ref(0)
 	// 响应式数据
 	// const phoneNumber = ref('sybjbr1');  //经办人事业部   资金
-	const phoneNumber = ref('sybzgo');  //您好，业务主管（运管中心）
+	// const phoneNumber = ref('sybzgo');  //您好，业务主管（运管中心）
 	// const phoneNumber = ref('sybzg1');  //业务主管（一事业部） （其他）
 	// const phoneNumber = ref('cwzg');  //业务主管（一事业部）  cwzg财务主管
 	// const phoneNumber = ref('jbrsz');  //经办人（市政）
 	// 申请人:sybjbro  审核人：sybzgo sybldo cwkj
-	// const phoneNumber = ref('sybjbro');  //您好，经办人（运管中心） 可实现收入确认11/21
+	const phoneNumber = ref('sybjbro');  //您好，经办人（运管中心） 可实现收入确认11/21）  支出
 	// 其他费用报销流程
 	// 申请人：sybjbr1
 	// 审批人：sybzg1  
@@ -81,7 +81,7 @@
 				uni.setStorageSync('token', res.data.accessToken)
 				uni.setStorageSync('userFullName', res.data.userFullName)
 				uni.switchTab({
-					url: '/pages/nav/home'
+					url: '/pages/nav/layoutHome'
 				})
 			} else {
 				uni.showToast({

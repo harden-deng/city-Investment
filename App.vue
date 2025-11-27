@@ -28,16 +28,16 @@
 		box-sizing: border-box;
 	}
 
-	/* @media (min-aspect-ratio: 13/20) {
-        ::v-deep .uni-tabbar-bottom {
+	/* @media (min-aspect-ratio: 13/20) { */
+        /* ::v-deep .uni-tabbar-bottom {
           display: none !important;
           height: 0 !important;
         }
         ::v-deep .uni-tabbar{
           display: none !important;
           height: 0 !important;
-        }
-      } */
+        } */
+      /* } */
 	/* @media (min-aspect-ratio: 13/20) {
 	  ::v-deep .uni-tabbar-bottom {
 		display: none !important;

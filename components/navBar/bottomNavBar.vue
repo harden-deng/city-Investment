@@ -4,7 +4,7 @@
 			:class="{ active: currentIndex === index }" @click="handleNavClick(index, item)">
 			<!-- 图标容器 -->
 			<view class="icon-container">
-				<image :src="currentIndex === index ? item.activeIcon || item.icon : item.icon"
+				<image :src="currentIndex === index ? item.activeIcon : item.icon"
 					class="nav-icon" mode="aspectFit" />
 			</view>
 			<!-- 文字标签 -->
@@ -16,13 +16,14 @@
 </template>
 
 <script setup>
-    import { ref, onMounted, computed } from 'vue'
+    import { ref, onMounted, computed, watch } from 'vue'
 
     // Props(运行时定义，保持与原默认值一致)
     const props = defineProps({
         modelValueFlag: { type: Number, default: 0 },
         activeColor: { type: String, default: '#3e65f6' },
         inactiveColor: { type: String, default: '#000' },
+        componentMode: { type: Boolean, default: false }, // 组件切换模式，为 true 时不执行页面跳转，只 emit change 事件
         // showFlag: { type: Boolean, default: true }
     })
 
@@ -66,59 +67,71 @@
 	// 响应式数据
     const currentIndex = ref(props.modelValueFlag)
 
+	// 监听 modelValueFlag 变化（用于组件切换模式）
+	watch(() => props.modelValueFlag, (newVal) => {
+		if (props.componentMode && newVal !== currentIndex.value) {
+			currentIndex.value = newVal
+		}
+	})
+
 	// 方法
     const handleNavClick = (index, item) => {
-		// if (currentIndex.value === index) return
+		if (currentIndex.value === index) return
 
-		// emit('update:modelValue', index)
-		// emit('change', index, item)
-		// 页面跳转
-		navigateToPage(item)
-	}
-
-    const navigateToPage = (item) => {
-		// 判断当前页面是否为目标页面，避免重复跳转
-        const pages = getCurrentPages();
-		const currentPage = pages[pages.length - 1]
-		const currentRoute = currentPage.route
-
-		if (currentRoute === item.pagePath) {
+		// 组件切换模式：只 emit 事件，不执行页面跳转
+		if (props.componentMode) {
+			currentIndex.value = index
+			emit('change', index, item)
 			return
 		}
 
-		// 根据页面路径决定跳转方式
-		if (item.path.includes('pages/nav/')) {
-			// 跳转到首页使用 switchTab 或 reLaunch
-			uni.switchTab({
-				url: item.path,
-				fail: (err) => {
-					console.error('页面跳转失败:', err)
-					// 备用跳转方式
-					uni.navigateTo({
-						url: item.path,
-						fail: (navErr) => {
-							console.error('备用跳转也失败:', navErr)
-						}
-					})
-				}
-			})
-		} else {
-			// 其他页面使用 navigateTo
-			uni.redirectTo({
-				url: item.path,
-				fail: (err) => {
-					console.error('页面跳转失败:', err)
-					// 如果是tabBar页面，尝试使用switchTab
-					uni.switchTab({
-						url: item.path,
-						fail: (switchErr) => {
-							console.error('switchTab也失败:', switchErr)
-						}
-					})
-				}
-			})
-		}
+		// 默认模式：执行页面跳转
+		// navigateToPage(item)
 	}
+
+    // const navigateToPage = (item) => {
+	// 	// 判断当前页面是否为目标页面，避免重复跳转
+    //     const pages = getCurrentPages();
+	// 	const currentPage = pages[pages.length - 1]
+	// 	const currentRoute = currentPage.route
+
+	// 	if (currentRoute === item.pagePath) {
+	// 		return
+	// 	}
+
+	// 	// 根据页面路径决定跳转方式
+	// 	if (item.path.includes('pages/nav/')) {
+	// 		// 跳转到首页使用 switchTab 或 reLaunch
+	// 		uni.switchTab({
+	// 			url: item.path,
+	// 			fail: (err) => {
+	// 				console.error('页面跳转失败:', err)
+	// 				// 备用跳转方式
+	// 				uni.navigateTo({
+	// 					url: item.path,
+	// 					fail: (navErr) => {
+	// 						console.error('备用跳转也失败:', navErr)
+	// 					}
+	// 				})
+	// 			}
+	// 		})
+	// 	} else {
+	// 		// 其他页面使用 navigateTo
+	// 		uni.redirectTo({
+	// 			url: item.path,
+	// 			fail: (err) => {
+	// 				console.error('页面跳转失败:', err)
+	// 				// 如果是tabBar页面，尝试使用switchTab
+	// 				uni.switchTab({
+	// 					url: item.path,
+	// 					fail: (switchErr) => {
+	// 						console.error('switchTab也失败:', switchErr)
+	// 					}
+	// 				})
+	// 			}
+	// 		})
+	// 	}
+	// }
 
 	// 获取当前激活的索引（外部可调用）
     const getCurrentIndex = () => {
@@ -135,20 +148,26 @@
 
 	// 生命周期
 	onMounted(() => {
-		// 根据当前页面路径设置激活状态
-		const pages = getCurrentPages()
-		if (pages.length > 0) {
-			const currentPage = pages[pages.length - 1]
-			const currentRoute = currentPage.route
-
-			const activeIndex = navItems.value.findIndex(item =>
-				item.pagePath === currentRoute || item.path.includes(currentRoute)
-			)
-			if (activeIndex !== -1 && activeIndex !== currentIndex.value) {
-				currentIndex.value = activeIndex
-				// emit('update:modelValue', activeIndex)
-			}
+		// 组件切换模式下，不根据页面路径设置激活状态，由父组件控制
+		if (props.componentMode) {
+			currentIndex.value = props.modelValueFlag
+			return
 		}
+
+		// 默认模式：根据当前页面路径设置激活状态
+		// const pages = getCurrentPages()
+		// if (pages.length > 0) {
+		// 	const currentPage = pages[pages.length - 1]
+		// 	const currentRoute = currentPage.route
+
+		// 	const activeIndex = navItems.value.findIndex(item =>
+		// 		item.pagePath === currentRoute || item.path.includes(currentRoute)
+		// 	)
+		// 	if (activeIndex !== -1 && activeIndex !== currentIndex.value) {
+		// 		currentIndex.value = activeIndex
+		// 		// emit('update:modelValue', activeIndex)
+		// 	}
+		// }
 	})
 
 	// 暴露给父组件的方法
@@ -166,14 +185,14 @@
 		right: 0;
 		height: 50px;
 		background: #ffffff;
-		border-top: 1rpx solid #e6e6e6;
+		border-top: 1rpx solid #ffffff;
 		display: flex;
 		align-items: center;
 		justify-content: space-around;
-		padding-bottom: constant(safe-area-inset-bottom);
-		padding-bottom: env(safe-area-inset-bottom);
+		// padding-bottom: constant(safe-area-inset-bottom);
+		// padding-bottom: env(safe-area-inset-bottom);
 		z-index: 19;
-		box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.1);
+		// box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.1);
 
 		.nav-item {
 			max-height: 50px;
@@ -183,14 +202,14 @@
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			transition: all 0.3s ease;
-			cursor: pointer;
+			// transition: all 0.3s ease;
+			// cursor: pointer;
 			height: 100%;
 			position: relative;
 
 			&:active {
-				background-color: rgba(0, 122, 255, 0.1);
-				border-radius: 6px;
+				// background-color: rgba(0, 122, 255, 0.1);
+				// border-radius: 6px;
 			}
 
 			&.active {

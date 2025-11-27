@@ -1,6 +1,6 @@
 <template>
 	<view class="order-page">
-		<view class="header-stickt">
+		<view class="header-stickt" ref="headerRef">
 			<view class="status_bar" :style="{height: `${statusBarHeight*2}rpx`}"></view>
 			<uni-nav-bar class="nav-bar-top">
 				<template v-slot:left>
@@ -82,17 +82,18 @@
 		onUnload,
 	} from '@dcloudio/uni-app'
 	import {
-		ref,
+		ref,onMounted, nextTick
 	} from 'vue'
 	import http from '@/utils/request.js'
 	import {
 		procDefCodeUrlObj,
 	} from '@/utils/definitions'
 	import { formatNumber,formatRelativeTime } from '@/utils/h5Bribge.js'
-	import { useListHeight } from '@/utils/useListHeight.js'
+	// import { useListHeight } from '@/utils/useListHeight.js'
 	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
 	const statusBarHeight = ref(0)
+	const listHeight = ref('')
 	onLoad(() => {
 		uni.$on('refresh-completed', () => {
 			onRefresh()
@@ -101,9 +102,23 @@
 	onUnload(() => {
        uni.$off("refresh-completed");
     });
-	const { listHeight } = useListHeight({
-	     headerSelector: '.header-stickt', // 可选，默认就是这个值
-	});
+	const headerRef = ref(null)
+	const getHeaderHeight = () => {
+		nextTick(() => {
+			const { windowHeight } = uni.getSystemInfoSync() // px
+			const query = uni.createSelectorQuery().in(headerRef.value)
+			query.select('.header-stickt').boundingClientRect((rect) => {
+			if (rect) {
+				const headerH = rect?.height || 0
+				  const h = Math.max(0, windowHeight - headerH)
+                 listHeight.value = `${h}px`
+			}
+			}).exec()
+		})
+	}
+	onMounted(() => {
+        getHeaderHeight()
+	})
 	const paging = ref(null)
 	// 搜索相关
 	const searchKeyword = ref('')

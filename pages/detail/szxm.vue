@@ -39,13 +39,13 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item"  :class="{'info-item-column': row.value?.length > 34,'info-item-border': (row.key === 'contractNo' || row.key === 'contractPaymentRatio')}"  v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item"  :class="{'info-item-border': (row.key === 'contractNo' || row.key === 'contractPaymentRatio')}"  v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value" :class="{'info-value-left': row.value?.length > 34}">{{row.key === 'contractPaymentRatio' ? row.value + '%' : row.value || '--'}}</text>
+						<text class="info-value">{{row.key === 'contractPaymentRatio' ? row.value + '%' : row.value || '--'}}</text>
 					</view>
-					<view class="info-item" v-if="['OverBudget','OutOfBudget'].includes(itemDatas.specialCase)">
+					<view class="info-item" :class="{'info-item-column': itemDatas.specialRemark?.length > 34}" v-if="['OverBudget','OutOfBudget'].includes(itemDatas.specialCase)">
 						<text class="info-label">补充说明</text>
-						<text class="info-value">{{ itemDatas.specialRemark || '--' }}</text>
+						<text class="info-value" :class="{'info-value-left': itemDatas.specialRemark?.length > 34}">{{ itemDatas.specialRemark || '--' }}</text>
 					</view>
 				</view>
 			</view>
@@ -946,8 +946,10 @@
 		text-align: right;
 		color: #666;
 		padding: 8px !important;
-		max-width: 350px;
-		white-space: wrap !important;
+		max-width: 450px;
+		white-space: normal !important;
+		word-break: break-all;
+		word-wrap: break-word;
 	}
 
 	.table1 .info-plus {

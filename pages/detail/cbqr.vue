@@ -41,9 +41,9 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" :class="{'info-item-column': row.value?.length > 34}" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value" :class="{'info-value-left': row.value?.length > 34}">{{ row.value || '--' }}</text>
+						<text class="info-value">{{ row.value || '--' }}</text>
 					</view>
 				</view>
 			</view>
@@ -1018,7 +1018,10 @@
 		color: #666;
 		padding: 8px !important;
 		max-width: 350px;
-		white-space: wrap !important;
+		white-space: normal !important; //合并空白，自动换行
+		word-break: break-all; //断字：打破一切；
+		word-wrap: break-word;
+	
 	}
 
 	.table1 .text {

@@ -41,9 +41,9 @@
 					<text class="section-title-text">基本信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" :class="{'info-item-column': row.value?.length > 34}" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item" v-for="(row, idx) in infoRows" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value" :class="{'info-value-left': row.value?.length > 34}">{{ row.value || '--' }}</text>
+						<text class="info-value">{{ row.value || '--' }}</text>
 					</view>
 				</view>
 			</view>	
@@ -83,13 +83,14 @@
 									<text class="account-info-label">{{ infoRows2[4].label }}</text>
 									<text class="account-info-value">{{ infoRows2[4].value || '--' }}</text>
 								</view>
-								<view class="account-info-row" v-if="infoRows2[5].value">
-									<text class="account-info-label">{{ infoRows2[5].label }}</text>
-									<text class="account-info-value">{{ infoRows2[5].value || '--' }}</text>
+								<!-- <view class="account-info-row" v-if="infoRows2[5].value"> -->
+								<view class="account-info-row" v-if="isShowClaimCategory">
+									<text class="account-info-label">差额</text>
+									<text class="account-info-value">{{itemDatas.diffExpense || '--' }}</text>
 								</view>
 							</view>
-                            
-							<view class="account-info-block" style="margin-top: 20rpx;" v-if="itemDatas.receivingBankName || itemDatas.receivingBankAccountName || itemDatas.receivingBankAccountNumber">
+							<!-- <view class="account-info-block" style="margin-top: 20rpx;" v-if="itemDatas.receivingBankName || itemDatas.receivingBankAccountName || itemDatas.receivingBankAccountNumber"> -->
+							<view class="account-info-block" style="margin-top: 20rpx;" v-if="isShowClaimCategory">
 								<view class="account-info-row">
 									<text class="account-info-label">收款名称</text>
 									<text class="account-info-value">{{ itemDatas.receivingBankName || '--' }}</text>
@@ -107,8 +108,8 @@
 							<view class="account-info-block" style="margin-top: 20rpx;">
 								
 								<view class="account-info-row">
-									<text class="account-info-label">{{ infoRows2[6].label }}</text>
-									<text class="account-info-value">{{ infoRows2[6].value || '--' }}</text>
+									<text class="account-info-label">{{ infoRows2[5].label }}</text>
+									<text class="account-info-value">{{ infoRows2[5].value || '--' }}</text>
 								</view>
 							</view>
 						</view>
@@ -203,6 +204,7 @@
 	} from '@dcloudio/uni-app'
 	import {
 		ref,
+		computed,
 		getCurrentInstance,
 		onUnmounted
 	} from 'vue'
@@ -248,6 +250,14 @@
 	const itemDatas = ref({});
 	const stageTags = ref([]);
 	const attachmentData = ref([]);
+	const isShowClaimCategory = computed(()=>{
+		if (!itemDatas?.value?.claimCategoryId) {
+               return false
+         }
+		let val = ['H0011503','H0011504'].includes(itemDatas.value?.claimCategoryId) ? false : true
+        return val
+	})
+
 	const {   
 		urlParams, wfstatusText,setOptions,getOptions
     } = useDetailCommon({
@@ -313,12 +323,6 @@
             value: '',
             key: 'writeOffAmount'
         },
-		{
-			label: '差额',
-			value: '',
-			key: 'diffExpense'
-		},
-		
 		{
 			label: '核销内容',
 			value: '',

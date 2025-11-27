@@ -949,7 +949,7 @@
 			
 			.contract-section {
 				box-sizing: border-box;
-				border: 2rpx solid #ddd;
+				// border: 2rpx solid #ddd;
 				padding: 16rpx;
 				overflow: hidden;
 				&.contract-section-vehicle {

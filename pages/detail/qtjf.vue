@@ -61,13 +61,13 @@
 				</view>
 				<transition name="collapse">
 					<view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
-						<view class="contract-section">
+						<!-- <view class="contract-section"> -->
 							<scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 0" @touchmove.stop="handleTableTouchMove">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
 										   <td class="type font_w sticky-xz-1 bordr-none">明细</td>
-										   <td class="type font_w sticky-xz-2 bordr-none bordr-right-none">合计</td>
+										   <td class="type font_w text_right sticky-xz-2 bordr-none bordr-right-none">合计</td>
 										   <td class="type font_w text_right bordr-none" v-for="(value,index) in vehiclePaymentContentList" :key="index">
 										   </td>
 										</tr>
@@ -112,11 +112,11 @@
 								</table>
 							</scroll-view>
 							<view class="detail-row summary-row" v-if="vehiclePaymentContentList.length > 0">
-								<text class="detail-label summary-label">本次用款小计</text>
+								<text class="detail-label summary-label">本次小计</text>
 								<text
 									class="detail-value summary-value">{{ formatNumber(itemDatas.paymentAmount) }}</text>
 							</view>
-						</view>
+						<!-- </view> -->
 					</view>
 				</transition>
 			</view>
@@ -770,7 +770,7 @@
 			.summary-row {
 				border-top: 2rpx solid #ddd;
 				margin-top: 20rpx;
-				padding: 20rpx 16rpx 8rpx;
+				padding: 20rpx 16rpx 0rpx;
 				height: auto !important;
 
 				.summary-label {
@@ -866,8 +866,9 @@
 
 	.table1 .type {
 		background: #f6f8fc !important;
-		color: #000;
+		color: #000 !important;
 	}
+	
 
 	.table1 td {
 		box-sizing: border-box;
@@ -882,7 +883,7 @@
 		color: #666;
 		padding: 8px !important;
 		max-width: 350px;
-		white-space: wrap !important;
+		white-space: normal !important; //合并空白，自动换行
 	}
 
 	.table1 .info-plus {
@@ -914,6 +915,7 @@
 		z-index: 3;
 		max-width: 76px !important;
 		min-width: 76px !important;
+		width: 76px;
 		box-sizing: border-box;
 		background: #fff;
 	}
