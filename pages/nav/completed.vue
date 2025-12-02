@@ -248,22 +248,22 @@
 		z-index: 999 !important;
 	}
 
-	::v-deep .uni-navbar__header {
-		height: 50px !important;
-		padding: 0 !important;
-	}
+	// ::v-deep .uni-navbar__header {
+	// 	height: 50px !important;
+	// 	padding: 0 !important;
+	// }
 	
-	@media (min-aspect-ratio: 13/20) {
-	  ::v-deep .uni-tabbar-bottom {
-		display: none !important;
-		height: 0 !important;
-		background-color: #fff !important;
-	  }
-	  ::v-deep .uni-tabbar{
-		  display: none !important;
-		  height: 0 !important;
-	  }
-	}
+	// @media (min-aspect-ratio: 13/20) {
+	//   ::v-deep .uni-tabbar-bottom {
+	// 	display: none !important;
+	// 	height: 0 !important;
+	// 	background-color: #fff !important;
+	//   }
+	//   ::v-deep .uni-tabbar{
+	// 	  display: none !important;
+	// 	  height: 0 !important;
+	//   }
+	// }
 
 
 	page {

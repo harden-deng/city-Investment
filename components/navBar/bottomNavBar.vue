@@ -17,7 +17,6 @@
 
 <script setup>
     import { ref, onMounted, computed, watch } from 'vue'
-
     // Props(运行时定义，保持与原默认值一致)
     const props = defineProps({
         modelValueFlag: { type: Number, default: 0 },
@@ -303,7 +302,7 @@
 		// 中屏幕适配
 		@media (min-width: 414px) and (max-width: 767px){
 			.bottom-nav-bar {
-				height: 110rpx;
+				height: 55px;
 				.nav-item {
 					padding: 0px 2px;
 					.icon-container {
@@ -325,22 +324,30 @@
 		// 大屏幕适配
 		@media (min-width: 768px) {
 			.bottom-nav-bar {
-				height: 140rpx;
+				height: 60px;
 				.nav-item {
 					padding: 0rpx 8rpx;
 					.icon-container {
-						width: 56rpx;
-						height: 56rpx;
-						margin-bottom: 8rpx;
+						width: 50rpx;
+						height: 50rpx;
+						margin-bottom: 6rpx;
 						.nav-icon {
 							width: 100%;
 							height: 100%;
 						}
 					}
 					.nav-label {
-						font-size: 24rpx;
+						font-size: 14px;
 					}
 				}
 			}
 		}
+
+		// PC端适配
+	@media screen and (min-width: 768px) {
+		.bottom-nav-bar {
+			max-width: 768rpx;
+			margin: 0 auto;
+		}
+	}
 </style>

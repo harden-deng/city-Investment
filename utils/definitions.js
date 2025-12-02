@@ -15,9 +15,130 @@ export const procDefCodeUrlObj = {
   'ZZ01': '/pages/detail/fyzz',  //费用暂支(张旭)11/21
   'CB01': '/pages/detail/cbqr',  //成本确认(张旭)11/21 
   'HX01': '/pages/detail/zzhx',  //暂支核销(宋来文)11/25
-  'ZC01': '/pages/detail/zcys',  //支出预算(孙总)
+  'ZC01': '/pages/detail/zcys',  //支出预算(孙总)11/28
 }
+
 export const currentUrlObj = {
   pending: '/WF/GetFormDataApproval',
   completed: '/WF/GetFormDataView'
 }
+
+//用于支出预算
+ export const infoRowsArray = [
+  [{
+     label: '合同名称',
+     value: '',
+     key: 'contractName'
+   },{
+     label: '合同编号',
+     value: '',
+     key: 'contractNo'
+   },{
+     label: '业务类型',
+     value: '',
+     key: 'contractTypeName'
+   },{
+     label: '项目名称/资产名称',
+     value: '',
+     key: 'contractObjectName' 
+   },
+   {
+     label: '对方单位',
+     value: '',
+     key: 'contractRelevantParty'
+   },
+   {
+     label: '合同价（含税）',
+     value: '',
+     key: 'contractPrice'
+   },
+   {
+     label: '合同支付子项',
+     value: '',
+     key: 'contractItemName'
+   },
+   {
+     label: '预算事项',
+     value: '',
+     key: 'budgetItemName'
+   },
+   {
+     label: '本月预计支出',
+     value: '',
+     key: 'planToPay'
+   },
+   {
+     label: '款项对应开始日期',
+     value: '',
+     key: 'relatedPeriodFrom'
+   },
+   {
+     label: '款项对应结束日期',
+     value: '',
+     key: 'relatedPeriodTo'
+   },
+   {
+     label: '是否已确认成本',
+     value: '',
+     key: 'isCostConfirmed'
+   },
+   {
+     label: '发票是否已收讫',
+     value: '',
+     key: 'isInvoiceReceived'
+   },
+ ],
+ [{
+     label: '合同名称',
+     value: '',
+     key: 'contractName'
+   },{
+     label: '业务类型',
+     value: '',
+     key: 'contractTypeName'
+   },{
+     label: '项目名称/资产名称',
+     value: '',
+     key: 'contractObjectName' 
+   },{
+     label: '我方单位',
+     value: '',
+     key: 'companyName'
+   },
+   {
+     label: '对方单位',
+     value: '',
+     key: 'contractRelevantParty'
+   },
+   {
+     label: '预算事项',
+     value: '',
+     key: 'budgetItemName'
+   },
+   {
+     label: '本月预计支出',
+     value: '',
+     key: 'planToPay'
+   },
+   {
+     label: '款项对应开始日期',
+     value: '',
+     key: 'relatedPeriodFrom'
+   },
+   {
+     label: '款项对应结束日期',
+     value: '',
+     key: 'relatedPeriodTo'
+   },
+   {
+     label: '是否已确认成本',
+     value: '',
+     key: 'isCostConfirmed'
+   },
+   {
+     label: '发票是否已收讫',
+     value: '',
+     key: 'isInvoiceReceived'
+   },
+   ]
+ ]

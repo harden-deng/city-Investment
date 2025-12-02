@@ -169,6 +169,9 @@ onMounted(() => {
 })
 </script>
 <style lang="scss" scoped>
+	page {
+		background: #f3f7ff;
+	}
 ::v-deep .uni-navbar__header-container {
     justify-content: center !important;
     align-items: center !important;
@@ -177,7 +180,13 @@ onMounted(() => {
 ::v-deep .uni-navbar__header {
     padding: 0 !important;
 }
-
+	// PC端适配
+	@media screen and (min-width: 768px) {
+		.msg-page {
+			max-width: 768rpx;
+			margin: 0 auto;
+		}
+	}
 .msg-page {
     width: 100%;
     height: auto;

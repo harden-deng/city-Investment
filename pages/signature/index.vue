@@ -327,6 +327,13 @@
 </script>
 
 <style lang="scss" scoped>
+	// PC端适配
+	@media screen and (min-width: 768px) {
+		.signature-container {
+			max-width: 768rpx;
+			margin: 0 auto;
+		}
+	}
 	.signature-container {
 		padding: 20rpx;
 		background-color: #f5f5f5;
@@ -380,7 +387,13 @@
 			}
 		}
 	}
-
+	// PC端适配
+	@media screen and (min-width: 768px) {
+		.action-buttons {
+			max-width: 768rpx;
+			margin: 0 auto;
+		}
+	}
 	.action-buttons {
 		position: fixed;
 		bottom: 0;

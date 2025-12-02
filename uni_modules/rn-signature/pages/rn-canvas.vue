@@ -155,7 +155,7 @@
 				}) => {
 					this.data = data;
 					this.options = options; //按钮配置
-					let defaultTime = 500;
+					let defaultTime = 300;
 					try {
 						// #ifdef UNI-APP-X
 						// #ifdef APP-HARMONY || MP-WEIXIN

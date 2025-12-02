@@ -63,20 +63,38 @@ export default {
 			let _config = null
 			options.complete = (response) => {
 				let statusCode = response.statusCode
-				response.config = _config
-			
-				if (statusCode === 200) { //成功
-					resolve(response.data);
-				} else if (statusCode === 401) {
-					uni.clearStorageSync()
-					uni.setStorageSync('token','')
-					uni.reLaunch({
-					    url: '/pages/index/index'
-					})
-				} else {
-					reject(response)
-					// console.log(JSON.stringify(response));
-					// console.log("login err=: ", response);
+				switch (statusCode) {
+					case 200:	
+						resolve(response.data);
+						break;
+					case 401:
+						uni.showToast({
+							title: '登录过期，请重新登录',
+							icon: 'none',
+							duration: 4500
+						})
+						uni.clearStorageSync()
+						uni.setStorageSync('token','')
+						uni.reLaunch({
+							url: '/pages/index/index'
+						})
+						break;
+					case 404:
+						uni.showToast({
+							title: '您访问的链接可能已失效或输入有误',
+							icon: 'none',
+							duration: 3500
+						})
+						reject(response)
+						break;
+					default:
+						uni.showToast({
+							title: '请求失败，请稍后重试',
+							icon: 'none',
+							duration: 2500
+						})
+						reject(response)
+						break;
 				}
 			}
 

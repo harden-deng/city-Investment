@@ -547,19 +547,6 @@
 </script>
 
 <style lang="scss" scoped>
-	::v-deep .uni-navbar__header-container {
-		justify-content: center !important;
-		align-items: center !important;
-	}
-
-	::v-deep .uni-navbar__header {
-		padding: 0 !important;
-	}
-
-	::v-deep .uni-tabbar-bottom {
-		display: none !important;
-		height: 0 !important;
-	}
 
 	.detail-page {
 		width: 100%;

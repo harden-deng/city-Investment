@@ -179,4 +179,16 @@ export	const handleTableTouchMove = (e) => {
         }, 0);
     }
 
+	// 主要目的是将扁平数组按照指定的 groupKey 转换成树形结构。
+    export const flatToTree = (list, groupKey) => {
+		return list.reduce((m, item) => {
+			const key = item[groupKey];
+			if (!m.has(key)) m.set(key, { [groupKey]: key, children: [] });
+			m.get(key).children.push(item);
+			return m;
+		}, new Map())
+	}
+		
+		
+
 

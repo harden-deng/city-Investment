@@ -7,7 +7,7 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ itemDetail.taskName || '暂支核销申请'  }}
+							{{ itemDetail.taskName || '暂支核销单申请'  }}
 						</view>
 						<view class="project-name-1">
 							{{ itemDatas.businessUnitName }}
@@ -371,11 +371,6 @@
 </script>
 
 <style lang="scss" scoped>
-	::v-deep .uni-tabbar-bottom {
-		display: none !important;
-		height: 0 !important;
-	}
-
 	.detail-page {
 		width: 100%;
 		height: 100vh;

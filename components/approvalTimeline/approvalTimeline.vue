@@ -14,13 +14,13 @@
 					}"
 				>
 					<view class="indicator-checkmark" v-if="item.approvalResult == '完成' || item.approvalResult === '处理完成'">
-						<uni-icons type="smallcircle-filled" size="12" color="#07c160"></uni-icons>
+						<uni-icons type="smallcircle-filled" size="24rpx" color="#07c160"></uni-icons>
 					</view>
 					<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批' && item.approvalResult == '批准'">
-						<uni-icons type="checkmarkempty" size="10" color="#07c160"></uni-icons>
+						<uni-icons type="checkmarkempty" size="20rpx" color="#07c160"></uni-icons>
 					</view>
 					<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批' && (item.approvalResult == '驳回' || item.approvalResult == '已拒绝')">
-						<uni-icons type="checkmarkempty" size="10" color="#ffb800"></uni-icons>
+						<uni-icons type="checkmarkempty" size="20rpx" color="#ffb800"></uni-icons>
 					</view>
 					<view class="indicator-loading" v-else-if="item.approvalActionType === 'vmPending'"></view>
 					<view class="indicator-empty" v-else-if="item.approvalActionType === '提交'"></view>
@@ -212,7 +212,7 @@ defineProps({
 		min-width: 0;
 		background: #f6f8fc;
 		padding: 20rpx;
-		margin-left: 27px;
+		margin-left: 54rpx;
 
 		.approval-header {
 			margin-bottom: 16rpx;

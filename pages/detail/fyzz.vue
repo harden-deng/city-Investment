@@ -7,7 +7,7 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ itemDetail.taskName  }}
+							{{ itemDetail.taskName || '费用暂支单申请'  }}
 						</view>
 						<view class="project-name-1">
 							{{ itemDatas.paymentCompanyName }}
@@ -337,10 +337,7 @@
 </script>
 
 <style lang="scss" scoped>
-	::v-deep .uni-tabbar-bottom {
-		display: none !important;
-		height: 0 !important;
-	}
+
 
 	.detail-page {
 		width: 100%;

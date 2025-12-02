@@ -41,7 +41,7 @@
 
 <script>
 	import statusBar from "./uni-status-bar.vue";
-	const getVal = (val) => typeof val === 'number' ? val + 'px' : val;
+	const getVal = (val) => typeof val === 'number' ? val*2 + 'rpx' : val;
 
 	/**
 	 *

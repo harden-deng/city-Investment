@@ -41,7 +41,7 @@
 					</view>
 				</view>
 				<!-- 在线帮助 -->
-				<view class="help-section">
+				<view class="help-section" @click="handleHelp">
 					<image src="../../static/images/ib_2.jpg" mode="" aria-label="在线帮助" loading="lazy"
 						style="width: 100%;height: 100%;border-radius: 24rpx;"></image>
 				</view>
@@ -53,13 +53,11 @@
 </template>
 <script setup>
 	import {
-		onShow
-	} from '@dcloudio/uni-app'
-	import {
 		ref,
 		onMounted,
 		computed,
-		nextTick
+		nextTick,
+		watch
 	} from 'vue'
 
 	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
@@ -67,16 +65,27 @@
 	import http from '@/utils/request.js'
 	// Emits定义
 	const emit = defineEmits(['change'])
+	const props = defineProps({
+		currentIndex: {
+			type: Number,
+			default: -1
+		}
+	})
 	const statusBarHeight = ref(0)
 	const tabBarHeight = ref(0) // 如有实际高度可替换
 	const windowHeight = ref(0)
 	const announcements = ref('');
-	onShow(() => {
+
+	onMounted(() => {
 		nextTick(()=>{
 			getAnnouncements();
 		})
 	})
-	
+	watch(() => props.currentIndex, (newVal) => {
+		if(newVal == 0){
+			getAnnouncements();
+		}
+	})
 	const getAnnouncements = () => {
 		http.get('/WF/GetAnnouncements').then(res => {
 			if(res.code == 0){
@@ -136,31 +145,25 @@
 	const scrollViewHeight = computed(() => {
 		return `${Math.max(0, windowHeight.value - tabBarHeight.value - 50)}px`
 	})
+	let resizeHandler = null
 	onMounted(() => {
+		computeScrollHeight()
+		resizeHandler = () => computeScrollHeight()
+		uni.onWindowResize?.(resizeHandler)
+	})
+	const computeScrollHeight = () => {
 		try {
 			const sys = uni.getSystemInfoSync()
-			console.log("sys=>",sys)
 			windowHeight.value = sys.windowHeight
 		} catch (e) {
 			windowHeight.value = 600
 		}
-		uni.onWindowResize?.(() => {
-			const sys = uni.getSystemInfoSync?.()
-			if (sys?.windowHeight) windowHeight.value = sys.windowHeight
+	}
+	const handleHelp = () => {
+		uni.navigateTo({
+			url: '/pages/info/help'
 		})
-	})
-	// const count = ref(0)
-	// const plusOne = computed({
-	// 	get: () => count.value + 1,
-	// 	set: (val) => {
-	// 		console.log("plusOne.value==0000=>",val)
-	// 		count.value = val - 1
-	// 		handleNotification()
-	// 	}
-	// })
-	// plusOne.value = 5
-	
-	// console.log("plusOne.value===>", plusOne.value,count.value)
+	}
 </script>
 
 <style lang="scss" scoped>
@@ -396,26 +399,26 @@
 	}
 
 	// 超大屏幕适配
-	@media screen and (min-width: 1200px) {
-		.workplace-container {
-			max-width: 1200rpx;
+	// @media screen and (min-width: 1200px) {
+	// 	.workplace-container {
+	// 		max-width: 1200rpx;
 
-			.header-stickt {
-				.header-banner {
-					.banner-bg {}
-				}
-			}
+	// 		.header-stickt {
+	// 			.header-banner {
+	// 				.banner-bg {}
+	// 			}
+	// 		}
 
-			.main-content {
-				.quick-access {
-					.access-item {
-						.access-icon {
-							width: 140rpx;
-							height: 140rpx;
-						}
-					}
-				}
-			}
-		}
-	}
+	// 		.main-content {
+	// 			.quick-access {
+	// 				.access-item {
+	// 					.access-icon {
+	// 						width: 140rpx;
+	// 						height: 140rpx;
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
 </style>

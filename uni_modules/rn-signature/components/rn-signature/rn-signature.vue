@@ -3,7 +3,7 @@
 	<view class="rn_signature" :style="[optionsAll.style]" style="border: 1px soild red;">
 		<view class="sign_container" @click="btnClick">
 			<!-- <span v-if="!data.url">{{ optionsAll.placeholder.content }}</span> -->
-			<span v-if="!data.url">请点击设置签名</span>
+			<span class="signature-placeholder" v-if="!data.url">请点击设置签名</span>
 			<!-- <span v-if="data.url && optionsAll.clear.show" :class="{
 					clear_url: !optionsAll.clear.slot,
 					[clearClassName]: optionsAll.clear.slot
@@ -128,6 +128,10 @@
 	};
 </script>
 <style lang="scss" scoped>
+	.signature-placeholder {
+		font-size: 30rpx;
+		color: #000;
+	}
 	.rn_signature {
 		overflow: hidden;
 		border-radius: 24rpx !important;

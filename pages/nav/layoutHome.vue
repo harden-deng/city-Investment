@@ -1,7 +1,7 @@
 <template>
 	<view class="layout-container">
       <view v-show="currentIndex === 0" >
-        <Home v-if="cacheList[0]" @change="handleNavChange"/>
+        <Home v-if="cacheList[0]" @change="handleNavChange" :currentIndex="currentIndex"/>
       </view>
       <view v-show="currentIndex === 1">
         <Pending v-if="cacheList[1]" />
@@ -9,7 +9,7 @@
       <view v-show="currentIndex === 2">
         <Completed v-if="cacheList[2]" />
       </view>
-      <view v-show="currentIndex === 3" style="height: 100vh;">
+      <view v-show="currentIndex === 3">
         <Profile v-if="cacheList[3]" />
       </view>
 		<!-- 底部导航栏 -->
@@ -55,6 +55,9 @@ const handleNavChange = (index, item) => {
 </script>
 
 <style lang="scss" scoped>
+page{
+	background: #f3f7ff;
+}
 .layout-container {
 	width: 100%;
 	// height: 100vh;
@@ -87,19 +90,17 @@ const handleNavChange = (index, item) => {
 // 		height: 100%;
 // 	}
 // }
-
-@media (min-aspect-ratio: 13/20) {
+@media (max-width: 600px) {
+	@media (min-aspect-ratio: 13/20) {
 	  ::v-deep .bottom-nav-bar {
-		opacity: 0 !important;
+		// opacity: 0 !important;
 		display: none !important;
 		height: 0 !important;
 		background-color: #fff !important;
 		
 	  }
-	//   ::v-deep .uni-tabbar{
-	// 	  display: none !important;
-	// 	  height: 0 !important;
-	//   }
 	}
+}
+
 
 </style>
