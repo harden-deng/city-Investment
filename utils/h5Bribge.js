@@ -188,6 +188,33 @@ export	const handleTableTouchMove = (e) => {
 			return m;
 		}, new Map())
 	}
+
+
+	export const detectImageType = (base64Data) => {
+		// 移除data URL前缀（如果有）
+		const base64 = base64Data.includes(',') 
+			? base64Data.split(',')[1] 
+			: base64Data;
+		
+		const binary = atob(base64.substring(0, 20)); // 解码前20个字符
+		const bytes = new Uint8Array(binary.length);
+		
+		for (let i = 0; i < binary.length; i++) {
+			bytes[i] = binary.charCodeAt(i);
+		}
+		
+		// 检查文件头
+		if (bytes[0] === 0xFF && bytes[1] === 0xD8) return 'jpeg';
+		if (bytes[0] === 0x89 && bytes[1] === 0x50 && 
+			bytes[2] === 0x4E && bytes[3] === 0x47) return 'png';
+		if (bytes[0] === 0x47 && bytes[1] === 0x49 && 
+			bytes[2] === 0x46) return 'gif';
+		if (bytes[0] === 0x42 && bytes[1] === 0x4D) return 'bmp';
+		if (bytes[0] === 0x52 && bytes[1] === 0x49 && 
+			bytes[2] === 0x46 && bytes[3] === 0x46) return 'webp';
+		
+		return 'png';
+	}
 		
 		
 

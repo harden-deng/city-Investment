@@ -192,7 +192,7 @@
 		currentType,
 		itemDatas,
 	})
-	const { listHeight } = useListHeight({
+	const { listHeight, computeScrollHeight } = useListHeight({
 	     headerSelector: '.header-stickt', // 可选，默认就是这个值
 		 iosFit: true,
 	});
@@ -378,6 +378,7 @@
 					parent.children.push(childItem)
 				}
 			})
+			computeScrollHeight()
 		})
 	}
 </script>

@@ -63,28 +63,35 @@ import confirmDialog from "@/components/confirmDialog/confirmDialog.vue"
 const confirmRef = ref(null)
 const userInfo = ref({})
 onMounted(() => {
+	uni.$on('refresh-signature', () => {
+		getUserSignature()
+	})
 	const userInfos = uni.getStorageSync('userInfo')
 	if (userInfos) {
 		userInfo.value = userInfos;
 	} else {
 		getUserInfo();
 	}
-	getUserSignature();
+})
+onUnmounted(() => {
+	uni.$off('refresh-signature')
 })
 //获取用户信息
 const getUserInfo = () => {
 	http.get('/Users/GetUserInfo').then(res => {
 		if (res.code == 0) {
 			userInfo.value = res.data;
-			uni.setStorageSync('userInfo', res.data)
+			uni.setStorageSync('userInfo', res.data);
+			getUserSignature()
 		}
 	})
 }
 //获取用户签名
 const getUserSignature = () => {
-	http.get('/Users/GetUserSignature').then(res => {
+	const userInfos = uni.getStorageSync('userInfo')
+	http.get('/Users/GetUserSignature',{ userAccount: userInfos?.userAccount}).then(res => {
 		if (res.code == 0) {
-			uni.setStorageSync('userSignature', res.data)
+			uni.setStorageSync('userSignature', res.data?.dataUrl || '')
 		}
 	})
 }
@@ -97,6 +104,9 @@ const goSign = () => {
 	uni.navigateTo({
 		url: '/pages/signature/index'
 	})
+	// uni.navigateTo({
+	// 	url: '/pages/signatureers/index'
+	// })
 }
 const goHelp = () => {
 	uni.navigateTo({

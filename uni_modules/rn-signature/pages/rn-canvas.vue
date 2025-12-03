@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<view class="container" v-if="!imgurl">
 		<canvas class="canvas_container" canvas-id="canvas_container" id="canvas_container" :disable-scroll="true"
 			@touchstart="touchstart" @touchmove="touchmove" @touchend="touchend"></canvas>
 		<!-- 控制按钮-包裹 -->
@@ -39,6 +39,10 @@
 		</view>
 		<!-- #endif -->
 		<!-- #endif -->
+		
+	</view>
+	<view v-else>
+	     <ksp-cropper mode="free" :width="200" :height="140" :maxWidth="1024" :maxHeight="1024" :url="imgurl" @cancel="oncancel" @ok="onok"></ksp-cropper>
 	</view>
 </template>
 
@@ -63,6 +67,7 @@
 				let saveBtn = btn.saveBtn || {};
 				let resetBtn = btn.resetBtn || {};
 				let cancelBtn = btn.cancelBtn || {};
+				let uploadBtn = btn.uploadBtn || {};
 				return {
 					...this.btnOptions,
 					...btn,
@@ -89,6 +94,14 @@
 							...this.btnOptions.cancelBtn.style,
 							...(cancelBtn.style || {})
 						}
+					},
+					uploadBtn: {
+						...this.btnOptions.uploadBtn,
+						...uploadBtn,
+						style: {
+							...this.btnOptions.uploadBtn.style,
+							...(uploadBtn.style || {})
+						}
 					}
 				};
 			},
@@ -97,7 +110,8 @@
 				let arr = [	
 					this.btnConfig.cancelBtn,
 					this.btnConfig.resetBtn,
-					this.btnConfig.saveBtn
+					this.btnConfig.saveBtn,
+					this.btnConfig.uploadBtn,
 				];
 				return arr.sort((a, b) => a.order - b.order);
 			}
@@ -106,6 +120,8 @@
 			return {
 				ctx: null,
 				data: {},
+				imgurl: "",
+				imgpath: "",
 				query: {},
 				options: {},
 				btnShow: false, //控制APP按钮显隐，（优化 横屏过程中 按钮变化）
@@ -129,6 +145,13 @@
 						order: 3,
 						content: "保存",
 						class: "btn_save",
+						style: {}
+					},
+					uploadBtn: {
+						prop: "upload",
+						order: 4,
+						content: "上传",
+						class: "btn_upload",
 						style: {}
 					}
 				}
@@ -261,9 +284,30 @@
 				this.data.url = url;
 				uni.navigateBack(-1);
 			},
+			//上传-点击
+			uploadClick() {
+				uni.chooseImage({
+                        count: 1,
+                        success: (rst) => {
+                            // 设置imgurl的值，显示控件
+                            this.imgurl = rst.tempFilePaths[0];
+                        }
+                    });
+			},
 			//重置-点击
 			resetClick() {
 				this.ctx.resetConfig();
+			},
+			onok(ev) {
+				this.data.url = ev.base64;
+				setTimeout(() => {
+					this.imgurl = "";
+					uni.navigateBack(-1);
+				}, 10);
+			},
+			oncancel() {
+				// url设置为空，隐藏控件
+				this.imgurl = "";
 			},
 			//取消
 			cancelClick() {
@@ -311,6 +355,9 @@
 </script>
 
 <style lang="scss" scoped>
+    page {
+		background: #fff !important;
+	}
 	.container {
 		position: fixed;
 		top: 0;

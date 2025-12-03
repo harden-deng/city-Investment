@@ -33,6 +33,8 @@
 </template>
 
 <script>
+	import http from '@/utils/request.js'
+	import { detectImageType } from '@/utils/h5Bribge.js'
 	let navigateBackTimeoutId = null
 	export default {
 		data() {
@@ -84,10 +86,11 @@
 							content: '取消',
 							order: 1,
 							style: {
-								backgroundColor: '#007aff',
+								backgroundColor: '#999',
 								color: '#fff'
 							}
-						},resetBtn: {
+						},
+						resetBtn: {
 							content: '重签',
 							order: 2,
 							style: {
@@ -96,10 +99,18 @@
 							}
 						},
 						saveBtn: {
-							content: '保存',
+							content: '确认',
 							order: 3,
 							style: {
 								backgroundColor: '#19be6b',
+								color: '#fff'
+							}
+						},
+						uploadBtn: {
+							content: '上传',
+							order: 4,
+							style: {
+								backgroundColor: '#007aff',
 								color: '#fff'
 							}
 						}
@@ -114,12 +125,12 @@
 				isSaving: false
 			}
 		},
-		onLoad(options) {
-			// 如果从其他页面传递了签名数据，则加载
-			if (options.signatureUrl) {
-				console.log('如果从其他页面传递了签名数据，则加载=>', options.signatureUrl);
-				this.signatureData.url = decodeURIComponent(options.signatureUrl);
+		onLoad() {
+			let signatureUrl = uni.getStorageSync('userSignature')
+			if (signatureUrl) {
+				this.signatureData.url = signatureUrl
 			}
+			this.getUserSignature()
 		},
 		onUnmounted() {
 			if (navigateBackTimeoutId) {
@@ -128,6 +139,51 @@
 			}
 		},
 		methods: {
+			getUserSignature(){
+				const userInfos = uni.getStorageSync('userInfo')
+				http.get('/Users/GetUserSignature',{ userAccount: userInfos?.userAccount}).then(res => {
+					if (res.code == 0) {
+						if(this.signatureData.url === res.data?.dataUrl){
+							return
+						} else {
+							this.signatureData.url = res.data?.dataUrl || ''
+							uni.setStorageSync('userSignature', this.signatureData.url)
+							return
+						}
+					}
+				})
+			},
+			saveUserSignature(){	
+				const userInfos = uni.getStorageSync('userInfo')
+				const imageType = detectImageType(this.signatureData.url)
+				let params = { Account: userInfos?.userAccount,FileType: '.' + imageType, FileBaseStr: this.signatureData.url }
+				http.post('/Users/UpdateUserSignature',params).then(res => {
+					if (res.code == 0) {
+						try {
+							uni.showToast({
+								title: '签名保存成功',
+								icon: 'success'
+							});
+							uni.$emit('refresh-signature')
+						} catch (error) {
+							uni.showToast({
+								title: error.message || '保存失败',
+								icon: 'none'
+							});
+							console.error('保存签名失败:', error);
+						} finally {
+							// 重置保存状态
+							this.isSaving = false;
+						}
+					} else {
+						uni.showToast({
+							title: res.message || '保存失败',
+							icon: 'none'
+						});
+						console.error('保存签名失败:', res.message);
+					}
+				})
+			},
 			// 处理签名数据更新
 			handleSignatureUpdate(newData) {
 				console.log('签名数据更新:', newData);
@@ -154,10 +210,11 @@
 				}
 				
 				this.isSaving = true;
+				this.saveUserSignature()
 				// this.goBack();
 
 				// 这里可以调用API保存签名到服务器
-				this.uploadSignatureToServer();
+				// this.uploadSignatureToServer();
 			},
 
 			// 上传签名到服务器
@@ -318,6 +375,7 @@
 
 			// 返回上一页
 			goBack() {
+				uni.$emit('refresh-signature')
 				uni.navigateBack({
 					delta: 1
 				});
@@ -334,10 +392,15 @@
 			margin: 0 auto;
 		}
 	}
+	page {
+		background: #f3f7ff;
+	}
 	.signature-container {
+		box-sizing: border-box;
+		height: 100vh;
 		padding: 20rpx;
-		background-color: #f5f5f5;
-		min-height: 100vh;
+		// min-height: 100vh;
+		// max-height: 100vh;
 	}
 
 	.signature-preview {

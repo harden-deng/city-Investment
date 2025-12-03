@@ -49,16 +49,16 @@ export function useListHeight(options = {}) {
   let focusoutHandler = null
   let visualViewportResizeHandler = null
   let windowResizeHandler = null
-  let timer = null
+  // let timer = null
   // 页面显示时重新计算高度
   if (autoCompute) {
     // 页面挂载时计算高度
     onMounted(() => {
       console.log('页面加载完成，计算列表高度')
       nextTick(() => computeScrollHeight())
-      timer = setTimeout(() => {
-        computeScrollHeight()
-      }, 500)
+      // timer = setTimeout(() => {
+      //   computeScrollHeight()
+      // }, 500)
       // 横竖屏切换/窗口改变时重算（H5 有效）
       if (enableResize) {
         resizeHandler = () => computeScrollHeight()
@@ -125,8 +125,8 @@ export function useListHeight(options = {}) {
       
       // 清理引用
       resizeHandler = null
-      clearTimeout(timer)
-      timer = null
+      // clearTimeout(timer)
+      // timer = null
     })
   }
   

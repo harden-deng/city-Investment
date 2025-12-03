@@ -1,1 +1,0 @@
-const e=e=>{try{const r=localStorage.getItem(e);if(!r)return null;const{value:t,expire:o}=JSON.parse(r);return o&&Date.now()>o?(localStorage.removeItem(e),null):t}catch(r){return console.warn("localStorage get error:",r),null}};export{e as g};
