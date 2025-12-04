@@ -1,6 +1,6 @@
 <!-- 签名 -->
 <template>
-	<view class="rn_signature" :style="[optionsAll.style]" style="border: 1px soild red;">
+	<view class="rn_signature" :style="[optionsAll.style]">
 		<view class="sign_container" @click="btnClick">
 			<!-- <span v-if="!data.url">{{ optionsAll.placeholder.content }}</span> -->
 			<span class="signature-placeholder" v-if="!data.url">请点击设置签名</span>

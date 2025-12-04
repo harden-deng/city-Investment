@@ -2,9 +2,6 @@
  * 通用uni-app网络请求
  * 基于 Promise 对象实现更简单的 request 使用方式，支持请求和响应拦截
  */
-/*
-
-*/
 import myconfig from './config.js'
 
 export default {
@@ -12,7 +9,6 @@ export default {
 		baseUrl: myconfig.base_url,
 		header: {
 			'Content-Type': 'application/json;charset=UTF-8',
-			// 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
 		},
 		data: {},
 		method: "POST",
@@ -22,52 +18,97 @@ export default {
 		fail() {},
 		complete() {}
 	},
-	// 拦截器
-	// interceptor: {
-	// 	request: null, //请求
-	// 	response: null //响应
-	// },
+	// Token 缓存，避免频繁读取存储
+	_tokenCache: null,
+	_tokenCacheTime: 0,
+	_tokenCacheExpire: 5 * 60 * 1000, // 5分钟缓存
+	
+	// 请求去重 Map，key: url+method+JSON.stringify(data)
+	_pendingRequests: new Map(),
+	
+	// 获取 token（带缓存）
+	_getToken() {
+		const now = Date.now()
+		// 如果缓存未过期，直接返回
+		if (this._tokenCache && (now - this._tokenCacheTime < this._tokenCacheExpire)) {
+			return this._tokenCache
+		}
+		// 读取并更新缓存
+		this._tokenCache = uni.getStorageSync('token') || null
+		this._tokenCacheTime = now
+		return this._tokenCache
+	},
+	
+	// 清除 token 缓存
+	_clearTokenCache() {
+		this._tokenCache = null
+		this._tokenCacheTime = 0
+	},
+	
+	// 生成请求唯一标识
+	_getRequestKey(url, method, data) {
+		return `${method}:${url}:${JSON.stringify(data || {})}`
+	},
+	
 	request(options) {
 		if (!options) {
 			options = {}
 		}
-		options.baseUrl = options.baseUrl || this.config.baseUrl
-		options.dataType = options.dataType || this.config.dataType
-		options.url = options.baseUrl + options.url
-		options.sslVerify = false
-		options.data = options.data || {}
-		options.method = options.method || this.config.method
-		if (options.dataType === 'json') {
-			options.header = {
-				...options.header,
-				'Content-Type': 'application/json;charset=UTF-8',
-			}
-		} else {
-			options.header = {
-				...options.header,
-				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-			}
+		
+		// 合并配置，减少对象创建
+		const baseUrl = options.baseUrl || this.config.baseUrl
+		const dataType = options.dataType || this.config.dataType
+		const method = options.method || this.config.method
+		const url = `${baseUrl}${options.url}` // 使用模板字符串
+		
+		// 构建请求唯一标识
+		const requestKey = this._getRequestKey(url, method, options.data)
+		
+		// 请求去重：如果相同请求正在进行，返回同一个 Promise
+		if (this._pendingRequests.has(requestKey)) {
+			return this._pendingRequests.get(requestKey)
 		}
-
-		if (uni.getStorageSync('token')) {
-			options.header = {
-				...options.header,
-				'Authorization': 'Bearer' + ' ' + uni.getStorageSync('token') || '',
-			}
-		} else {
-			options.header = {
-				...options.header,
-			}
+		
+		// 构建 header（一次性构建，避免多次对象创建）
+		const token = this._getToken() // 只读取一次
+		const header = {
+			...this.config.header,
+			...options.header,
+			'Content-Type': dataType === 'json' 
+				? 'application/json;charset=UTF-8'
+				: 'application/x-www-form-urlencoded;charset=UTF-8'
 		}
-		return new Promise((resolve, reject) => {
-			let _config = null
-			options.complete = (response) => {
-				let statusCode = response.statusCode
+		
+		if (token) {
+			header['Authorization'] = `Bearer ${token}` // 使用模板字符串
+		}
+		
+		// 创建 Promise
+		const requestPromise = new Promise((resolve, reject) => {
+			const _config = {
+				...this.config,
+				...options,
+				url,
+				method,
+				dataType,
+				header,
+				data: options.data || {},
+				sslVerify: false,
+				requestId: Date.now() // 使用 Date.now() 替代 new Date().getTime()
+			}
+			
+			_config.complete = (response) => {
+				// 请求完成，从 pending 中移除
+				this._pendingRequests.delete(requestKey)
+				
+				const statusCode = response.statusCode
 				switch (statusCode) {
 					case 200:	
 						resolve(response.data);
 						break;
 					case 401:
+						// 清除 token 缓存
+						this._clearTokenCache()
 						uni.showToast({
 							title: '登录过期，请重新登录',
 							icon: 'none',
@@ -78,6 +119,7 @@ export default {
 						uni.reLaunch({
 							url: '/pages/index/index'
 						})
+						reject(response)
 						break;
 					case 404:
 						uni.showToast({
@@ -89,7 +131,7 @@ export default {
 						break;
 					default:
 						uni.showToast({
-							title: '请求失败，请稍后重试',
+							title: `状态码：${statusCode}，接口：${_config.url}请求失败，请稍后重试`,
 							icon: 'none',
 							duration: 2500
 						})
@@ -97,55 +139,60 @@ export default {
 						break;
 				}
 			}
-
-			_config = Object.assign({}, this.config, options)
-			_config.requestId = new Date().getTime()
-
-			// if (this.interceptor.request) {
-			// 	this.interceptor.request(_config)
-			// }
-			// 在请求前添加日志
+			
+			// 开发环境日志优化：合并为一次输出
 			if (process.env.NODE_ENV === 'development') {
-				console.log('请求_config:', _config)
-				console.log('请求URL:', _config.url)
-				console.log('请求方法:', _config.method)
-				console.log('请求头:', _config.header)
-				console.log('请求数据:', _config.data)
+				console.log('请求信息:', {
+					url: _config.url,
+					method: _config.method,
+					header: _config.header,
+					data: _config.data
+				})
 			}
+			
 			uni.request(_config);
-		});
+		})
+		
+		// 将请求加入 pending Map
+		this._pendingRequests.set(requestKey, requestPromise)
+		
+		// 请求完成后自动清理（防止内存泄漏）
+		requestPromise.finally(() => {
+			// 延迟清理，给可能的重复请求留出时间
+			setTimeout(() => {
+				this._pendingRequests.delete(requestKey)
+			}, 500)
+		})
+		
+		return requestPromise
 	},
+	
 	get(url, data, options) {
-		if (!options) {
-			options = {}
-		}
+		options = options || {}
 		options.url = url
 		options.data = data
 		options.method = 'GET'
 		return this.request(options)
 	},
+	
 	post(url, data, options) {
-		if (!options) {
-			options = {}
-		}
+		options = options || {}
 		options.url = url
 		options.data = data
 		options.method = 'POST'
 		return this.request(options)
 	},
+	
 	put(url, data, options) {
-		if (!options) {
-			options = {}
-		}
+		options = options || {}
 		options.url = url
 		options.data = data
 		options.method = 'PUT'
 		return this.request(options)
 	},
+	
 	delete(url, data, options) {
-		if (!options) {
-			options = {}
-		}
+		options = options || {}
 		options.url = url
 		options.data = data
 		options.method = 'DELETE'

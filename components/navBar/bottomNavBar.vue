@@ -251,29 +251,6 @@
 			}
 		}
 	}
-
-	// 深色模式适配
-	@media (prefers-color-scheme: dark) {
-		.bottom-nav-bar {
-			background: #1c1c1e;
-			border-top-color: #38383a;
-
-			.nav-item {
-				&:active {
-					background-color: rgba(255, 255, 255, 0.1);
-				}
-			}
-
-			.nav-label {
-				color: #8e8e93;
-
-				&.label-active {
-					color: v-bind(activeColor);
-				}
-			}
-		}
-	}
-
 	// 小屏幕适配
 	@media (max-width: 375px) {
 		.bottom-nav-bar {

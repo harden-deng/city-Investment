@@ -3,19 +3,6 @@
 		<!-- 签名组件 -->
 		<rn-signature :options="signatureOptions" :data="signatureData" @update:data="handleSignatureUpdate" />
 		<!-- 其他内容保持不变 -->
-		<!-- <view v-if="signatureData.url" class="signature-preview">
-			<view class="preview-title">签名预览：</view>
-			<image 
-				:src="signatureData.url" 
-				class="signature-image"
-				mode="aspectFit"
-			/>
-			<view class="preview-actions">
-				<button @click="downloadSignature" class="download-btn">下载签名</button>
-				<button @click="clearSignature" class="clear-btn">重新签名</button>
-			</view>
-		</view> -->
-
 		<!-- 操作按钮区域 -->
 		<view class="action-buttons">
 			<view 
@@ -65,8 +52,8 @@
 					style: {
 						width: '100%',
 						height: '450rpx',
-						borderRadius: '10rpx',
-						border: '2rpx dashed #cccccc'
+						// borderRadius: '10rpx',
+						// border: '2rpx dashed #cccccc'
 					},
 					// style: { //设置签名容器宽高
 					// 	width: '600rpx',
@@ -372,10 +359,8 @@
 					}
 				});
 			},
-
 			// 返回上一页
 			goBack() {
-				uni.$emit('refresh-signature')
 				uni.navigateBack({
 					delta: 1
 				});

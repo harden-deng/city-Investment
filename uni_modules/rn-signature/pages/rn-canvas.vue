@@ -1,5 +1,5 @@
 <template>
-	<view class="container" v-if="!imgurl">
+	<view class="container" v-show="imgurl == ''">
 		<canvas class="canvas_container" canvas-id="canvas_container" id="canvas_container" :disable-scroll="true"
 			@touchstart="touchstart" @touchmove="touchmove" @touchend="touchend"></canvas>
 		<!-- 控制按钮-包裹 -->
@@ -41,7 +41,7 @@
 		<!-- #endif -->
 		
 	</view>
-	<view v-else>
+	<view v-show="imgurl">
 	     <ksp-cropper mode="free" :width="200" :height="140" :maxWidth="1024" :maxHeight="1024" :url="imgurl" @cancel="oncancel" @ok="onok"></ksp-cropper>
 	</view>
 </template>
@@ -60,6 +60,7 @@
 	// #endif
 	export default {
 		name: "RnCanvas",
+		inheritAttrs: false, // 添加这一行
 		computed: {
 			//按钮配置
 			btnConfig() {
@@ -165,7 +166,29 @@
 				},
 				deep: true,
 				immediate: true
-			}
+			},
+			// imgurl: {
+			// 	handler(newVal) {
+			// 		console.log('imgurl更新=>', newVal)
+			// 		if(!newVal) {
+			// 			setTimeout(() => {
+			// 				this.initStyle();
+			// 				this.$nextTick(() => {
+			// 					this.btnShow = true;
+			// 					this.ctx = new CanvasControl({
+			// 							canvas_id: "canvas_container",
+			// 							data: this.data,
+			// 							...this.options
+			// 						},
+			// 						this
+			// 					);
+			// 					console.log(this.ctx);
+			// 				});
+			// 			}, 500);
+			// 		}
+			// 	},
+			// 	immediate: true
+			// }
 		},
 		onLoad(query) {
 			this.query = query;
@@ -282,16 +305,17 @@
 				}
 				let url = await this.ctx.rotateCanvas();
 				this.data.url = url;
-				uni.navigateBack(-1);
+				uni.navigateBack({delta: 1});
 			},
 			//上传-点击
 			uploadClick() {
+				this.imgurl = "";
 				uni.chooseImage({
                         count: 1,
-                        success: (rst) => {
-                            // 设置imgurl的值，显示控件
-                            this.imgurl = rst.tempFilePaths[0];
-                        }
+						sourceType: ['album'], //从相册选择
+						success: (res) => {
+							this.imgurl = res.tempFilePaths[0];
+						}
                     });
 			},
 			//重置-点击
@@ -301,9 +325,13 @@
 			onok(ev) {
 				this.data.url = ev.base64;
 				setTimeout(() => {
-					this.imgurl = "";
-					uni.navigateBack(-1);
-				}, 10);
+					// uni.showToast({
+					// 	title: `请保存签名`,
+					// 	icon: 'none',
+					// 	duration: 3000
+					// });
+					uni.navigateBack({delta: 1});
+				}, 100);
 			},
 			oncancel() {
 				// url设置为空，隐藏控件
@@ -311,7 +339,7 @@
 			},
 			//取消
 			cancelClick() {
-				uni.navigateBack(-1);
+				uni.navigateBack({delta: 1});
 				// uni.showModal({
 				// 	title: "提示",
 				// 	content: "确定取消签名？",

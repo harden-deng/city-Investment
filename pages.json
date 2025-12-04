@@ -122,13 +122,6 @@
 			}
 		},
 		{
-			"path": "pages/signatureers/index",
-			"style": {
-				"navigationStyle": "custom",
-				"disableScroll": true
-			}
-		},
-		{
 			"path": "pages/info/msg",
 			"style": {
 				"navigationStyle": "custom",
