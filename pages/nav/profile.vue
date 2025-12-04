@@ -55,7 +55,7 @@ import {
 	ref,
 	onMounted,
 	onUnmounted,
-	computed
+	computed,
 } from 'vue'
 import http from '@/utils/request.js'
 import confirmDialog from "@/components/confirmDialog/confirmDialog.vue"
@@ -91,7 +91,10 @@ const getUserSignature = () => {
 	const userInfos = uni.getStorageSync('userInfo')
 	http.get('/Users/GetUserSignature',{ userAccount: userInfos?.userAccount}).then(res => {
 		if (res.code == 0) {
-			uni.setStorageSync('userSignature', res.data?.dataUrl || '')
+			let obj = {
+				dataUrl: res.data?.dataUrl || '',
+			}
+			uni.setStorageSync('userSignature', obj)
 		}
 	})
 }

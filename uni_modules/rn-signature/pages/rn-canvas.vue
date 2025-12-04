@@ -312,11 +312,26 @@
 				this.imgurl = "";
 				uni.chooseImage({
                         count: 1,
-						sourceType: ['album'], //从相册选择
+						sourceType: ['album'],      // 相册
+                        sizeType: ['compressed'],             // 使用压缩图，减小体积
 						success: (res) => {
-							this.imgurl = res.tempFilePaths[0];
+							const path = res.tempFilePaths && res.tempFilePaths[0];
+							if (!path) {
+								uni.showToast({
+									title: '未获取到图片路径',
+									icon: 'none'
+								});
+								return;
+							}
+							this.imgurl = path;                 // 触发 v-show，显示裁剪组件
+						},
+						fail: (err) => {
+							uni.showToast({
+								title: '选择图片失败',
+								icon: 'none'
+							});
 						}
-                    });
+                });
 			},
 			//重置-点击
 			resetClick() {

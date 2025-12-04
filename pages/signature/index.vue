@@ -114,8 +114,8 @@
 		},
 		onLoad() {
 			let signatureUrl = uni.getStorageSync('userSignature')
-			if (signatureUrl) {
-				this.signatureData.url = signatureUrl
+			if (signatureUrl?.dataUrl) {
+				this.signatureData.url = signatureUrl.dataUrl
 			}
 			this.getUserSignature()
 		},
@@ -134,7 +134,10 @@
 							return
 						} else {
 							this.signatureData.url = res.data?.dataUrl || ''
-							uni.setStorageSync('userSignature', this.signatureData.url)
+							let obj = {
+								dataUrl: this.signatureData.url || ''
+							}
+							uni.setStorageSync('userSignature', obj)
 							return
 						}
 					}
