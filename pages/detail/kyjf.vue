@@ -311,7 +311,7 @@
 		{
 			label: '申请人',
 			value: '',
-			key: 'submittedByName'   //deng 潜在bug
+			key: 'applicantName'
 		},
 		{
 			label: '付款单位',

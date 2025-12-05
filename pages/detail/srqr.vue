@@ -363,7 +363,7 @@
 		{
 			label: '合同子项',
 			value: '',
-			key: 'relatedContractItemName' //潜在 bug  宋来文2025/11/20
+			key: 'relatedContractItemName' //潜在 bug1级  宋来文2025/11/20
 		},{
 			label: '合同金额 (含税)',
 			value: '',

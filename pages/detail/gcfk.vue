@@ -7,7 +7,7 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ itemDetail.taskName }}
+							{{ itemDetail.taskName || '工程付款申请单'  }}
 						</view>
 						<view class="project-name-1">
 							{{ itemDatas.projectName }}
@@ -180,12 +180,22 @@
 										class="detail-value">{{ formatNumber(itemDatas.planToPayMaterialAmountPr) }}</text>
 								</view>
 								<view class="detail-row">
-									<text class="detail-label">前期费用</text>
+									<text class="detail-label">前期费用/动拆迁</text>
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.planToPayProphaseAmountPr) }}</text>
 								</view>
 								<view class="detail-row">
-									<text class="detail-label">其他</text>
+									<text class="detail-label">前期费用/管线搬迁</text>
+									<text
+										class="detail-value">{{ formatNumber(itemDatas.planToPayProphaseLineMigrationAmountPr) }}</text>
+								</view>
+								<view class="detail-row">
+									<text class="detail-label">前期费用/前期工程款</text>
+									<text
+										class="detail-value">{{ formatNumber(itemDatas.planToPayProphaseConstructionAmountPr) }}</text>
+								</view>
+								<view class="detail-row">
+									<text class="detail-label">二类费用等</text>
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.planToPayOtherAmountPr) }}</text>
 								</view>
@@ -226,14 +236,28 @@
 												{{ formatNumber(value.materialAmount) }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1 bordr-right-none">前期费用</td>
+											<td class="text sticky-lx-1 bordr-right-none text_white_space_normal">前期费用/动拆迁</td>
 											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayProphaseAmountPr)  }}
 											</td>
 											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
 												{{ formatNumber(value.prophaseAmount) }}</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1 bordr-right-none bordr-bottom-none">其他</td>
+											<td class="text sticky-lx-1 bordr-right-none text_white_space_normal">前期费用/管线搬迁</td>
+											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayProphaseLineMigrationAmountPr)  }}
+											</td>
+											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.prophaseLineMigrationAmount) }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-lx-1 bordr-right-none text_white_space_normal">前期费用/前期工程款</td>
+											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayProphaseConstructionAmountPr)  }}
+											</td>
+											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.prophaseConstructionAmount) }}</td>
+										</tr>
+										<tr>
+											<td class="text sticky-lx-1 bordr-right-none bordr-bottom-none">二类费用等</td>
 											<td class="info sticky-lx-2 bordr-bottom-none">{{ formatNumber(itemDatas.planToPayOtherAmountPr)  }}</td>
 											<td class="info bordr-right-none bordr-bottom-none" v-for="value in roadSectionList" :key="value.id">
 												{{ formatNumber(value.otherAmount) }}</td>
@@ -804,7 +828,7 @@
 		{
 			label: '预算事项',
 			value: '',
-			key: 'lv1AccountName'  //deng 潜在bug
+			key: 'lv1AccountName'
 		},
 		{
 			label: '支付节点',
@@ -975,7 +999,12 @@
 			infoRows.value.forEach(item => {
 				item.value = itemDatas.value[item.key] || ''
                 if(item.key === 'lv1AccountName'){
-                    item.value = itemDatas.value.lv3AccountName || itemDatas.value.lv2AccountName || itemDatas.value.lv1AccountName || ''
+					if(itemDatas.value.lv2AccountName && itemDatas.value.lv3AccountName){
+						item.value = itemDatas.value.lv2AccountName + '/' + itemDatas.value.lv3AccountName
+					}else{
+						item.value = itemDatas.value.lv3AccountName || itemDatas.value.lv2AccountName || itemDatas.value.lv1AccountName || ''
+					}
+                    
                 }
                 if(item.key === 'guaranteeLetterValidTo'){
                     item.value = formatDateTimeMinute(itemDatas.value[item.key])
@@ -1647,7 +1676,9 @@
 		text-align: right;
 	}
 
-
+    .text_white_space_normal{
+		white-space: normal !important;
+	}
 
 	// .table-scroll-x {
 	// 	box-sizing: border-box;
