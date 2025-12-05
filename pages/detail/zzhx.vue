@@ -281,13 +281,13 @@
 		onApprove,
 		approvalRecordList,
 		getApprovalRecord
-		} = useApproval({
-			itemDetail,
-			currentType,
-			successMessage: '已审批',
-			autoGoBack: true,
-			autoRefresh: true
-		})
+	} = useApproval({
+		itemDetail,
+		currentType,
+		successMessage: '已审批',
+		autoGoBack: true,
+		autoRefresh: true
+	})
 
 	const infoRows = ref([{
 			label: '申请人',
@@ -387,24 +387,6 @@
 			// }
 		}
 
-		// .nav-bar-top {
-		// 	::v-deep .uni-navbar__header {
-		// 		background: #fff !important;
-		// 	}
-
-		// 	.back-btn {
-		// 		width: 100rpx;
-		// 		height: 100rpx;
-		// 		background: url('../../static/images/back.svg') center center no-repeat;
-		// 		background-size: 24rpx;
-		// 	}
-
-		// 	.nav-title {
-		// 		font-size: 32rpx;
-		// 		font-weight: bold;
-		// 		color: #000;
-		// 	}
-		// }
 
 		.scroller {
 			box-sizing: border-box;

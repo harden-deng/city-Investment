@@ -140,8 +140,7 @@
 	import {
 		ref,
 		getCurrentInstance,
-		onUnmounted,
-		computed
+		onUnmounted
 	} from 'vue'
 	import {
 		FUND_USAGE_STATUS,
@@ -401,24 +400,7 @@
 			}
 		}
 
-		.nav-bar-top {
-			::v-deep .uni-navbar__header {
-				background: #fff !important;
-			}
-
-			.back-btn {
-				width: 100rpx;
-				height: 100rpx;
-				background: url('../../static/images/back.svg') center center no-repeat;
-				background-size: 24rpx;
-			}
-
-			.nav-title {
-				font-size: 32rpx;
-				font-weight: bold;
-				color: #000;
-			}
-		}
+	
 
 		.scroller {
 			box-sizing: border-box;

@@ -6,14 +6,14 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ itemDetail.taskName }}
+							{{ itemDetail.taskName || '三公经费申请单'}}
 						</view>
 						<view class="project-name-1">
 							{{ itemDatas.companyName }}
 						</view>
 					</view>
 					<view class="amount-box">
-						<view class="amount-label">申请支付总金额</view>
+						<view class="amount-label">申请金额</view>
 						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
 								class="amount-value-number">
 								{{ formatNumber(itemDatas.paymentAmount) }}</text></view>
@@ -410,6 +410,7 @@
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
+	import { useDetailCommon } from '@/utils/useDetailCommon.js'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
@@ -446,14 +447,23 @@
 		'Travel': ['travelExpense', 'accommodationFee', 'missedMealFee', 'meetingExpense', 'travelPeopleCount', 'travelDays','transportationMethod','content'],
 	}
 	const itemDetail = ref({})
-	const stageTags = ref([])
-	const wfstatusText = computed(() => {
-		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
-	})
+	const itemDatas = ref({});
+	const vehiclePaymentContentList = ref([]);
+    const vehiclePaymentContentObj = reactive({});
+	const personnelListManager = ref([]);
+	const personnelListStaff = ref([]);
+	const stageTags = ref([]);
+	const attachmentData = ref([])
 	const vehiclePlateNoList = computed(() => {
 	   return itemDatas.value.vehiclePlateNo?.split(';') || []
     })
-	const attachmentData = ref([])
+	const {   
+		urlParams, wfstatusText,setOptions,getOptions
+    } = useDetailCommon({
+		itemDetail,
+		currentType,
+		itemDatas,
+	})
 	const { listHeight, computeScrollHeight } = useListHeight({
 	     headerSelector: '.header-stickt', // 可选，默认就是这个值
 		 iosFit: true,
@@ -476,35 +486,6 @@
 			autoGoBack: true,
 			autoRefresh: true
 		})
-
-	const pullDownObj = reactive({
-		[FUND_USAGE_STATUS]: true,
-		[PAYMENT_ACCOUNT_INFORMATION]: true,
-		[COLLECTION_ACCOUNT_INFORMATION]: true,
-		[APPROVAL_RECORD]: true,
-		[ATTACHMENT_LIST]: true,
-	})
-	const setOptions = (name) => {
-		pullDownObj[name] = pullDownObj[name] ? false : true
-	}
-	
-	const getOptions = (name) => {
-		return pullDownObj[name]
-	}
-	
-	const urlParams = computed(() => {
-		let params = {
-			pending: {
-				procCode: itemDetail.value.procDefCode,
-				workitemid: itemDetail.value.workItemId
-			},
-			completed: {
-				procCode: itemDetail.value.procDefCode,
-				wfInstanceId: itemDetail.value.wfinstanceId
-			}
-		}
-		return params[currentType.value]
-	})
 	
 	const infoRows = ref([{
 			label: '报销类型',
@@ -536,11 +517,7 @@
 			key: 'receivingBankAccountNumber'
 		},
 	])
-	const itemDatas = ref({});
-	const vehiclePaymentContentList = ref([]);
-    const vehiclePaymentContentObj = reactive({});
-	const personnelListManager = ref([]);
-	const personnelListStaff = ref([]);
+
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			let data = res.data?.data || {}

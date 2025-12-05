@@ -148,13 +148,10 @@
 	} from '@dcloudio/uni-app'
 	import {
 		ref,
-		reactive,
 		getCurrentInstance,
-		computed,
 		onUnmounted
 	} from 'vue'
 	import {
-		FUND_USAGE_STATUS,
 		APPROVAL_RECORD,
 		PAYMENT_ACCOUNT_INFORMATION,
 		ATTACHMENT_LIST,
@@ -166,6 +163,7 @@
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
+	import { useDetailCommon } from '@/utils/useDetailCommon.js'
 	import detailNavBar from '@/components/navBar/detailNavBar.vue'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
@@ -192,12 +190,16 @@
 	})
 	const currentType = ref('')
 	const itemDetail = ref({})
+	const itemDatas = ref({})
 	const stageTags = ref([])
-	const wfstatusText = computed(() => {
-		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
-	})
 	const attachmentData = ref([]);
-
+	const {   
+		urlParams, wfstatusText,setOptions,getOptions
+    } = useDetailCommon({
+		itemDetail,
+		currentType,
+		itemDatas,
+	})
 	const { listHeight, computeScrollHeight } = useListHeight({
 	     headerSelector: '.header-stickt', // 可选，默认就是这个值
 		 iosFit: true,
@@ -214,38 +216,12 @@
 		onApprove,
 		approvalRecordList,
 		getApprovalRecord
-		} = useApproval({
-			itemDetail,
-			currentType,
-			successMessage: '已审批',
-			autoGoBack: true,
-			autoRefresh: true
-		})
-	const pullDownObj = reactive({
-		[FUND_USAGE_STATUS]: true,
-		[APPROVAL_RECORD]: true,
-		[PAYMENT_ACCOUNT_INFORMATION]: true,
-		[ATTACHMENT_LIST]: true,
-	})
-	const setOptions = (name) => {
-		pullDownObj[name] = pullDownObj[name] ? false : true
-	}
-
-	const getOptions = (name) => {
-		return pullDownObj[name]
-	}
-	const urlParams = computed(() => {
-		let params = {
-			pending: {
-				procCode: itemDetail.value.procDefCode,
-				workitemid: itemDetail.value.workItemId
-			},
-			completed: {
-				procCode: itemDetail.value.procDefCode,
-				wfInstanceId: itemDetail.value.wfinstanceId
-			}
-		}
-		return params[currentType.value]
+	} = useApproval({
+		itemDetail,
+		currentType,
+		successMessage: '已审批',
+		autoGoBack: true,
+		autoRefresh: true
 	})
 
 	const infoRows = ref([{
@@ -295,7 +271,7 @@
 		}
 	])
 
-	const itemDatas = ref({});
+	
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			let data = res.data?.data || {}
@@ -337,8 +313,6 @@
 </script>
 
 <style lang="scss" scoped>
-
-
 	.detail-page {
 		width: 100%;
 		height: 100vh;
@@ -348,31 +322,7 @@
 			position: sticky;
 			top: 0;
 			z-index: 19;
-
-			// .status_bar {
-			// 	background: #fff;
-			// 	width: 100%;
-			// }
 		}
-
-		// .nav-bar-top {
-		// 	::v-deep .uni-navbar__header {
-		// 		background: #fff !important;
-		// 	}
-
-		// 	.back-btn {
-		// 		width: 100rpx;
-		// 		height: 100rpx;
-		// 		background: url('../../static/images/back.svg') center center no-repeat;
-		// 		background-size: 24rpx;
-		// 	}
-
-		// 	.nav-title {
-		// 		font-size: 32rpx;
-		// 		font-weight: bold;
-		// 		color: #000;
-		// 	}
-		// }
 
 		.scroller {
 			box-sizing: border-box;

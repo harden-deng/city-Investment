@@ -9,7 +9,7 @@ export const procDefCodeUrlObj = {
   'SG01': '/pages/detail/sgjf', //三公经费(孙总)11/11
   'KY01': '/pages/detail/kyjf', //科研经费(孙总)11/11
   'DB01': '/pages/detail/zjdb', //资金调拨(孙总)11/11
-  'SR01': '/pages/detail/srqr', //收入确认(宋来文)11/19
+  'SR01': '/pages/detail/srqr', //收入确认(宋来文)11/19 (需要再测)
   'QT01': '/pages/detail/qtjf', //其他(罗运永)11/19
   'XM01': '/pages/detail/szxm',  //市政项目(罗运永)11/19
   'ZZ01': '/pages/detail/fyzz',  //费用暂支(张旭)11/21

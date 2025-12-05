@@ -6,7 +6,7 @@
 				<view class="hero-header">
 					<view class="project-name">
 						<view class="project-name-1">
-							{{ itemDetail.taskName }}
+							{{ itemDetail.taskName || '集团内资金调拨单'}}
 						</view>
 						<view class="project-name-1">
 							上海城投公路投资（集团）有限公司
@@ -134,9 +134,7 @@
 	} from '@dcloudio/uni-app'
 	import {
 		ref,
-		reactive,
 		getCurrentInstance,
-		computed,
 		onUnmounted
 	} from 'vue'
 	import {
@@ -151,6 +149,7 @@
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
+	import { useDetailCommon } from '@/utils/useDetailCommon.js'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
@@ -178,10 +177,16 @@
 	
 	const currentType = ref('')
 	const itemDetail = ref({})
+	const itemDatas = ref({})
 	const stageTags = ref([])
 	const attachmentData = ref([])
-	const wfstatusText = computed(() => {
-		return itemDatas.value.wfstatus == 'Running' ? '流转中' : (itemDatas.value.wfstatus == 'Completed' ? '已审批' : '')
+
+	const {   
+		urlParams, wfstatusText,setOptions,getOptions
+    } = useDetailCommon({
+		itemDetail,
+		currentType,
+		itemDatas,
 	})
 	const { listHeight, computeScrollHeight } = useListHeight({
 	     headerSelector: '.header-stickt', // 可选，默认就是这个值
@@ -205,32 +210,7 @@
 			autoGoBack: true,
 			autoRefresh: true
 		})
-	const pullDownObj = reactive({
-		[PAYMENT_ACCOUNT_INFORMATION]: true,
-		[APPROVAL_RECORD]: true,
-		[ATTACHMENT_LIST]: true,
-	})
-	const setOptions = (name) => {
-		pullDownObj[name] = pullDownObj[name] ? false : true
-	}
-	
-	const getOptions = (name) => {
-		return pullDownObj[name]
-	}
-	
-	const urlParams = computed(() => {
-		let params = {
-			pending: {
-				procCode: itemDetail.value.procDefCode,
-				workitemid: itemDetail.value.workItemId
-			},
-			completed: {
-				procCode: itemDetail.value.procDefCode,
-				wfInstanceId: itemDetail.value.wfinstanceId
-			}
-		}
-		return params[currentType.value]
-	})
+
 	
 	const infoRows = ref([{
 			label: '付款单位',
@@ -272,7 +252,7 @@
 		}
 	])
 	
-	const itemDatas = ref({});
+
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			let data = res.data?.data || {}
