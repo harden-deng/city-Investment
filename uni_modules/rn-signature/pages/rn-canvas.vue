@@ -39,7 +39,6 @@
 		</view>
 		<!-- #endif -->
 		<!-- #endif -->
-		
 	</view>
 	<view v-show="imgurl">
 	     <ksp-cropper mode="free" :width="200" :height="140" :maxWidth="1024" :maxHeight="1024" :url="imgurl" @cancel="oncancel" @ok="onok"></ksp-cropper>

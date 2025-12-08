@@ -115,7 +115,6 @@ export default {
 							duration: 4500
 						})
 						uni.clearStorageSync()
-						uni.setStorageSync('token','')
 						uni.reLaunch({
 							url: '/pages/index/index'
 						})

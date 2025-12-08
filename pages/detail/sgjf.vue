@@ -387,14 +387,9 @@
 
 <script setup>
 	import {
-		onLoad
-	} from '@dcloudio/uni-app'
-	import {
 		ref,
 		reactive,
-		getCurrentInstance,
 		computed,
-		onUnmounted
 	} from 'vue'
 	import {
 		FUND_USAGE_STATUS,
@@ -415,26 +410,7 @@
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
 	import detailNavBar from '@/components/navBar/detailNavBar.vue'
-	let eventChannel
-	let handleOpenDetail = null
 
-	onLoad(() => {
-		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
-		handleOpenDetail = (data) => {
-			currentType.value = data.type
-			itemDetail.value = data.order
-			getFormDataApproval()
-			getApprovalRecord()
-		}
-		eventChannel.on('open-detail', handleOpenDetail)
-	})
-
-	onUnmounted(() => {
-		if (eventChannel && handleOpenDetail) {
-			eventChannel.off('open-detail', handleOpenDetail)
-		}
-		handleOpenDetail = null
-	})
 	const currentType = ref('')
 	const requestTypeObj = {
 		'Vehicle': '公务用车报销单',
@@ -457,17 +433,18 @@
 	const vehiclePlateNoList = computed(() => {
 	   return itemDatas.value.vehiclePlateNo?.split(';') || []
     })
-	const {   
-		urlParams, wfstatusText,setOptions,getOptions
-    } = useDetailCommon({
+		const {   
+		urlParams, wfstatusText, setOptions, getOptions
+	} = useDetailCommon({
 		itemDetail,
 		currentType,
 		itemDatas,
-	})
-	const { listHeight, computeScrollHeight } = useListHeight({
-	     headerSelector: '.header-stickt', // 可选，默认就是这个值
-		 iosFit: true,
-	})
+		onDetailOpen: () => {
+			getFormDataApproval()
+			getApprovalRecord()
+		}
+	})	
+	const { listHeight, computeScrollHeight } = useListHeight();
 	const {
 		inputDialogRef,
 		inputDialogRequired,
@@ -481,10 +458,7 @@
 		getApprovalRecord
 		} = useApproval({
 			itemDetail,
-			currentType,
-			successMessage: '已审批',
-			autoGoBack: true,
-			autoRefresh: true
+			currentType
 		})
 	
 	const infoRows = ref([{

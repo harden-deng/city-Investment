@@ -247,13 +247,8 @@
 
 <script setup>
 	import {
-		onLoad
-	} from '@dcloudio/uni-app'
-	import {
 		ref,
 		reactive,
-		getCurrentInstance,
-		onUnmounted
 	} from 'vue'
 	import {
 		FUND_USAGE_STATUS,
@@ -273,26 +268,7 @@
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
 	import detailNavBar from '@/components/navBar/detailNavBar.vue'
-	let eventChannel
-	let handleOpenDetail = null
 
-	onLoad(() => {
-		eventChannel = getCurrentInstance()?.proxy?.getOpenerEventChannel?.()
-		handleOpenDetail = (data) => {
-			currentType.value = data.type
-			itemDetail.value = data.order
-			getFormDataApproval()
-			getApprovalRecord()
-		}
-		eventChannel.on('open-detail', handleOpenDetail)
-	})
-
-	onUnmounted(() => {
-		if (eventChannel && handleOpenDetail) {
-			eventChannel.off('open-detail', handleOpenDetail)
-		}
-		handleOpenDetail = null
-	})
 	const currentType = ref('')
 	const itemDetail = ref({})
 	const itemDatas = ref({});
@@ -303,18 +279,19 @@
 	const stageTags = ref([])
 	const attachmentData = ref([])
 
-	const {   
-		urlParams, wfstatusText,setOptions,getOptions
-    } = useDetailCommon({
+		const {   
+		urlParams, wfstatusText, setOptions, getOptions
+	} = useDetailCommon({
 		itemDetail,
 		currentType,
 		itemDatas,
-	})
+		onDetailOpen: () => {
+			getFormDataApproval()
+			getApprovalRecord()
+		}
+	})	
 
-	const { listHeight, computeScrollHeight } = useListHeight({
-	     headerSelector: '.header-stickt', // 可选，默认就是这个值
-		 iosFit: true,
-	})
+	const { listHeight, computeScrollHeight } = useListHeight();
 	const {
 		inputDialogRef,
 		inputDialogRequired,
@@ -328,10 +305,7 @@
 		getApprovalRecord
 	} = useApproval({
 		itemDetail,
-		currentType,
-		successMessage: '已审批',
-		autoGoBack: true,
-		autoRefresh: true
+		currentType
 	})
 
 	const infoRows = ref([{
@@ -452,13 +426,26 @@
 			let data = res.data?.data || {}
 			itemDatas.value = data || {}
 			infoRows.value.forEach(item => {
-				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key]
-				if(item.key == 'requestType'&&itemDatas.value[item.key]){
-					let text = ''
-					itemDatas.value[item.key].split('|').forEach(item => {
-						text += requestTypeObj[item] + '、'
-					})
-					item.value = text.slice(0, -1) || ''
+				// item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key]
+				// if(item.key == 'requestType'&&itemDatas.value[item.key]){
+				// 	let text = ''
+				// 	itemDatas.value[item.key].split('|').forEach(item => {
+				// 		text += requestTypeObj[item] + '、'
+				// 	})
+				// 	item.value = text.slice(0, -1) || ''
+				// }
+				const value = itemDatas.value[item.key]
+				
+				if(item.key === 'requestType' && value){
+					item.value = value
+						.split('|')
+						.map(type => requestTypeObj[type])
+						.filter(Boolean)
+						.join('、') || ''
+				} else {
+					item.value = typeof value === 'number' 
+						? formatNumber(value) 
+						: value
 				}
 			});
 			infoRows2.value.forEach(item => {

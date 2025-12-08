@@ -89,7 +89,6 @@
 		procDefCodeUrlObj,
 	} from '@/utils/definitions'
 	import { formatNumber,formatRelativeTime } from '@/utils/h5Bribge.js'
-	// import { useListHeight } from '@/utils/useListHeight.js'
 	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
 	const statusBarHeight = ref(0)

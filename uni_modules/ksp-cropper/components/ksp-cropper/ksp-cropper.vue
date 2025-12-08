@@ -964,8 +964,8 @@ export default {
 	height: 20px;
 	left: -6px;
 	top: -6px;
-	border-left: 4px solid red;
-	border-top: 4px solid red;
+	border-left: 4px solid white;
+	border-top: 4px solid white;
 	box-sizing:content-box;
 }
 .frame-left-bottom {
@@ -974,8 +974,8 @@ export default {
 	height: 20px;
 	left: -6px;
 	bottom: -6px;
-	border-left: 4px solid red;
-	border-bottom: 4px solid red;
+	border-left: 4px solid white;
+	border-bottom: 4px solid white;
 	box-sizing:content-box;
 }
 .frame-right-top {
@@ -984,8 +984,8 @@ export default {
 	height: 20px;
 	right: -6px;
 	top: -6px;
-	border-right: 4px solid red;
-	border-top: 4px solid red;
+	border-right: 4px solid white;
+	border-top: 4px solid white;
 	box-sizing:content-box;
 }
 .frame-right-bottom {
@@ -994,8 +994,8 @@ export default {
 	height: 20px;
 	right: -6px;
 	bottom: -6px;
-	border-right: 4px solid red;
-	border-bottom: 4px solid red;
+	border-right: 4px solid white;
+	border-bottom: 4px solid white;
 	box-sizing:content-box;
 }
 .transit {

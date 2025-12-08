@@ -17,8 +17,14 @@ export function useListHeight(options = {}) {
     fallbackHeight = 'calc(100vh - 50px)',
     autoCompute = true,
     enableResize = true,
-    iosFit = false,
+    iosFit = true,
   } = options
+  console.log('options->', options)
+  console.log('headerSelector->', headerSelector)
+  console.log('fallbackHeight->', fallbackHeight)
+  console.log('autoCompute->', autoCompute)
+  console.log('enableResize->', enableResize)
+  console.log('iosFit->', iosFit)
   // 列表高度
   const listHeight = ref('')
 
@@ -27,6 +33,7 @@ export function useListHeight(options = {}) {
    */
   const computeScrollHeight = () => {
     try {
+      console.log('页面加载完成，计算列表高度执行中')
       const { windowHeight } = uni.getSystemInfoSync() // px
       const inst = getCurrentInstance()
       const q = uni.createSelectorQuery().in(inst?.proxy)
