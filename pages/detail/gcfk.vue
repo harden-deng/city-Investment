@@ -684,7 +684,7 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,handleTableTouchMove,formatDateTimeMinute
+		formatNumber,handleTableTouchMove,formatDateTimeMinute,processAttachmentData
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
@@ -975,31 +975,9 @@
 			// 	roadSectionList.value.push({...cc2})
 			// 	roadSectionList.value.push({...cc3})
 			// }
-			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
-						return {
-							fileTagName: item.fileTagName,
-							fileName: item.fileName,
-							fileUrl: item.fileUrl,
-							id: item.attachmentId
-						}
-			})
-			attachmentData.value = [
-				{fileTagName: '工程付款申请单', children: []}, 
-				{fileTagName: '工程费用支付申请表', children: []},
-			    {fileTagName: '发票', children: []},
-				{fileTagName: '财务监理付款意见书', children: []},
-				{fileTagName: '合同要求其他资料', children: []},
-			]
-			const attachmentMap = new Map()
-			attachmentData.value.forEach(item => {
-				attachmentMap.set(item.fileTagName, item)
-			})
-			arr1.forEach(childItem => {
-				const parent = attachmentMap.get(childItem.fileTagName)
-				if (parent) {
-					parent.children.push(childItem)
-				}
-			})
+
+			attachmentData.value = processAttachmentData(itemDatas.value?.attachmentList || [], ['工程付款申请单','工程费用支付申请表','发票','财务监理付款意见书','合同要求其他资料'])
+
 			computeScrollHeight()
 		})
 	}

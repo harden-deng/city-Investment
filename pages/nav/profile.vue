@@ -1,5 +1,5 @@
 <template>
-	<scroll-view scroll-y="true" class="scroller" :style="{ height: scrollViewHeight }">
+	<scroll-view scroll-y="true" class="scroller" :style="{ height: scrollViewHeight, paddingTop:	`${statusBarHeight}rpx` }">
 		<view class="profile">
 			<view class="card">
 				<view class="card__header">
@@ -60,6 +60,7 @@ import {
 import http from '@/utils/request.js'
 import confirmDialog from "@/components/confirmDialog/confirmDialog.vue"
 // import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
+const statusBarHeight = getApp().globalData.statusBarHeight
 const confirmRef = ref(null)
 const userInfo = ref({})
 onMounted(() => {

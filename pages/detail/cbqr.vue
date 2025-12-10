@@ -198,7 +198,7 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,formatDateTimeMinute,handleTableTouchMove
+		formatNumber,formatDateTimeMinute,handleTableTouchMove,processAttachmentData
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
@@ -379,25 +379,7 @@
 			if(itemDatas.value.businessUnitName){
 				 stageTags.value.push(itemDatas.value.businessUnitName)
 			}
-			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
-				return {
-					fileTagName: item.fileTagName,
-					fileName: item.fileName,
-                    fileUrl: item.fileUrl,
-					id: item.attachmentId
-				}
-			})
-			attachmentData.value = [{fileTagName: '合同', children: []}, {fileTagName: '发票/收据', children: []}, {fileTagName: '合同要求其他资料', children: []}, {fileTagName: '其他', children: []}]
-			const attachmentMap = new Map()
-			attachmentData.value.forEach(item => {
-				attachmentMap.set(item.fileTagName, item)
-			})
-			arr1.forEach(childItem => {
-				const parent = attachmentMap.get(childItem.fileTagName)
-				if (parent) {
-					parent.children.push(childItem)
-				}
-			})
+			attachmentData.value = processAttachmentData(itemDatas.value?.attachmentList || [], ['合同','发票/收据','合同要求其他资料','其他'])
 			computeScrollHeight()
 
 		})
@@ -405,8 +387,6 @@
 </script>
 
 <style lang="scss" scoped>
-
-
 	.detail-page {
 		width: 100%;
 		height: 100vh;

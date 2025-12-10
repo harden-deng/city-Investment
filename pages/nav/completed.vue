@@ -82,7 +82,7 @@
 		onUnload,
 	} from '@dcloudio/uni-app'
 	import {
-		ref,onMounted, nextTick
+		ref,onMounted, nextTick,onUnmounted
 	} from 'vue'
 	import http from '@/utils/request.js'
 	import {
@@ -91,7 +91,8 @@
 	import { formatNumber,formatRelativeTime } from '@/utils/h5Bribge.js'
 	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
-	const statusBarHeight = ref(0)
+	let resizeHandler = null
+	const statusBarHeight = getApp().globalData.statusBarHeight
 	const listHeight = ref('')
 	onLoad(() => {
 		uni.$on('refresh-completed', () => {
@@ -117,6 +118,14 @@
 	}
 	onMounted(() => {
         getHeaderHeight()
+		resizeHandler = () => getHeaderHeight()
+        uni.onWindowResize?.(resizeHandler)
+	})
+	onUnmounted(()=>{
+		if (resizeHandler && typeof uni.offWindowResize === 'function') {
+			uni.offWindowResize(resizeHandler)
+			resizeHandler = null
+        }
 	})
 	const paging = ref(null)
 	// 搜索相关
@@ -188,7 +197,6 @@
 			paging.value.complete(res.data.data || [])
 		}).catch(() => {
 			paging.value.complete(false)
-			uni.showToast({ title: '加载失败', icon: 'none' });
 		})
 		// let cc = pageNo + pageSize
 		// 此处请求仅为演示，请替换为自己项目中的请求

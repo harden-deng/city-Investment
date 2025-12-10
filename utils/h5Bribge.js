@@ -215,7 +215,46 @@ export	const handleTableTouchMove = (e) => {
 		
 		return 'png';
 	}
-		
+
+	/**
+	 * 处理附件数据，将附件列表按分类组织成树形结构
+	 * 
+	 * @param {Array} attachmentList - 原始附件列表
+	 * @param {Array} categories - 分类列表
+	 * @returns {Array} 处理后的附件数据
+	 */
+	export function processAttachmentData(attachmentList = [], categories = []) {
+		// 处理附件列表，统一格式
+		const processedList = (attachmentList || []).map(item => ({
+				fileTagName: item.fileTagName,
+				fileName: item.fileName,
+				fileUrl: item.fileUrl,
+				id: item.attachmentId
+		}))
+	
+		// 初始化分类结构
+		const result = categories.map(category => ({
+				fileTagName: category,
+				children: []
+		}))
+	
+		// 使用 Map 提高查找效率
+		const categoryMap = new Map()
+		result.forEach(item => {
+		   categoryMap.set(item.fileTagName, item)
+		})
+	
+		// 将附件分配到对应分类
+		processedList.forEach(attachment => {
+			const parent = categoryMap.get(attachment.fileTagName)
+			if (parent) {
+				parent.children.push(attachment)
+			}
+		})
+	
+		return result
+	}
+			
 		
 
 

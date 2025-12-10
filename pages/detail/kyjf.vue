@@ -212,7 +212,8 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber
+		formatNumber,
+		processAttachmentData
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
@@ -371,25 +372,7 @@
 			if(itemDatas.value.budgetAccountName){
 				 stageTags.value.push(itemDatas.value.budgetAccountName)
 			}
-			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
-				return {
-					fileTagName: item.fileTagName,
-					fileName: item.fileName,
-                    fileUrl: item.fileUrl,
-					id: item.attachmentId
-				}
-			})
-			attachmentData.value = [{fileTagName: '合同', children: []}, {fileTagName: '课题预算表', children: []}, {fileTagName: '发票', children: []}]
-			const attachmentMap = new Map()
-			attachmentData.value.forEach(item => {
-				attachmentMap.set(item.fileTagName, item)
-			})
-			arr1.forEach(childItem => {
-				const parent = attachmentMap.get(childItem.fileTagName)
-				if (parent) {
-					parent.children.push(childItem)
-				}
-			})
+			attachmentData.value = processAttachmentData(itemDatas.value?.attachmentList || [], ['合同','课题预算表','发票'])
 			computeScrollHeight()
 		})
 	}

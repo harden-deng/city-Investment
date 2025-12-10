@@ -24,7 +24,7 @@ const props = defineProps({
 	},
 	statusBarHeight: {
 		type: Number,
-		default: 0
+		default: getApp().globalData.statusBarHeight - 6
 	}
 })
 

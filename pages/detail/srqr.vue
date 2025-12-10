@@ -57,6 +57,60 @@
 				</view>
 			</view>
 
+            <!-- 收入确认---此模块主要用于骨架屏防止视图错位 -->
+			<view class="section" v-if="!infoRows[0].value">
+				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">收入确认</text>
+					</view>
+					<view class="section-title-2-right" :class="{ 'active': getOptions(FUND_USAGE_STATUS) }">
+
+					</view>
+				</view>
+				<transition name="collapse">
+					<view class="account-info-section" v-if="getOptions(FUND_USAGE_STATUS)">
+						<view class="account-card">
+							<view class="account-info-block">
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[0].label }}</text>
+									<text class="account-info-value">{{ infoRows2[0].value || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[1].label }}</text>
+									<text class="account-info-value">{{ infoRows2[1].value || '' }}</text>
+								</view>
+									<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[2].label }}</text>
+									<text class="account-info-value"> {{ infoRows2[2].value || '' }} </text>
+								</view>
+							</view>
+							<view class="account-info-block" style="margin-top: 20rpx;">
+							
+                                <view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[3].label }}</text>
+									<text class="account-info-value">{{ infoRows2[3].value || '' }}</text>
+								</view>
+                                <view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[4].label }}</text>
+									<text class="account-info-value">{{ infoRows2[4].value || '' }}</text>
+								</view>
+								
+							</view>
+							<view class="account-info-block" style="margin-top: 20rpx;">
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[5].label }}</text>
+									<text class="account-info-value">{{ infoRows2[5].value || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">{{ infoRows2[6].label }}</text>
+									<text class="account-info-value"> {{ infoRows2[6].value || '' }} </text>
+								</view>
+							</view>
+						</view>
+					</view>
+				</transition>
+			</view>
 			<!-- 收入确认 -->
 			<view class="section" v-if="infoRows[0].value.includes('收入确认')">
 				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
@@ -69,12 +123,6 @@
 					</view>
 				</view>
 				<transition name="collapse">
-                    <!-- <view class="info-list" v-if="getOptions(FUND_USAGE_STATUS)">
-                        <view class="info-item" :class="{ 'info-item-border': (row.key === 'contractRatio') }" v-for="(row, idx) in infoRows2" :key="idx">
-                            <text class="info-label">{{ row.label }}</text>
-                            <text class="info-value">{{ row.value || '--' }}</text>
-                        </view>
-				    </view> -->
 					<view class="account-info-section" v-if="getOptions(FUND_USAGE_STATUS)">
 						<view class="account-card">
 							<view class="account-info-block">
@@ -259,7 +307,7 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,formatDateTimeMinute
+		formatNumber,formatDateTimeMinute,processAttachmentData
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
@@ -487,27 +535,7 @@
 			if(infoRows.value[0].value){
 				 stageTags.value.push(infoRows.value[0].value)
 			}
-			
-			
-			let arr1 = (itemDatas.value?.attachmentList || []).map(item => {
-				return {
-					fileTagName: item.fileTagName,
-					fileName: item.fileName,
-                    fileUrl: item.fileUrl,
-					id: item.attachmentId
-				}
-			})
-			attachmentData.value = [{fileTagName: '合同', children: []}, {fileTagName: '合同要求其他资料', children: []}, {fileTagName: '其他', children: []}]
-			const attachmentMap = new Map()
-			attachmentData.value.forEach(item => {
-				attachmentMap.set(item.fileTagName, item)
-			})
-			arr1.forEach(childItem => {
-				const parent = attachmentMap.get(childItem.fileTagName)
-				if (parent) {
-					parent.children.push(childItem)
-				}
-			})
+			attachmentData.value = processAttachmentData(itemDatas.value?.attachmentList || [], ['合同','合同要求其他资料','其他'])
 			computeScrollHeight()
 		})
 	}

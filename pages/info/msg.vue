@@ -44,6 +44,7 @@
 <script setup>
 import { ref, onMounted,getCurrentInstance,nextTick } from 'vue'
 import http from '@/utils/request.js'
+const statusBarHeight = getApp().globalData.statusBarHeight
 // 消息列表数据
 // const dataList = ref([]);
 const dataList = ref([
@@ -118,7 +119,6 @@ const dataList = ref([
 		// 	paging.value.complete(res.data || [])
 		// }).catch(() => {
 		// 	paging.value.complete(false)
-		// 	uni.showToast({ title: '加载失败', icon: 'none' });
 		// })
 	}
     const goBack = () => {
@@ -127,7 +127,6 @@ const dataList = ref([
         })
     }
 
-const statusBarHeight = ref(0)
 
 // 处理消息点击
 const handleMsgClick = (item) => {

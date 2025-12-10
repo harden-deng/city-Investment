@@ -71,6 +71,7 @@
 			default: -1
 		}
 	})
+	let resizeHandler = null
 	const statusBarHeight = ref(0)
 	const tabBarHeight = ref(0) // 如有实际高度可替换
 	const windowHeight = ref(0)
@@ -145,7 +146,7 @@
 	const scrollViewHeight = computed(() => {
 		return `${Math.max(0, windowHeight.value - tabBarHeight.value - 50)}px`
 	})
-	let resizeHandler = null
+	
 	onMounted(() => {
 		computeScrollHeight()
 		resizeHandler = () => computeScrollHeight()
@@ -170,7 +171,7 @@
 	page {
 		background: #f3f7ff;
 	}
-
+	
 	.workplace-container {
 		height: auto;
 		background: #f3f7ff;

@@ -8,6 +8,9 @@
 		},
 		onHide: function() {
 			console.log('App Hide')
+		},
+		globalData: {
+			statusBarHeight: 0
 		}
 	}
 </script>

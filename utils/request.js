@@ -21,7 +21,7 @@ export default {
 	// Token 缓存，避免频繁读取存储
 	_tokenCache: null,
 	_tokenCacheTime: 0,
-	_tokenCacheExpire: 5 * 60 * 1000, // 5分钟缓存
+	_tokenCacheExpire: 5 * 1 * 1000, // 5秒缓存
 	
 	// 请求去重 Map，key: url+method+JSON.stringify(data)
 	_pendingRequests: new Map(),
@@ -100,7 +100,7 @@ export default {
 			_config.complete = (response) => {
 				// 请求完成，从 pending 中移除
 				this._pendingRequests.delete(requestKey)
-				
+				console.log('response', response)
 				const statusCode = response.statusCode
 				switch (statusCode) {
 					case 200:	

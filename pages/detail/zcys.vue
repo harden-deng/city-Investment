@@ -146,7 +146,7 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,formatDateTimeMinute,flatToTree,handleTableTouchMove
+		formatNumber,formatDateTimeMinute,flatToTree,handleTableTouchMove,processAttachmentData
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
@@ -325,32 +325,7 @@
 			if(itemDatas.value.contractTypeName){
 				 stageTags.value.push(itemDatas.value.contractTypeName)
 			}
-			let attachmentList = (data?.attachmentList || []).map(item => {
-				return {
-					fileTagName: item.fileTagName,
-					fileName: item.fileName,
-                    fileUrl: item.fileUrl,
-					id: item.attachmentId
-				}
-			})
-			attachmentData.value = [
-				{fileTagName: '工程付款申请单', children: []}, 
-				{fileTagName: '工程费用支付申请表', children: []}, 
-				{fileTagName: '合同款支付情况统计表', children: []},
-				{fileTagName: '发票', children: []},
-				{fileTagName: '财务监理付款意见书', children: []},
-				{fileTagName: '其他合同约定需提供资料', children: []},
-		    ]
-			const attachmentMap = new Map()
-			attachmentData.value.forEach(item => {
-				attachmentMap.set(item.fileTagName, item)
-			})
-			attachmentList.forEach(childItem => {
-				const parent = attachmentMap.get(childItem.fileTagName)
-				if (parent) {
-					parent.children.push(childItem)
-				}
-			})
+			attachmentData.value = processAttachmentData(data?.attachmentList || [], ['工程付款申请单','工程费用支付申请表','合同款支付情况统计表','发票','财务监理付款意见书','其他合同约定需提供资料'])
 			computeScrollHeight()
 		})
 	}

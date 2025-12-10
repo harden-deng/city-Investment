@@ -1,6 +1,6 @@
 <template>
 	<view class="login-container">
-		<view class="status_bar" :style="{height: `${statusBarHeight*2}rpx`}"></view>
+		<!-- <view class="status_bar" :style="{height: `${statusBarHeight*2}rpx`}"></view> -->
 		<!-- 头部渐变背景区域 -->
 		<view class="header-section">
 		<!-- 	<view class="brand-welcome">
@@ -29,18 +29,44 @@
 </template>
 
 <script setup>
-	import { ref } from 'vue'
+	import { ref,onMounted } from 'vue'
 	import http from '@/utils/request.js'
+	// import { useH5Bridge } from '@/utils/h5Bribge.js'
+	// const { isInApp, postToApp } = useH5Bridge((data)=>{
+	//     getApp().globalData.statusBarHeight = data.statusBarHeight
+	// 	console.log(" getApp().globalData.statusBarHeight-->", getApp().globalData.statusBarHeight)
+	// })
+	 // 解析 URL 参数
+	 const getUrlParams = () => {
+      const params = {}
+      const queryString = window.location.search.substring(1)
+      const pairs = queryString.split('&')
+      
+      pairs.forEach(pair => {
+        const [key, value] = pair.split('=')
+        if (key) {
+          params[decodeURIComponent(key)] = decodeURIComponent(value || '')
+        }
+      })
+      
+      return params
+    }
+	onMounted(()=>{
+		const params = getUrlParams()
+		console.log(" params-->", params)
+		if(params?.statusBarHeight && Number(params?.statusBarHeight) > 0){
+			getApp().globalData.statusBarHeight = Number(params.statusBarHeight)
+		}
+	})
 	const styles = {
 	    placeholderColor: '#999999',
 	}
-	const statusBarHeight = ref(0)
 	// 响应式数据
-	const phoneNumber = ref('sybjbr1');  //经办人事业部   资金
-	// const phoneNumber = ref('sybzgo');  //您好，业务主管（运管中心）
-	// const phoneNumber = ref('sybzg1');  //业务主管（一事业部） （其他）
+	// const phoneNumber = ref('sybjbr1');  //经办人事业部   资金
+	const phoneNumber = ref('sybzgo');  //您好，业务主管（运管中心）（暂支核销）
+	// const phoneNumber = ref('sybzg1');  //业务主管（一事业部） （其他） （科研）
 	// const phoneNumber = ref('cwzg');  //业务主管（一事业部）  cwzg财务主管
-	// const phoneNumber = ref('jbrsz');  //经办人（市政）
+	// const phoneNumber = ref('jbrsz');  //经办人（市政）（收入确认）（费用暂支）
 	// 申请人:sybjbro  审核人：sybzgo sybldo cwkj
 	// const phoneNumber = ref('sybjbro');  //您好，经办人（运管中心） 可实现收入确认11/21）  支出
 	// 其他费用报销流程
@@ -77,8 +103,6 @@
 					icon: 'none'
 				})
 			}
-		}).catch(err => {
-			console.log('登录失败', err)
 		})
 	}
 </script>

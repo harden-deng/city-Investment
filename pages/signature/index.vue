@@ -1,5 +1,6 @@
 <template>
 	<view class="signature-container">
+		<view class="status_bar" :style="{ height: `${statusBarHeight * 2}rpx` }"></view>
 		<!-- 签名组件 -->
 		<rn-signature :options="signatureOptions" :data="signatureData" @update:data="handleSignatureUpdate" />
 		<!-- 其他内容保持不变 -->
@@ -26,6 +27,7 @@
 	export default {
 		data() {
 			return {
+				statusBarHeight: getApp().globalData.statusBarHeight,
 				// 签名组件配置
 				signatureOptions: {
 					// 清除按钮配置
@@ -389,6 +391,9 @@
 		padding: 20rpx;
 		// min-height: 100vh;
 		// max-height: 100vh;
+		.status_bar{
+			width: 100%;
+		}
 	}
 
 	.signature-preview {

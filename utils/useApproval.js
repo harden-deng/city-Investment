@@ -134,27 +134,6 @@ export function useApproval(options = {}) {
              goBack();
           }
         }, 1000)
-      } else {
-        uni.showToast({
-          title: res.message || '审批失败',
-          icon: 'none'
-        })
-
-        // 执行失败回调
-        if (onError) {
-          onError(res)
-        }
-      }
-    }).catch(err => {
-      console.error('审批提交失败:', err)
-      uni.showToast({
-        title: '网络错误，请重试',
-        icon: 'none'
-      })
-
-      // 执行失败回调
-      if (onError) {
-        onError(err)
       }
     })
   }

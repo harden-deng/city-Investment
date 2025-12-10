@@ -401,7 +401,7 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,handleTableTouchMove,sumNestedProperties,totalNestedValue
+		formatNumber,handleTableTouchMove,sumNestedProperties,totalNestedValue,processAttachmentData
 	} from '@/utils/h5Bribge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
@@ -536,26 +536,7 @@
 			if(itemDatas.value.receivingBankName){
 				 stageTags.value.push(itemDatas.value.receivingBankName)
 			}
-
-			let arr1 = data?.attachementList?.map(item => {
-				return {
-					fileTagName: item.fileTagName,
-					fileName: item.fileName,
-                    fileUrl: item.fileUrl,
-					id: item.attachmentId
-				}
-			})
-			attachmentData.value = [{fileTagName: '合同', children: []}, {fileTagName: '发票/收据', children: []}, {fileTagName: '其他', children: []}]
-			const attachmentMap = new Map()
-			attachmentData.value.forEach(item => {
-				attachmentMap.set(item.fileTagName, item)
-			})
-			arr1.forEach(childItem => {
-				const parent = attachmentMap.get(childItem.fileTagName)
-				if (parent) {
-					parent.children.push(childItem)
-				}
-			})
+			attachmentData.value = processAttachmentData(data?.attachementList || [], ['合同','发票/收据','其他'])
 			computeScrollHeight()
 		})
 	}
