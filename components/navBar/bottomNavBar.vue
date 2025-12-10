@@ -184,7 +184,7 @@
 		right: 0;
 		height: 50px;
 		background: #ffffff;
-		border-top: 1rpx solid #ffffff;
+		// border-top: 1rpx solid #ffffff;
 		display: flex;
 		align-items: center;
 		justify-content: space-around;

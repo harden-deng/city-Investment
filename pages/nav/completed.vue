@@ -103,16 +103,24 @@
        uni.$off("refresh-completed");
     });
 	const headerRef = ref(null)
+	const bottomNavBarHeight = ref(50)
 	const getHeaderHeight = () => {
 		nextTick(() => {
-			const { windowHeight } = uni.getSystemInfoSync() // px
+			const { windowHeight,windowWidth } = uni.getSystemInfoSync() // px
+			if(windowWidth >= 414 && windowWidth <= 767){
+				bottomNavBarHeight.value = 55
+			}else if(windowWidth >= 768){
+				bottomNavBarHeight.value = 60
+			}else{
+				bottomNavBarHeight.value = 50
+			}
 			const query = uni.createSelectorQuery().in(headerRef.value)
 			query.select('.header-stickt').boundingClientRect((rect) => {
-			if (rect) {
-				const headerH = rect?.height || 0
-				  const h = Math.max(0, windowHeight - headerH)
-                 listHeight.value = `${h}px`
-			}
+				if (rect) {
+					const headerH = rect?.height || 0
+					const h = Math.max(0, windowHeight - headerH - bottomNavBarHeight.value)
+					listHeight.value = `${h}px`
+				}
 			}).exec()
 		})
 	}

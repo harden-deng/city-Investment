@@ -98,7 +98,7 @@
 	}
 	.zp-l-container-rpx {
 		height: 80rpx;
-		margin-bottom: 80px;
+		margin-bottom: 48rpx;
 		font-size: 27rpx;
 	}
 	.zp-l-container-px {
