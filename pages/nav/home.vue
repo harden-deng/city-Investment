@@ -3,7 +3,7 @@
 		<scroll-view scroll-y="true" class="scroller" :style="{ height: scrollViewHeight }">
 			<!-- 顶部标题栏 -->
 			<view class="header-stickt">
-				<view class="status_bar" :style="{ height: `${statusBarHeight * 2}rpx` }"></view>
+				<!-- <view class="status_bar" :style="{ height: `${statusBarHeight * 2}rpx` }"></view> -->
 				<view class="header-banner">
 					<view class="banner-bg">
 					</view>
@@ -55,7 +55,7 @@
 	import {
 		ref,
 		onMounted,
-		computed,
+		onUnmounted,
 		nextTick,
 		watch
 	} from 'vue'
@@ -72,16 +72,8 @@
 		}
 	})
 	let resizeHandler = null
-	const statusBarHeight = ref(0)
-	const tabBarHeight = ref(0) // 如有实际高度可替换
-	const windowHeight = ref(0)
-	const announcements = ref('');
 
-	onMounted(() => {
-		nextTick(()=>{
-			getAnnouncements();
-		})
-	})
+	const announcements = ref('');
 	watch(() => props.currentIndex, (newVal) => {
 		if(newVal == 0){
 			getAnnouncements();
@@ -143,23 +135,31 @@
 			url: '/pages/info/msg'
 		})
 	}
-	const scrollViewHeight = computed(() => {
-		return `${Math.max(0, windowHeight.value - tabBarHeight.value - 50)}px`
-	})
-	
+	const bottomNavBarHeight = ref(50)
+	const scrollViewHeight = ref('')
+	const computeScrollHeight = () => {
+			const { windowHeight,windowWidth } = uni.getSystemInfoSync()
+			if(windowWidth >= 414 && windowWidth <= 767){
+				bottomNavBarHeight.value = 55
+			}else if(windowWidth >= 768){
+				bottomNavBarHeight.value = 60
+			}else{
+				bottomNavBarHeight.value = 50
+			}
+			scrollViewHeight.value = `${Math.max(0, windowHeight - bottomNavBarHeight.value)}px`;
+	}
 	onMounted(() => {
+		getAnnouncements();
 		computeScrollHeight()
 		resizeHandler = () => computeScrollHeight()
 		uni.onWindowResize?.(resizeHandler)
 	})
-	const computeScrollHeight = () => {
-		try {
-			const sys = uni.getSystemInfoSync()
-			windowHeight.value = sys.windowHeight
-		} catch (e) {
-			windowHeight.value = 600
-		}
-	}
+	onUnmounted(()=>{
+		if (resizeHandler && typeof uni.offWindowResize === 'function') {
+			uni.offWindowResize(resizeHandler)
+			resizeHandler = null
+        }
+	})
 	const handleHelp = () => {
 		uni.navigateTo({
 			url: '/pages/info/help'

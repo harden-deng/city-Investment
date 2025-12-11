@@ -11,7 +11,8 @@
 				<view class="nav-input-view">
 					<!-- <uni-icons class="input-uni-icon" type="search" size="12" color="#999" /> -->
 					<image class="input-seach" src="../../static/images/search.svg" mode=""  @click.stop="doSearch"></image>
-					<input  class="input-view" placeholder="搜索" type="text"  v-model="searchKeyword" confirm-type="search" @confirm="doSearch" @keyup.enter="doSearch"/>
+					<!-- <input  class="input-view" placeholder="搜索" type="text"  v-model="searchKeyword" confirm-type="search" @confirm="doSearch" @keyup.enter="doSearch"/> -->
+					<uni-easyinput :inputBorder="false" class="input-view"  v-model="searchKeyword" placeholder="搜索" @confirm="doSearch" @clear="doSearch" confirm-type="search"></uni-easyinput>
 				</view>
 				<template v-slot:right>
 					<view @click="openFilter" class="nav-bar-filter"> 筛选 </view>
@@ -226,13 +227,14 @@
 
 <style lang="scss" scoped>
 	::v-deep .uni-easyinput__content {
-		background-color: #F2F2F2 !important;
+		height: 62rpx !important;
+		background-color: #FFF !important;
 		border: none !important;
-		border-radius: 30rpx !important;
+		border-radius: 32rpx !important;
 	}
 
 	::v-deep .uniui-clear {
-		color: #C3CEDF !important;
+		color: #dde6f8 !important;
 	}
 
 	::v-deep .uni-navbar__header-btns-left {
@@ -297,6 +299,8 @@
 
 		.nav-input-view {
 			box-sizing: border-box;
+			// min-width: 324rpx;
+			// max-width: 406rpx;
 			width: 324rpx;
 			height: 66rpx;
 			border-radius: 32rpx;
@@ -310,15 +314,15 @@
 			.input-seach {
 				width: 24rpx;
 				height: 24rpx;
-				margin: 0 24rpx 0 32rpx;
+				margin: 0 4rpx 0 30rpx;
 			}
 
 			.input-view {
 				flex: 1;
 				// margin-left: 80rpx;
-				margin-right: 12rpx;
-				font-size: 24rpx;
-				color: #666;
+				// margin-right: 12rpx;
+				font-size: 24rpx !important;
+				color: #666 !important;
 
 			}
 		}

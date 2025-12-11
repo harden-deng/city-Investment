@@ -1,5 +1,6 @@
 <template>
-	<scroll-view scroll-y="true" class="scroller" :style="{ height: scrollViewHeight, paddingTop:	`${statusBarHeight}rpx` }">
+	<scroll-view scroll-y="true" class="scroller" :style="{ height: scrollViewHeight }">
+		<view class="status_bar" :style="{height: `${statusBarHeight}rpx`}"></view>
 		<view class="profile">
 			<view class="card">
 				<view class="card__header">
@@ -129,9 +130,10 @@ const doLogout = () => {
 		url: '/pages/index/index'
 	})
 }
-const windowHeight = ref(0)
+const windowHeights = ref(0)
+const bottomNavBarHeight = ref(50)
 const scrollViewHeight = computed(() => {
-	return `${Math.max(0, windowHeight.value - 50)}px`
+	return `${Math.max(0, windowHeights.value - bottomNavBarHeight.value)}px`
 })
 let resizeHandler = null
 onMounted(() => {
@@ -146,12 +148,15 @@ onUnmounted(() => {
 	}
 })
 const computeScrollHeight = () => {
-	try {
-		const sys = uni.getSystemInfoSync()
-		windowHeight.value = sys.windowHeight
-	} catch (e) {
-		windowHeight.value = 600
-	}
+		const { windowHeight,windowWidth } = uni.getSystemInfoSync()
+		windowHeights.value = windowHeight
+		if(windowWidth >= 414 && windowWidth <= 767){
+			bottomNavBarHeight.value = 55
+		}else if(windowWidth >= 768){
+			bottomNavBarHeight.value = 60
+		}else{
+			bottomNavBarHeight.value = 50
+		}
 }
 </script>
 
@@ -163,7 +168,9 @@ const computeScrollHeight = () => {
 page {
 	background: #f3f7ff;
 }
-
+.status_bar{
+	width: 100%;
+}
 .profile {
 	height: auto;
 	background: #f3f7ff;
