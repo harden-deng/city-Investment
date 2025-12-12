@@ -838,22 +838,22 @@
 		box-sizing: border-box;
 		border-bottom: 2rpx #ddd solid;
 		border-right: 2rpx #ddd solid;
-		padding: 8px;
-		font-size: 12px;
+		padding: 16rpx;
+		font-size: 24rpx;
 	}
 
 	.table1 .info {
 		text-align: right;
 		color: #666;
-		padding: 8px !important;
-		max-width: 450px;
+		padding: 16rpx !important;
+		max-width: 900rpx;
 		white-space: normal !important;
 		word-break: break-all;
 		word-wrap: break-word;
 	}
 
 	.table1 .info-plus {
-		min-width: 150px;
+		min-width: 300rpx;
 	}
 
 	.table1 .text {
@@ -879,9 +879,9 @@
 		left: 0; 
 		top: 0; 
 		z-index: 3;
-		max-width: 176px !important;
-		min-width: 176px !important;
-		width: 176px !important;
+		max-width: 352rpx !important;
+		min-width: 352rpx !important;
+		width: 352rpx !important;
         border-left: 2rpx #ddd solid;
 		box-sizing: border-box;
 		background: #fff;
@@ -889,7 +889,7 @@
 
 	.table1 td.sticky-xz-2 { 
 		position: sticky;  
-		left: 76px;  
+		left: 152rpx;  
 		z-index: 4;
 		background: #fff; 
 	}

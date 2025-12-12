@@ -50,7 +50,7 @@
 				</view>
 			</view>
 
-			<view class="section" v-if="vehiclePaymentContentList.length > 0">
+			<view class="section" >
 				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
@@ -62,7 +62,7 @@
 				<transition name="collapse">
 					<view class="usage-details" v-if="getOptions(FUND_USAGE_STATUS)">
 						<!-- <view class="contract-section"> -->
-							<scroll-view scroll-x class="table-scroll-x" v-if="vehiclePaymentContentList.length > 0" @touchmove.stop="handleTableTouchMove">
+							<scroll-view scroll-x class="table-scroll-x"  @touchmove.stop="handleTableTouchMove">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
@@ -111,7 +111,7 @@
 									</tbody>
 								</table>
 							</scroll-view>
-							<view class="detail-row summary-row" v-if="vehiclePaymentContentList.length > 0">
+							<view class="detail-row summary-row" >
 								<text class="detail-label summary-label">本次小计</text>
 								<text
 									class="detail-value summary-value">{{ formatNumber(itemDatas.paymentAmount) }}</text>
@@ -314,6 +314,7 @@
 			})
             let arr = requestTypeSel['QT01'] || []
 			if(data?.wfrequestregularpaymentitems){
+				
 				 vehiclePaymentContentList.value = data?.wfrequestregularpaymentitems || []
 				arr.forEach(item => {
                   vehiclePaymentContentObj[item] = totalNestedValue(vehiclePaymentContentList.value, item)
@@ -774,20 +775,20 @@
 		box-sizing: border-box;
 		// border-left: 2rpx #ddd solid;
 		border-top: 2rpx #ddd solid;
-		padding: 8px;
-		font-size: 12px;
+		padding: 16rpx;
+		font-size: 24rpx;
 	}
 
 	.table1 .info {
 		text-align: right;
 		color: #666;
-		padding: 8px !important;
-		max-width: 350px;
+		padding: 16rpx !important;
+		max-width: 700rpx;
 		white-space: normal !important; //合并空白，自动换行
 	}
 
 	.table1 .info-plus {
-		min-width: 150px;
+		min-width: 300rpx;
 	}
 
 	.table1 .text {
@@ -813,16 +814,16 @@
 		left: 0; 
 		top: 0; 
 		z-index: 3;
-		max-width: 76px !important;
-		min-width: 76px !important;
-		width: 76px;
+		max-width: 152rpx !important;
+		min-width: 152rpx !important;
+		width: 152rpx;
 		box-sizing: border-box;
 		background: #fff;
 	}
 
 	.table1 td.sticky-xz-2 { 
 		position: sticky;  
-		left: 76px;  
+		left: 152rpx;  
 		z-index: 4;
 		background: #fff; 
 		border-right: 2rpx #ddd solid;

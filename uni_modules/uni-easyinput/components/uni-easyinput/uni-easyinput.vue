@@ -1,7 +1,7 @@
 <template>
 	<view class="uni-easyinput" :class="{ 'uni-easyinput-error': msg }" :style="boxStyle">
 		<view class="uni-easyinput__content" :class="inputContentClass" :style="inputContentStyle">
-			<uni-icons v-if="prefixIcon" class="content-clear-icon" :type="prefixIcon" color="#c0c4cc" @click="onClickIcon('prefix')" size="22"></uni-icons>
+			<uni-icons v-if="prefixIcon" class="content-clear-icon" :type="prefixIcon" color="#c0c4cc" @click="onClickIcon('prefix')" size="44rpx"></uni-icons>
 			<slot name="left">
 			</slot>
 			<!-- #ifdef MP-ALIPAY -->
@@ -15,13 +15,13 @@
 
 			<template v-if="type === 'password' && passwordIcon">
 				<!-- 开启密码时显示小眼睛 -->
-				<uni-icons v-if="isVal" class="content-clear-icon" :class="{ 'is-textarea-icon': type === 'textarea' }" :type="showPassword ? 'eye-slash-filled' : 'eye-filled'" :size="22" :color="focusShow ? primaryColor : '#c0c4cc'" @click="onEyes"></uni-icons>
+				<uni-icons v-if="isVal" class="content-clear-icon" :class="{ 'is-textarea-icon': type === 'textarea' }" :type="showPassword ? 'eye-slash-filled' : 'eye-filled'" size="44rpx" :color="focusShow ? primaryColor : '#c0c4cc'" @click="onEyes"></uni-icons>
 			</template>
 			<template v-if="suffixIcon">
-				<uni-icons v-if="suffixIcon" class="content-clear-icon" :type="suffixIcon" color="#c0c4cc" @click="onClickIcon('suffix')" size="22"></uni-icons>
+				<uni-icons v-if="suffixIcon" class="content-clear-icon" :type="suffixIcon" color="#c0c4cc" @click="onClickIcon('suffix')" size="44rpx"></uni-icons>
 			</template>
 			<template v-else>
-				<uni-icons v-if="clearable && isVal && !disabled && type !== 'textarea'" class="content-clear-icon" :class="{ 'is-textarea-icon': type === 'textarea' }" type="clear" :size="clearSize" :color="msg ? '#dd524d' : focusShow ? primaryColor : '#c0c4cc'" @click="onClear"></uni-icons>
+				<uni-icons v-if="clearable && isVal && !disabled && type !== 'textarea'" class="content-clear-icon" :class="{ 'is-textarea-icon': type === 'textarea' }" type="clear" :size="`${clearSize}rpx`" :color="msg ? '#dd524d' : focusShow ? primaryColor : '#c0c4cc'" @click="onClear"></uni-icons>
 			</template>
 			<slot name="right"></slot>
 		</view>
@@ -168,7 +168,7 @@
 			},
 			clearSize: {
 				type: [Number, String],
-				default: 24
+				default: 44
 			},
 			inputBorder: {
 				type: Boolean,
@@ -517,7 +517,7 @@
 		position: relative;
 		text-align: left;
 		color: #333;
-		font-size: 14px;
+		font-size: 28rpx;
 	}
 
 	.uni-easyinput__content {
@@ -544,13 +544,13 @@
 		overflow: hidden;
 		flex: 1;
 		line-height: 1;
-		font-size: 14px;
-		height: 35px;
+		font-size: 28rpx;
+		height: 70rpx;
 	}
 
 	.uni-easyinput__placeholder-class {
 		color: #999;
-		font-size: 12px;
+		font-size: 24rpx;
 		// font-weight: 200;
 	}
 
@@ -559,7 +559,7 @@
 	}
 
 	.is-textarea-icon {
-		margin-top: 5px;
+		margin-top: 10rpx;
 	}
 
 	.uni-easyinput__content-textarea {
@@ -567,28 +567,28 @@
 		overflow: hidden;
 		flex: 1;
 		line-height: 1.5;
-		font-size: 14px;
-		margin: 6px;
+		font-size: 28rpx;
+		margin: 12rpx;
 		margin-left: 0;
-		height: 80px;
-		min-height: 80px;
+		height: 160rpx;
+		min-height: 160rpx;
 		/* #ifndef APP-NVUE */
-		min-height: 80px;
+		min-height: 160rpx;
 		width: auto;
 		/* #endif */
 	}
 
 	.input-padding {
-		padding-left: 10px;
+		padding-left: 20rpx;
 	}
 
 	.content-clear-icon {
-		padding: 0 5px;
+		padding: 0 10rpx;
 	}
 
 	.label-icon {
-		margin-right: 5px;
-		margin-top: -1px;
+		margin-right: 10rpx;
+		margin-top: -2rpx;
 	}
 
 	// 显示边框
@@ -599,8 +599,8 @@
 		/* #endif */
 		flex-direction: row;
 		align-items: center;
-		border: 1px solid $uni-border-1;
-		border-radius: 4px;
+		border: 2rpx solid $uni-border-1;
+		border-radius: 8rpx;
 		/* #ifdef MP-ALIPAY */
 		overflow: hidden;
 		/* #endif */
@@ -610,16 +610,16 @@
 		position: absolute;
 		bottom: -17px;
 		left: 0;
-		line-height: 12px;
+		line-height: 24rpx;
 		color: $uni-error;
-		font-size: 12px;
+		font-size: 24rpx;
 		text-align: left;
 	}
 
 	.uni-error-msg--boeder {
 		position: relative;
 		bottom: 0;
-		line-height: 22px;
+		line-height: 44rpx;
 	}
 
 	.is-input-error-border {
@@ -632,9 +632,9 @@
 
 	.uni-easyinput--border {
 		margin-bottom: 0;
-		padding: 10px 15px;
+		padding: 20rpx 30rpx;
 		// padding-bottom: 0;
-		border-top: 1px #eee solid;
+		border-top: 2rpx #eee solid;
 	}
 
 	.uni-easyinput-error {
@@ -656,7 +656,7 @@
 
 		.uni-easyinput__placeholder-class {
 			color: #d5d5d5;
-			font-size: 12px;
+			font-size: 24rpx;
 		}
 	}
 </style>

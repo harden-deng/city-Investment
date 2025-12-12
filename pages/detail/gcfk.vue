@@ -1519,7 +1519,7 @@
 
 // ------------------------------------------
 	.margin_1 {
-		margin-top: 20px;
+		margin-top: 40rpx;
 	}
 
 	.table1 {
@@ -1558,8 +1558,8 @@
 		box-sizing: border-box;
 		border-bottom: 2rpx #ddd solid;
 		border-right: 2rpx #ddd solid;
-		padding: 8px;
-		font-size: 12px;
+		padding: 16rpx;
+		font-size: 24rpx;
 	}
 
 	.table1 .info {
@@ -1610,26 +1610,26 @@
 	}
 
 	/* 需要给表格的前几列设置 sticky 和 left 偏移，按你的列宽自行调整 */
-	.table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 109.02px !important;min-width: 109.02px !important;box-sizing: border-box;  border-left: 2rpx #ddd solid; /* 解决左右滑动时，边框不显示 */ }
-	.table1 td.sticky-2 { position: sticky; left: 109.02px;  z-index: 4;box-sizing: border-box; }
-	.table1 td.sticky-3 { position: sticky; left: 220px;  z-index: 2;box-sizing: border-box; }
+	.table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 218.04rpx !important;min-width: 218.04rpx !important;box-sizing: border-box;  border-left: 2rpx #ddd solid; /* 解决左右滑动时，边框不显示 */ }
+	.table1 td.sticky-2 { position: sticky; left: 218.04rpx;  z-index: 4;box-sizing: border-box; }
+	.table1 td.sticky-3 { position: sticky; left: 440rpx;  z-index: 2;box-sizing: border-box; }
 
 	 /* max-width: 55px !important;min-width: 55px !important;确保组件宽度始终精确为55px，忽略所有其他影响因素 */
-	.table1 td.sticky-1-plus { position: sticky; left: 0; top: 0; z-index: 3;max-width: 55px !important;min-width: 55px !important;box-sizing: border-box; 
+	.table1 td.sticky-1-plus { position: sticky; left: 0; top: 0; z-index: 3;max-width: 110rpx !important;min-width: 110rpx !important;box-sizing: border-box; 
                               white-space: normal; /* 默认值，允许文本换行 */ border-left: 2rpx #ddd solid;  /* 解决左右滑动时，边框不显示 */
 							  background-clip: padding-box; }
-	.table1 td.sticky-2-plus { position: sticky; left: 55px;  z-index: 4;max-width: 59px !important;min-width: 59px !important;box-sizing: border-box;  white-space: normal; /* 默认值，允许文本换行 */
+	.table1 td.sticky-2-plus { position: sticky; left: 110rpx;  z-index: 4;max-width: 118rpx !important;min-width: 118rpx !important;box-sizing: border-box;  white-space: normal; /* 默认值，允许文本换行 */
 	                    	}
-	.table1 td.sticky-3-plus { position: sticky; left: 114px;  z-index: 2;box-sizing: border-box;background: #fff; 
+	.table1 td.sticky-3-plus { position: sticky; left: 228rpx;  z-index: 2;box-sizing: border-box;background: #fff; 
 		                   }
 
-	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 55px !important;min-width: 55px !important;background: #fff; white-space: normal; /* 默认值，允许文本换行 */}
-	.table1 td.sticky-xz-2 { position: sticky; left: 55px;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid !important; }
-	.table1 td.sticky-xz-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
+	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 110rpx !important;min-width: 110rpx !important;background: #fff; white-space: normal; /* 默认值，允许文本换行 */}
+	.table1 td.sticky-xz-2 { position: sticky; left: 110rpx;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid !important; }
+	.table1 td.sticky-xz-3 { position: sticky; left: 440rpx;  z-index: 2;background: #fff; }
 
-	.table1 td.sticky-lx-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 76px !important;min-width: 76px !important;background: #fff; }
-	.table1 td.sticky-lx-2 { position: sticky; left: 76px;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid !important; }
-	.table1 td.sticky-lx-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
+	.table1 td.sticky-lx-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 152rpx !important;min-width: 152rpx !important;background: #fff; }
+	.table1 td.sticky-lx-2 { position: sticky; left: 152rpx;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid !important; }
+	.table1 td.sticky-lx-3 { position: sticky; left: 440rpx;  z-index: 2;background: #fff; }
 
 	/* 审批记录独立样式区域 */
 	.approval-record-section {

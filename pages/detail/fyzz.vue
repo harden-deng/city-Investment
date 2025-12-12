@@ -743,15 +743,6 @@
 
 
 
-
-
-
-
-
-	.margin_1 {
-		margin-top: 20px;
-	}
-
 	.table1 {
 		box-sizing: border-box;
 		width: 100%;
@@ -777,8 +768,8 @@
 		box-sizing: border-box;
 		border-left: 2rpx #ddd solid;
 		border-top: 2rpx #ddd solid;
-		padding: 8px;
-		font-size: 12px;
+		padding: 16rpx;
+		font-size: 24rpx;
 	}
 
 	.table1 .info {
@@ -807,17 +798,17 @@
 	}
 
 	/* 需要给表格的前几列设置 sticky 和 left 偏移，按你的列宽自行调整 */
-	.table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 109.02px !important;box-sizing: border-box;  }
-	.table1 td.sticky-2 { position: sticky; left: 109.02px;  z-index: 4;box-sizing: border-box; }
-	.table1 td.sticky-3 { position: sticky; left: 220px;  z-index: 2;box-sizing: border-box; }
+	.table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 218.04rpx !important;box-sizing: border-box;  }
+	.table1 td.sticky-2 { position: sticky; left: 218.04rpx;  z-index: 4;box-sizing: border-box; }
+	.table1 td.sticky-3 { position: sticky; left: 440rpx;  z-index: 2;box-sizing: border-box; }
 
-	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 55.5px !important; ;background: #fff;}
-	.table1 td.sticky-xz-2 { position: sticky; left: 55.5px;  z-index: 4;;background: #fff; }
-	.table1 td.sticky-xz-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
+	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 111rpx !important; ;background: #fff;}
+	.table1 td.sticky-xz-2 { position: sticky; left: 111rpx;  z-index: 4;;background: #fff; }
+	.table1 td.sticky-xz-3 { position: sticky; left: 440rpx;  z-index: 2;background: #fff; }
 
-	.table1 td.sticky-lx-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 76px !important;background: #fff; }
-	.table1 td.sticky-lx-2 { position: sticky; left: 76px;  z-index: 4;background: #fff; }
-	.table1 td.sticky-lx-3 { position: sticky; left: 220px;  z-index: 2;background: #fff; }
+	.table1 td.sticky-lx-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 152rpx !important;background: #fff; }
+	.table1 td.sticky-lx-2 { position: sticky; left: 152rpx;  z-index: 4;background: #fff; }
+	.table1 td.sticky-lx-3 { position: sticky; left: 440rpx;  z-index: 2;background: #fff; }
 
 	/* 审批记录独立样式区域 */
 	.approval-record-section {

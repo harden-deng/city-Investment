@@ -14,7 +14,7 @@
 		<view class="form-container">
 			<!-- 账号输入框 -->
 			<view class="input-group">
-				<uni-easyinput :border="false" :height="'150px'" :styles="styles"  v-model="phoneNumber" placeholder="请输入您的平台账号" confirm-type="done"></uni-easyinput>
+				<uni-easyinput type="text"  v-model="phoneNumber" placeholder="请输入您的平台账号" confirm-type="done"></uni-easyinput>
 			</view>
 			<!-- 密码输入框 -->
 			<view class="input-group">
@@ -58,15 +58,13 @@
 			getApp().globalData.statusBarHeight = Number(params.statusBarHeight)
 		}
 	})
-	const styles = {
-	    placeholderColor: '#999999',
-	}
+
 	// 响应式数据
-	// const phoneNumber = ref('sybjbr1');  //经办人事业部   资金
+	const phoneNumber = ref('sybjbr1');  //经办人事业部   资金
 	// const phoneNumber = ref('sybzgo');  //您好，业务主管（运管中心）（暂支核销）
 	// const phoneNumber = ref('sybzg1');  //业务主管（一事业部） （其他） （科研）
 	// const phoneNumber = ref('cwzg');  //业务主管（一事业部）  cwzg财务主管
-	const phoneNumber = ref('jbrsz');  //经办人（市政）（收入确认）（费用暂支）
+	// const phoneNumber = ref('jbrsz');  //经办人（市政）（收入确认）（费用暂支）
 	// 申请人:sybjbro  审核人：sybzgo sybldo cwkj
 	// const phoneNumber = ref('sybjbro');  //您好，经办人（运管中心） 可实现收入确认11/21）  支出
 	// 其他费用报销流程
@@ -221,10 +219,10 @@
 	}
 
 	// 全局样式重置
-	::v-deep .uni-input-input {
-		height: 88rpx !important;
-		line-height: 88rpx !important;
-	}
+	// ::v-deep .uni-input-input {
+	// 	height: 88rpx !important;
+	// 	line-height: 88rpx !important;
+	// }
 	
 	// PC端适配
 	@media screen and (min-width: 768px) {

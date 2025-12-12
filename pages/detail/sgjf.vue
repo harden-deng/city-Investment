@@ -1019,8 +1019,8 @@
 		box-sizing: border-box;
 		// border-left: 2rpx #ddd solid;
 		border-top: 2rpx #ddd solid;
-		padding: 8px;
-		font-size: 12px;
+		padding: 16rpx;
+		font-size: 24rpx;
 	}
 	
 	.bordr-none{
@@ -1059,8 +1059,8 @@
 		white-space: nowrap;
 	}
 	
-	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 88px !important;background: #fff;}
-	.table1 td.sticky-xz-2 { position: sticky; left: 88px;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid; }
+	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 176rpx !important;background: #fff;}
+	.table1 td.sticky-xz-2 { position: sticky; left: 176rpx;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid; }
 
 	.table1 td.sticky-ry-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 40%;background: #fff;  white-space: normal;
                 word-break: break-all;

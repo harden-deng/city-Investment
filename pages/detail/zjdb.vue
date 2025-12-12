@@ -553,7 +553,7 @@
 	}
 	
 	.margin_1 {
-		margin-top: 20px;
+		margin-top: 40rpx;
 	}
 	
 	.approval-record-section {
