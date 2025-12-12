@@ -10,7 +10,9 @@
 			console.log('App Hide')
 		},
 		globalData: {
-			statusBarHeight: 0
+			statusBarHeight: 0,
+			userSignature: null,
+			userInfo: null
 		}
 	}
 </script>

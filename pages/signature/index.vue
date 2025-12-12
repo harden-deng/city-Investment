@@ -115,9 +115,9 @@
 			}
 		},
 		onLoad() {
-			let signatureUrl = uni.getStorageSync('userSignature')
-			if (signatureUrl?.dataUrl) {
-				this.signatureData.url = signatureUrl.dataUrl
+			let signatureUrl = getApp().globalData.userSignature 
+			if (signatureUrl) {
+				this.signatureData.url = signatureUrl
 			}
 			this.getUserSignature()
 		},
@@ -129,24 +129,21 @@
 		},
 		methods: {
 			getUserSignature(){
-				const userInfos = uni.getStorageSync('userInfo')
+				const userInfos = getApp().globalData.userInfo || uni.getStorageSync('userInfo')
 				http.get('/Users/GetUserSignature',{ userAccount: userInfos?.userAccount}).then(res => {
 					if (res.code == 0) {
 						if(this.signatureData.url === res.data?.dataUrl){
 							return
 						} else {
 							this.signatureData.url = res.data?.dataUrl || ''
-							let obj = {
-								dataUrl: this.signatureData.url || ''
-							}
-							uni.setStorageSync('userSignature', obj)
+							getApp().globalData.userSignature = this.signatureData.url || ''
 							return
 						}
 					}
 				})
 			},
 			saveUserSignature(){	
-				const userInfos = uni.getStorageSync('userInfo')
+				const userInfos = getApp().globalData.userInfo || uni.getStorageSync('userInfo')
 				const imageType = detectImageType(this.signatureData.url)
 				let params = { Account: userInfos?.userAccount,FileType: '.' + imageType, FileBaseStr: this.signatureData.url }
 				http.post('/Users/UpdateUserSignature',params).then(res => {
@@ -231,7 +228,6 @@
 							title: '签名保存成功',
 							icon: 'success'
 						});
-
 						// 返回上一页并传递签名结果
 						navigateBackTimeoutId = setTimeout(() => {
 							uni.navigateBack({
@@ -254,7 +250,6 @@
 					this.isSaving = false;
 				}
 			},
-
 			// 上传文件到服务器
 			uploadFile(filePath) {
 				return new Promise((resolve, reject) => {
@@ -283,7 +278,6 @@
 					});
 				});
 			},
-
 			// base64转临时文件
 			base64ToTempFile(base64Data) {
 				return new Promise((resolve, reject) => {
@@ -307,7 +301,6 @@
 					});
 				});
 			},
-
 			// 下载签名
 			downloadSignature() {
 				if (!this.signatureData.url) {

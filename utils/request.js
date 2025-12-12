@@ -14,37 +14,37 @@ export default {
 		method: "POST",
 		dataType: "json",
 		responseType: "text",
+		token: '',
 		success() {},
 		fail() {},
 		complete() {}
 	},
 	// Token 缓存，避免频繁读取存储
 	_tokenCache: null,
-	_tokenCacheTime: 0,
-	_tokenCacheExpire: 5 * 1 * 1000, // 5秒缓存
 	
 	// 请求去重 Map，key: url+method+JSON.stringify(data)
 	_pendingRequests: new Map(),
 	
 	// 获取 token（带缓存）
 	_getToken() {
-		const now = Date.now()
-		// 如果缓存未过期，直接返回
-		if (this._tokenCache && (now - this._tokenCacheTime < this._tokenCacheExpire)) {
-			return this._tokenCache
-		}
 		// 读取并更新缓存
 		this._tokenCache = uni.getStorageSync('token') || null
-		this._tokenCacheTime = now
+		this.config.token = this._tokenCache
 		return this._tokenCache
 	},
-	
 	// 清除 token 缓存
 	_clearTokenCache() {
 		this._tokenCache = null
-		this._tokenCacheTime = 0
+		this.config.token = null
+		uni.clearStorageSync()
 	},
-	
+	setToken(token) {
+		this.config.token = token
+		uni.setStorageSync('token', token)
+	},
+	getToken(){
+		return this.config.token || this._getToken();
+	},
 	// 生成请求唯一标识
 	_getRequestKey(url, method, data) {
 		return `${method}:${url}:${JSON.stringify(data || {})}`
@@ -70,7 +70,7 @@ export default {
 		}
 		
 		// 构建 header（一次性构建，避免多次对象创建）
-		const token = this._getToken() // 只读取一次
+		const token = this.getToken() // 只读取一次
 		const header = {
 			...this.config.header,
 			...options.header,
@@ -114,7 +114,6 @@ export default {
 							icon: 'none',
 							duration: 4500
 						})
-						uni.clearStorageSync()
 						uni.reLaunch({
 							url: '/pages/index/index'
 						})

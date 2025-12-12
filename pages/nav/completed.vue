@@ -72,8 +72,6 @@
 			</z-paging>
 		</view>
 		<FilterPopup ref="filterRef" @confirm="onConfirm" @reset="onReset" />
-		<!-- 底部导航栏 -->
-		<!-- <BottomNavBar ref="bottomNavRef" :modelValueFlag="2"/> -->
 	</view>
 </template>
 
@@ -90,7 +88,6 @@
 		procDefCodeUrlObj,
 	} from '@/utils/definitions'
 	import { formatNumber,formatRelativeTime } from '@/utils/h5Bribge.js'
-	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
 	let resizeHandler = null
 	const statusBarHeight = getApp().globalData.statusBarHeight

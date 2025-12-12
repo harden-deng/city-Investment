@@ -14,11 +14,11 @@
 		<view class="form-container">
 			<!-- 账号输入框 -->
 			<view class="input-group">
-				<uni-easyinput :border="false" :height="'150px'" :styles="styles"  v-model="phoneNumber" placeholder="请输入您的平台账号" ></uni-easyinput>
+				<uni-easyinput :border="false" :height="'150px'" :styles="styles"  v-model="phoneNumber" placeholder="请输入您的平台账号" confirm-type="done"></uni-easyinput>
 			</view>
 			<!-- 密码输入框 -->
 			<view class="input-group">
-				<uni-easyinput type="password"  v-model="password"  placeholder="请输入您的密码" ></uni-easyinput>
+				<uni-easyinput type="password"  v-model="password"  placeholder="请输入您的密码" confirm-type="done"></uni-easyinput>
 			</view>
 			<!-- 登录按钮 -->
 			<button class="login-btn" @click="handleLogin">
@@ -92,8 +92,7 @@
 		}).then(res => {
 			console.log('登录成功', res)
 			if (res.code == 0) {
-				uni.setStorageSync('token', res.data.accessToken)
-				uni.setStorageSync('userFullName', res.data.userFullName)
+				http.setToken(res.data.accessToken)
 				uni.switchTab({
 					url: '/pages/nav/layoutHome'
 				})

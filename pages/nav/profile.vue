@@ -68,7 +68,7 @@ onMounted(() => {
 	uni.$on('refresh-signature', () => {
 		getUserSignature()
 	})
-	const userInfos = uni.getStorageSync('userInfo')
+	const userInfos = getApp().globalData.userInfo
 	if (userInfos) {
 		userInfo.value = userInfos;
 	} else {
@@ -83,20 +83,17 @@ const getUserInfo = () => {
 	http.get('/Users/GetUserInfo').then(res => {
 		if (res.code == 0) {
 			userInfo.value = res.data;
-			uni.setStorageSync('userInfo', res.data);
 			getUserSignature()
+			getApp().globalData.userInfo = res.data;
+			uni.setStorageSync('userInfo', res.data);
 		}
 	})
 }
 //获取用户签名
 const getUserSignature = () => {
-	const userInfos = uni.getStorageSync('userInfo')
-	http.get('/Users/GetUserSignature',{ userAccount: userInfos?.userAccount}).then(res => {
+	http.get('/Users/GetUserSignature',{ userAccount: userInfo.value?.userAccount}).then(res => {
 		if (res.code == 0) {
-			let obj = {
-				dataUrl: res.data?.dataUrl || '',
-			}
-			uni.setStorageSync('userSignature', obj)
+			getApp().globalData.userSignature = res.data?.dataUrl || ''
 		}
 	})
 }
