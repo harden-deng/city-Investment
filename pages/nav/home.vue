@@ -87,7 +87,7 @@
 		})
 	}
 	// 快捷功能列表
-	const quickAccessList = ref([{
+	const quickAccessList =[{
 			label: '待办流程',
 			imgUrl: '../../static/images/index_menu_1.svg',
 			path: '/pages/nav/pending',
@@ -117,7 +117,7 @@
 			bjColor: '#33cb99',
 			isTab: false
 		},
-	])
+	]
 	const handleQuickAccess = (item) => {
 		if (!item.path) {
 			uni.showToast({

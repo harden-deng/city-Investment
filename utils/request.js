@@ -72,35 +72,29 @@ export default {
 		// 构建 header（一次性构建，避免多次对象创建）
 		const token = this.getToken() // 只读取一次
 		const header = {
-			...this.config.header,
-			...options.header,
 			'Content-Type': dataType === 'json' 
 				? 'application/json;charset=UTF-8'
 				: 'application/x-www-form-urlencoded;charset=UTF-8'
 		}
-		
+
 		if (token) {
 			header['Authorization'] = `Bearer ${token}` // 使用模板字符串
 		}
-		
 		// 创建 Promise
 		const requestPromise = new Promise((resolve, reject) => {
 			const _config = {
-				...this.config,
-				...options,
 				url,
 				method,
 				dataType,
 				header,
 				data: options.data || {},
 				sslVerify: false,
-				requestId: Date.now() // 使用 Date.now() 替代 new Date().getTime()
+				requestId: Date.now()
 			}
 			
 			_config.complete = (response) => {
 				// 请求完成，从 pending 中移除
 				this._pendingRequests.delete(requestKey)
-				console.log('response', response)
 				const statusCode = response.statusCode
 				switch (statusCode) {
 					case 200:	
@@ -153,15 +147,6 @@ export default {
 		
 		// 将请求加入 pending Map
 		this._pendingRequests.set(requestKey, requestPromise)
-		
-		// 请求完成后自动清理（防止内存泄漏）
-		requestPromise.finally(() => {
-			// 延迟清理，给可能的重复请求留出时间
-			setTimeout(() => {
-				this._pendingRequests.delete(requestKey)
-			}, 500)
-		})
-		
 		return requestPromise
 	},
 	

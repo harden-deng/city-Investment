@@ -4,7 +4,7 @@
 			:class="{ active: currentIndex === index }" @click="handleNavClick(index, item)">
 			<!-- 图标容器 -->
 			<view class="icon-container">
-				<image :src="getIcon(item, index)"
+				<image :src="iconList[index]"
 					class="nav-icon" mode="aspectFit" />
 			</view>
 			<!-- 文字标签 -->
@@ -62,10 +62,15 @@
 	// 响应式数据
     const currentIndex = ref(props.modelValueFlag)
     
-    	// 获取图标（根据当前激活状态返回对应图标）
-	const getIcon = (item, index) => {
-		return currentIndex.value === index ? item.activeIcon : item.icon
-	}
+    // 获取图标（根据当前激活状态返回对应图标）
+	// const getIcon = (item, index) => {
+	// 	return currentIndex.value === index ? item.activeIcon : item.icon
+	// }
+	const iconList = computed(() => {
+		return navItems.value.map((item, index) => 
+			currentIndex.value === index ? item.activeIcon : item.icon
+		)
+	})
 
 	// 监听 modelValueFlag 变化（用于组件切换模式）
 	watch(() => props.modelValueFlag, (newVal) => {

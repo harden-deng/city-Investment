@@ -101,7 +101,7 @@
 		})
 	})
 	onUnload(() => {
-      uni.$off("refresh-pending");
+        uni.$off("refresh-pending");
     });
 	const headerRef = ref(null)
 	const bottomNavBarHeight = ref(50)
@@ -130,7 +130,7 @@
 		resizeHandler = () => getHeaderHeight()
         uni.onWindowResize?.(resizeHandler)
 	})
-	onUnmounted(()=>{
+	onUnmounted(() => {
 		if (resizeHandler && typeof uni.offWindowResize === 'function') {
 			uni.offWindowResize(resizeHandler)
 			resizeHandler = null
