@@ -4,7 +4,7 @@
 			:class="{ active: currentIndex === index }" @click="handleNavClick(index, item)">
 			<!-- 图标容器 -->
 			<view class="icon-container">
-				<image :src="currentIndex === index ? item.activeIcon : item.icon"
+				<image :src="getIcon(item, index)"
 					class="nav-icon" mode="aspectFit" />
 			</view>
 			<!-- 文字标签 -->
@@ -25,10 +25,6 @@
         componentMode: { type: Boolean, default: false }, // 组件切换模式，为 true 时不执行页面跳转，只 emit change 事件
         // showFlag: { type: Boolean, default: true }
     })
-
-    // 提供给<style>中 v-bind(activeColor/inactiveColor) 使用，且保持响应式
-    const activeColor = computed(() => props.activeColor)
-    const inactiveColor = computed(() => props.inactiveColor)
 
     const navItems = ref([
 		{
@@ -65,6 +61,11 @@
 
 	// 响应式数据
     const currentIndex = ref(props.modelValueFlag)
+    
+    	// 获取图标（根据当前激活状态返回对应图标）
+	const getIcon = (item, index) => {
+		return currentIndex.value === index ? item.activeIcon : item.icon
+	}
 
 	// 监听 modelValueFlag 变化（用于组件切换模式）
 	watch(() => props.modelValueFlag, (newVal) => {
@@ -237,14 +238,16 @@
 
 			.nav-label {
 				font-size: 11px;
-				color: v-bind(inactiveColor);
+				// color: v-bind(inactiveColor);
+				color: v-bind('props.inactiveColor');
 				line-height: 1.2;
 				text-align: center;
 				transition: all 0.3s ease;
 				font-weight: 400;
 
 				&.label-active {
-					color: v-bind(activeColor);
+					// color: v-bind(activeColor);
+					color: v-bind('props.activeColor');
 					// font-weight: 500;
 					// transform: scale(1.05);
 				}
@@ -254,7 +257,7 @@
 	// 小屏幕适配
 	@media (max-width: 375px) {
 		.bottom-nav-bar {
-			height: 100rpx;
+			height: 50px;
 			.nav-item {
 				padding: 0px 1px;
 				.icon-container {

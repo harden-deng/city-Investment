@@ -111,7 +111,8 @@
 					tempTime: Date.now() // 时间戳，用于事件通信
 				},
 				// 保存状态
-				isSaving: false
+				isSaving: false,
+				userInfos: getApp().globalData.userInfo || uni.getStorageSync('userInfo'), // 用户信息
 			}
 		},
 		onLoad() {
@@ -129,8 +130,7 @@
 		},
 		methods: {
 			getUserSignature(){
-				const userInfos = getApp().globalData.userInfo || uni.getStorageSync('userInfo')
-				http.get('/Users/GetUserSignature',{ userAccount: userInfos?.userAccount}).then(res => {
+				http.get('/Users/GetUserSignature',{ userAccount: this.userInfos?.userAccount}).then(res => {
 					if (res.code == 0) {
 						if(this.signatureData.url === res.data?.dataUrl){
 							return
@@ -143,9 +143,8 @@
 				})
 			},
 			saveUserSignature(){	
-				const userInfos = getApp().globalData.userInfo || uni.getStorageSync('userInfo')
 				const imageType = detectImageType(this.signatureData.url)
-				let params = { Account: userInfos?.userAccount,FileType: '.' + imageType, FileBaseStr: this.signatureData.url }
+				let params = { Account: this.userInfos?.userAccount,FileType: '.' + imageType, FileBaseStr: this.signatureData.url }
 				http.post('/Users/UpdateUserSignature',params).then(res => {
 					if (res.code == 0) {
 						try {
@@ -200,162 +199,6 @@
 				
 				this.isSaving = true;
 				this.saveUserSignature()
-				// this.goBack();
-
-				// 这里可以调用API保存签名到服务器
-				// this.uploadSignatureToServer();
-			},
-
-			// 上传签名到服务器
-			async uploadSignatureToServer() {
-				console.log('uploadSignatureToServer', this.signatureData);
-				try {
-					uni.showLoading({
-						title: '保存中...'
-					});
-
-					// 将base64转换为临时文件
-					console.log('tempFilePath11111');
-					const tempFilePath = await this.base64ToTempFile(this.signatureData.url);
-                    console.log('tempFilePath22222', tempFilePath);
-					// 上传到服务器
-					const uploadResult = await this.uploadFile(tempFilePath);
-					console.log('uploadResult', uploadResult);
-					uni.hideLoading();
-
-					if (uploadResult.success) {
-						uni.showToast({
-							title: '签名保存成功',
-							icon: 'success'
-						});
-						// 返回上一页并传递签名结果
-						navigateBackTimeoutId = setTimeout(() => {
-							uni.navigateBack({
-								delta: 1
-							});
-						}, 1500);
-					} else {
-						throw new Error(uploadResult.message || '上传失败');
-					}
-
-				} catch (error) {
-					uni.hideLoading();
-					uni.showToast({
-						title: error.message || '保存失败',
-						icon: 'none'
-					});
-					console.error('保存签名失败:', error);
-				} finally {
-					// 重置保存状态
-					this.isSaving = false;
-				}
-			},
-			// 上传文件到服务器
-			uploadFile(filePath) {
-				return new Promise((resolve, reject) => {
-					uni.uploadFile({
-						url: 'YOUR_SERVER_API_URL', // 替换为您的服务器API地址
-						filePath: filePath,
-						name: 'signature',
-						formData: {
-							userId: 'current_user_id', // 替换为实际用户ID
-							type: 'signature'
-						},
-						success: (res) => {
-							try {
-								const data = JSON.parse(res.data);
-								resolve({
-									success: true,
-									data: data
-								});
-							} catch (e) {
-								reject(new Error('服务器响应格式错误'));
-							}
-						},
-						fail: (error) => {
-							reject(new Error('网络请求失败'));
-						}
-					});
-				});
-			},
-			// base64转临时文件
-			base64ToTempFile(base64Data) {
-				return new Promise((resolve, reject) => {
-					// 去除base64前缀
-					const base64 = base64Data.replace(/^data:image\/\w+;base64,/, '');
-
-					// 转换为ArrayBuffer
-					const buffer = uni.base64ToArrayBuffer(base64);
-
-					// 写入临时文件
-					const fs = uni.getFileSystemManager();
-					const fileName = `signature_${Date.now()}.png`;
-					const filePath = `${uni.env.USER_DATA_PATH}/${fileName}`;
-
-					fs.writeFile({
-						filePath: filePath,
-						data: buffer,
-						encoding: 'binary',
-						success: () => resolve(filePath),
-						fail: (error) => reject(error)
-					});
-				});
-			},
-			// 下载签名
-			downloadSignature() {
-				if (!this.signatureData.url) {
-					uni.showToast({
-						title: '没有可下载的签名',
-						icon: 'none'
-					});
-					return;
-				}
-
-				// H5环境下直接下载
-				// #ifdef H5
-				const link = document.createElement('a');
-				link.href = this.signatureData.url;
-				link.download = `signature_${Date.now()}.png`;
-				document.body.appendChild(link);
-				link.click();
-				document.body.removeChild(link);
-				// #endif
-
-				// 其他平台保存到相册
-				// #ifndef H5
-				uni.saveImageToPhotosAlbum({
-					filePath: this.signatureData.url,
-					success: () => {
-						uni.showToast({
-							title: '已保存到相册',
-							icon: 'success'
-						});
-					},
-					fail: () => {
-						uni.showToast({
-							title: '保存失败',
-							icon: 'none'
-						});
-					}
-				});
-				// #endif
-			},
-
-			// 清除签名
-			clearSignature() {
-				uni.showModal({
-					title: '确认清除',
-					content: '确定要清除当前签名吗？',
-					success: (res) => {
-						if (res.confirm) {
-							this.signatureData.url = '';
-							uni.showToast({
-								title: '已清除',
-								icon: 'success'
-							});
-						}
-					}
-				});
 			},
 			// 返回上一页
 			goBack() {

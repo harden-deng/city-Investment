@@ -61,30 +61,43 @@ import {
 import http from '@/utils/request.js'
 import confirmDialog from "@/components/confirmDialog/confirmDialog.vue"
 // import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
-const statusBarHeight = getApp().globalData.statusBarHeight
+// 缓存 getApp() 结果，避免重复调用
+const app = getApp()
+const globalData = app.globalData
+
+let resizeHandler = null
+const statusBarHeight = globalData.statusBarHeight
 const confirmRef = ref(null)
 const userInfo = ref({})
 onMounted(() => {
 	uni.$on('refresh-signature', () => {
 		getUserSignature()
 	})
-	const userInfos = getApp().globalData.userInfo
+	const userInfos = globalData.userInfo
 	if (userInfos) {
 		userInfo.value = userInfos;
 	} else {
 		getUserInfo();
 	}
+	computeScrollHeight()
+	resizeHandler = () => computeScrollHeight()
+	uni.onWindowResize?.(resizeHandler)
 })
 onUnmounted(() => {
+	if (resizeHandler && typeof uni.offWindowResize === 'function') {
+		uni.offWindowResize(resizeHandler)
+		resizeHandler = null
+	}
 	uni.$off('refresh-signature')
 })
+
 //获取用户信息
 const getUserInfo = () => {
 	http.get('/Users/GetUserInfo').then(res => {
 		if (res.code == 0) {
 			userInfo.value = res.data;
 			getUserSignature()
-			getApp().globalData.userInfo = res.data;
+			globalData.userInfo = res.data;
 			uni.setStorageSync('userInfo', res.data);
 		}
 	})
@@ -93,7 +106,7 @@ const getUserInfo = () => {
 const getUserSignature = () => {
 	http.get('/Users/GetUserSignature',{ userAccount: userInfo.value?.userAccount}).then(res => {
 		if (res.code == 0) {
-			getApp().globalData.userSignature = res.data?.dataUrl || ''
+			globalData.userSignature = res.data?.dataUrl || ''
 		}
 	})
 }
@@ -106,9 +119,6 @@ const goSign = () => {
 	uni.navigateTo({
 		url: '/pages/signature/index'
 	})
-	// uni.navigateTo({
-	// 	url: '/pages/signatureers/index'
-	// })
 }
 const goHelp = () => {
 	uni.navigateTo({
@@ -132,18 +142,7 @@ const bottomNavBarHeight = ref(50)
 const scrollViewHeight = computed(() => {
 	return `${Math.max(0, windowHeights.value - bottomNavBarHeight.value)}px`
 })
-let resizeHandler = null
-onMounted(() => {
-	computeScrollHeight()
-	resizeHandler = () => computeScrollHeight()
-	uni.onWindowResize?.(resizeHandler)
-})
-onUnmounted(() => {
-	if (resizeHandler && typeof uni.offWindowResize === 'function') {
-		uni.offWindowResize(resizeHandler)
-		resizeHandler = null
-	}
-})
+
 const computeScrollHeight = () => {
 		const { windowHeight,windowWidth } = uni.getSystemInfoSync()
 		windowHeights.value = windowHeight

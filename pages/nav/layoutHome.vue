@@ -90,7 +90,7 @@ page{
 // 		height: 100%;
 // 	}
 // }
-@media (max-width: 600px) {
+@media (min-width: 320px) and (max-width: 539px) {
 	@media (min-aspect-ratio: 13/20) {
 	  ::v-deep .bottom-nav-bar {
 		// opacity: 0 !important;
