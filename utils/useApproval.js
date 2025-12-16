@@ -3,7 +3,7 @@ import { ref, onUnmounted } from 'vue'
 import http from '@/utils/request.js'
 import {
   goBack
-} from '@/utils/h5Bribge'
+} from '@/utils/h5Bridge'
 /**
  * 审批提交的 composable
  * 类似 Vue 2 的 mixin，可以在多个组件中复用

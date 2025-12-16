@@ -52,7 +52,7 @@
 
 <script setup>
 	import { ref, reactive, computed, watch } from 'vue'
-    import { throttle } from '@/utils/h5Bribge'
+    import { throttle } from '@/utils/h5Bridge'
     const handleReset = throttle(() => {
         onReset()
     }, 500)

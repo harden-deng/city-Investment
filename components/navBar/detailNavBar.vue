@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { goBack } from '@/utils/h5Bribge'
+import { goBack } from '@/utils/h5Bridge'
 
 const props = defineProps({
 	title: {

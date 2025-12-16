@@ -35,19 +35,19 @@
 		<view class="order-list">
 			<z-paging ref="paging" v-model="dataList" @onRefresh="onRefreshWatch" @query="queryList" :fixed="false">
 				<view style="height: 30rpx;"></view>
-				<view class="order-card" v-for="order in dataList " :key="order.id || order.requestFormNo" @click="toDetail(order)">
+				<view class="order-card" v-for="order in processedDataList" :key="order.id || order.requestFormNo" @click="toDetail(order)">
 					<view class="approved-view" v-show="order?.wfStatus === 'Completed'">
 					</view>
 					<view class="order-header">
 						<text class="order-id">{{ order.requestFormNo }}</text>
 						<view class="order-time">
-							<text class="time-text">{{ formatRelativeTime(order.submittedDate) }}</text>
+							<text class="time-text">{{ order.formattedTime }}</text>
 						</view>
 					</view>
 					<view class="order-content">
 						<view class="quote-section">
 							<text class="quote-label">申请费用：</text>
-							<text class="quote-price">¥{{formatNumber(order.planToPayTotal) || '--' }}</text>
+							<text class="quote-price">¥{{ order.formattedPrice }}</text>
 						</view>
 						<view class="quote-section">
 							<text class="quote-label">申请单位：</text>
@@ -83,13 +83,13 @@
 		onUnload,
 	} from '@dcloudio/uni-app'
 	import {
-		ref,onMounted, nextTick,onUnmounted
+		ref,onMounted, nextTick,onUnmounted,computed
 	} from 'vue'
 	import http from '@/utils/request.js'
 	import {
 		procDefCodeUrlObj,
 	} from '@/utils/definitions'
-	import { formatNumber,formatRelativeTime } from '@/utils/h5Bribge.js'
+	import { formatNumber,formatRelativeTime } from '@/utils/h5Bridge.js'
 	// import BottomNavBar from '@/components/navBar/bottomNavBar.vue'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
 	let resizeHandler = null
@@ -151,7 +151,11 @@
 	//弹窗筛选--------start
 	const filterRef = ref(null)
 	function openFilter() {
-	    filterRef.value?.open()
+		uni.showToast({
+			title: `筛选功能正在开发中，敬请期待`,
+			icon: 'none'
+		})
+	    // filterRef.value?.open()
 	}
 	function onConfirm(payload) {
 		console.log('筛选结果', payload)
@@ -186,6 +190,16 @@
 	}
 	// 订单数据--------start
 	const dataList = ref([])
+
+	// 预处理数据，避免模板中重复计算
+	const processedDataList = computed(() => {
+		return dataList.value.map(order => ({
+			...order,
+			formattedPrice: formatNumber(order.planToPayTotal) || '--',
+			formattedTime: formatRelativeTime(order.submittedDate),
+			labelArr: order?.labelArr || []
+		}))
+	})
 	//分页加载--------start
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
 	const queryList = (pageNo, pageSize) => {

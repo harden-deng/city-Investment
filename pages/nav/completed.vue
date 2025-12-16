@@ -87,7 +87,7 @@
 	import {
 		procDefCodeUrlObj,
 	} from '@/utils/definitions'
-	import { formatNumber,formatRelativeTime } from '@/utils/h5Bribge.js'
+	import { formatNumber,formatRelativeTime } from '@/utils/h5Bridge.js'
 	import FilterPopup from '@/components/filterPopup/filterPopup.vue'
 	let resizeHandler = null
 	const statusBarHeight = getApp().globalData.statusBarHeight
@@ -149,7 +149,11 @@
 	const filterRef = ref(null)
 
 	function openFilter() {
-		filterRef.value?.open()
+		uni.showToast({
+			title: `筛选功能正在开发中，敬请期待`,
+			icon: 'none'
+		})
+		// filterRef.value?.open()
 	}
 
 	function onConfirm(payload) {
@@ -165,7 +169,7 @@
 		// 	uni.showToast({ title: '请输入搜索关键词', icon: 'none' })
 		// 	return
 		// }
-		uni.hideKeyboard()
+		uni.hideKeyboard();
 		// 真正搜索逻辑：刷新列表或跳转搜索页
 		// 例1：刷新当前列表
 		onRefresh();
@@ -191,6 +195,16 @@
 	}
 	// 订单数据--------start
 	const dataList = ref([])
+
+	// 预处理数据，避免模板中重复计算
+	const processedDataList = computed(() => {
+		return dataList.value.map(order => ({
+			...order,
+			formattedPrice: formatNumber(order.planToPayTotal) || '--',
+			formattedTime: formatRelativeTime(order.submittedDate),
+			labelArr: order?.labelArr || []
+		}))
+	})
 	//分页加载--------start
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
 	const queryList = (pageNo, pageSize) => {

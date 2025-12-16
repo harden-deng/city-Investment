@@ -56,7 +56,6 @@
 		ref,
 		onMounted,
 		onUnmounted,
-		nextTick,
 		watch
 	} from 'vue'
 
@@ -75,19 +74,19 @@
 
 	const announcements = ref('');
 	watch(() => props.currentIndex, (newVal) => {
-		if(newVal == 0){
+		if(newVal === 0){
 			getAnnouncements();
 		}
 	})
 	const getAnnouncements = () => {
 		http.get('/WF/GetAnnouncements').then(res => {
-			if(res.code == 0){
+			if(res.code === 0){
 				announcements.value = res.data;
 			}
 		})
 	}
 	// 快捷功能列表
-	const quickAccessList =[{
+	const quickAccessList = [{
 			label: '待办流程',
 			imgUrl: '../../static/images/index_menu_1.svg',
 			path: '/pages/nav/pending',
@@ -113,7 +112,7 @@
 		{
 			label: '在线帮助',
 			imgUrl: '../../static/images/index_menu_4.svg',
-			path: '/pages/info/help',
+			path: '',
 			bjColor: '#33cb99',
 			isTab: false
 		},
@@ -121,7 +120,7 @@
 	const handleQuickAccess = (item) => {
 		if (!item.path) {
 			uni.showToast({
-				title: `${item.label}功能开发中`,
+				title: `${item.label}功能正在开发中，敬请期待`,
 				icon: 'none'
 			})
 			return
@@ -131,8 +130,9 @@
 		})
 	}
 	const handleNotification = () => {
-		uni.navigateTo({
-			url: '/pages/info/msg'
+		uni.showToast({
+			title: `消息中心功能正在开发中，敬请期待`,
+			icon: 'none'
 		})
 	}
 	const bottomNavBarHeight = ref(50)
@@ -150,9 +150,9 @@
 	}
 	onMounted(() => {
 		getAnnouncements();
-		computeScrollHeight()
-		resizeHandler = () => computeScrollHeight()
-		uni.onWindowResize?.(resizeHandler)
+		computeScrollHeight();
+		resizeHandler = () => computeScrollHeight();
+		uni.onWindowResize?.(resizeHandler);
 	})
 	onUnmounted(()=>{
 		if (resizeHandler && typeof uni.offWindowResize === 'function') {
@@ -161,8 +161,9 @@
         }
 	})
 	const handleHelp = () => {
-		uni.navigateTo({
-			url: '/pages/info/help'
+		uni.showToast({
+			title: `在线帮助功能正在开发中，敬请期待`,
+			icon: 'none'
 		})
 	}
 </script>
@@ -183,12 +184,6 @@
 		}
 
 		.header-stickt {
-			// position: sticky;
-			// z-index: 19;
-			// left: 0;
-			// top: 0;
-			// right: 0;
-
 			.status_bar {
 				height: var(--status-bar-height);
 				width: 100%;

@@ -76,7 +76,7 @@
 
 <script setup>
 import { defineProps } from 'vue'
-import { formatDateTime } from '@/utils/h5Bribge'
+import { formatDateTime } from '@/utils/h5Bridge'
 
 defineProps({
 	list: {

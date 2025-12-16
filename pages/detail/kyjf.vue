@@ -214,7 +214,7 @@
 	import {
 		formatNumber,
 		processAttachmentData
-	} from '@/utils/h5Bribge'
+	} from '@/utils/h5Bridge'
 	import { useListHeight } from '@/utils/useListHeight.js'
 	import { useApproval } from '@/utils/useApproval.js'
 	import { useDetailCommon } from '@/utils/useDetailCommon.js'

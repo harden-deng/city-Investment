@@ -22,7 +22,7 @@
 
 <script>
 	import http from '@/utils/request.js'
-	import { detectImageType } from '@/utils/h5Bribge.js'
+	import { detectImageType } from '@/utils/h5Bridge.js'
 	let navigateBackTimeoutId = null
 	export default {
 		data() {

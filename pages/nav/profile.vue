@@ -111,9 +111,13 @@ const getUserSignature = () => {
 	})
 }
 const goMessage = () => {
-	uni.navigateTo({
-		url: '/pages/info/msg'
+	uni.showToast({
+		title: `消息中心功能正在开发中，敬请期待`,
+		icon: 'none'
 	})
+	// uni.navigateTo({
+	// 	url: '/pages/info/msg'
+	// })
 }
 const goSign = () => {
 	uni.navigateTo({
@@ -121,9 +125,13 @@ const goSign = () => {
 	})
 }
 const goHelp = () => {
-	uni.navigateTo({
-		url: '/pages/info/help'
+	uni.showToast({
+		title: `在线帮助功能正在开发中，敬请期待`,
+		icon: 'none'
 	})
+		// uni.navigateTo({
+		// 	url: '/pages/info/help'
+		// })
 }
 const goLogout = () => {
 	confirmRef.value?.open();

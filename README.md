@@ -52,7 +52,7 @@ city-Investment/
 │     └─ help.vue            # 帮助中心
 ├─ utils/
 │  ├─ definitions.js         # 常量、枚举、配置项
-│  ├─ h5Bribge.js            # H5 工具函数，如 formatNumber、flatToTree 等
+│  ├─ h5Bridge.js            # H5 工具函数，如 formatNumber、flatToTree 等
 │  ├─ useListHeight.js       # 动态计算列表 / 滚动区域高度的 hook
 │  ├─ useApproval.js         # 审批通用逻辑（通过/打回等）
 │  └─ useDetailCommon.js     # 详情页通用逻辑（urlParams、开关控制等）

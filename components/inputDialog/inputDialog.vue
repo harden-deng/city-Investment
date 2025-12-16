@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { throttle } from '@/utils/h5Bribge'
+import { throttle } from '@/utils/h5Bridge'
 import { ref, watch, computed,reactive } from 'vue'
 
 	const handleConfirm = throttle(() => {
