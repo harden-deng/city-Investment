@@ -1,1 +1,0 @@
-import{ak as a,al as s,W as n,am as o,an as r}from"./index-DszEigh-.js";function t(a,s){return"string"==typeof a?s:a}const e=(o,r=0)=>(r,t=n())=>{!a&&s(o,r,t)},i=e(o,2),f=e(r,2);export{f as a,i as o,t as r};

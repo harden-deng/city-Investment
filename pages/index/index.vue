@@ -22,7 +22,10 @@
 			</view>
 			<!-- 登录按钮 -->
 			<button class="login-btn" @click="handleLogin">
-				登录
+				<view v-if="loginLoading" class="login-spinner">
+					<uni-icons type="spinner-cycle" size="30" color="#ffffff"/>
+				</view>
+				<text v-else>登录</text>
 			</button>
 		</view>
 	</view>
@@ -31,6 +34,7 @@
 <script setup>
 	import { ref,onMounted } from 'vue'
 	import http from '@/utils/request.js'
+	const loginLoading = ref(false)  // 登录中状态
 	// import { useH5Bridge } from '@/utils/h5Bridge.js'
 	// const { isInApp, postToApp } = useH5Bridge((data)=>{
 	//     getApp().globalData.statusBarHeight = data.statusBarHeight
@@ -71,7 +75,8 @@
 	// 审批人：sybzg1  
 	const password = ref(123);
 	// 方法定义
-	const handleLogin = () => {
+	const handleLogin =  async () => {
+		if (loginLoading.value) return  // 防止重复点击
 		if (!phoneNumber.value || !password.value) {
 			uni.showToast({
 				title: '请输入账号和密码',
@@ -82,24 +87,22 @@
 		if(uni.getStorageSync('token')){
 			uni.clearStorageSync()
 		}
+		loginLoading.value = true
 		// 登录逻辑
-		http.post('/Auth/accountlogin', {
-			userAccount: phoneNumber.value,
-			userPassword: password.value
-		}).then(res => {
-			console.log('登录成功', res)
+	    try {
+			const res = await http.post('/Auth/accountlogin', {
+				userAccount: phoneNumber.value,
+				userPassword: password.value
+			})
 			if (res.code == 0) {
 				http.setToken(res.data.accessToken)
-				uni.switchTab({
-					url: '/pages/nav/layoutHome'
-				})
+				uni.switchTab({ url: '/pages/nav/layoutHome' })
 			} else {
-				uni.showToast({
-					title: res.msg,
-					icon: 'none'
-				})
+			    uni.showToast({ title: res.msg, icon: 'none' })
 			}
-		})
+		} finally {
+			loginLoading.value = false
+		}
 	}
 </script>
 
@@ -230,4 +233,21 @@
 			margin: 0 auto;
 		}
 	}
+
+
+	.login-spinner {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	    animation: spin 1.2s linear infinite;
+	}
+
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+    }
 </style>
