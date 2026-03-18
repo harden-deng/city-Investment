@@ -103,7 +103,7 @@
 				"mp-weixin": {
 					"pageOrientation": "landscape"
 				},
-				"navigationBarTitleText": "uni-app",
+				"navigationBarTitleText": "城投公路集团业财通",
 				"navigationStyle": "custom"
 			}
 		},
@@ -138,7 +138,7 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "城投公路集团业财通",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	},
