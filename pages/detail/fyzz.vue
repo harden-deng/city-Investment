@@ -66,7 +66,7 @@
 									<text class="account-info-value">{{ infoRows2[0].value || '' }}</text>
 								</view>
 							</view>
-							<view class="account-info-block" style="margin-top: 20rpx;">
+							<view class="account-info-block" style="margin-top: 18.116rpx;">
 								<view class="account-info-row">
 									<text class="account-info-label">{{ infoRows2[1].label }}</text>
 									<text class="account-info-value">{{ infoRows2[1].value || '' }}</text>
@@ -80,7 +80,7 @@
 									<text class="account-info-value">{{ infoRows2[3].value || '' }}</text>
 								</view>
 							</view>
-							<view class="account-info-block" style="margin-top: 20rpx;">
+							<view class="account-info-block" style="margin-top: 18.116rpx;">
 								<view class="account-info-row">
 									<text class="account-info-label">{{ infoRows2[4].label }}</text>
 									<text class="account-info-value">{{ infoRows2[4].value || '' }}</text>
@@ -290,7 +290,7 @@
 			flex-direction: column;
 			display: flex;
 			justify-content: space-between;
-			padding: 16rpx 32rpx 0;
+			padding: 14.4928rpx 28.9856rpx 0;
 			background: #2d4ec8;
 			min-height: 200rpx;
 			color: #fff;
@@ -301,12 +301,12 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: flex-start;
-				margin-bottom: 16rpx;
+				margin-bottom: 14.4928rpx;
 			}
 
 			.project-name {
 				width: 60%;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #fff;
 
 				.project-name-1 {
@@ -316,7 +316,7 @@
 					word-break: break-all;
 					white-space: normal;
 					line-height: 1.4;
-					min-height: 72rpx;
+					min-height: 65.2176rpx;
 					/* 如果需要最小高度，使用 min-height */
 				}
 			}
@@ -328,7 +328,7 @@
 				.amount-label {
 					height: 70rpx;
 					line-height: 70rpx;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #99ccff;
 					text-align: right;
 				}
@@ -338,7 +338,7 @@
 					line-height: 70rpx;
 
 					.amount-value-symbol {
-						font-size: 28rpx;
+						font-size: 25.3624rpx;
 						color: #ffffff;
 						margin-right: 10rpx;
 					}
@@ -355,7 +355,7 @@
 
 			.hero-tags {
 				width: calc(100% - 320rpx);
-				height: 72rpx;
+				height: 65.2176rpx;
 				overflow: hidden;
 				display: flex;
 				align-items: center;
@@ -387,7 +387,7 @@
 				bottom: 0;
 				right: 0;
 				width: 350rpx;
-				height: 72rpx;
+				height: 65.2176rpx;
 				background: url('../../static/images/bg_1@2x.jpg') no-repeat center center;
 				background-size: 100% 100%;
 				margin-top: 18rpx;
@@ -407,7 +407,7 @@
 				justify-content: center;
 			
 				border-radius: 25rpx;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #66ccff;
 				white-space: nowrap;
                
@@ -418,7 +418,7 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				font-weight: 600;
 				color: #fff;
 			}
@@ -439,26 +439,26 @@
 
 		.section {
 			background: #fff;
-			border-radius: 16rpx;
-			margin-bottom: 40rpx;
+			border-radius: 14.4928rpx;
+			margin-bottom: 36.232rpx;
 		}
 
 		.section-title {
-			height: 80rpx;
-			padding: 16rpx 32rpx;
+			height: 72.464rpx;
+			padding: 14.4928rpx 28.9856rpx;
 			display: flex;
 			align-items: center;
-			gap: 20rpx;
+			gap: 18.116rpx;
 
 			.section-title-vertical {
 				box-sizing: border-box;
 				width: 8rpx;
-				height: 32rpx;
+				height: 28.9856rpx;
 				background: #3d65f5;
 			}
 
 			.section-title-text {
-				font-size: 28rpx;
+				font-size: 25.3624rpx;
 				color: #000000;
 				font-weight: bold;
 
@@ -466,8 +466,8 @@
 		}
 
 		.section-title-2 {
-			height: 80rpx;
-			padding: 16rpx 32rpx;
+			height: 72.464rpx;
+			padding: 14.4928rpx 28.9856rpx;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -475,17 +475,17 @@
 			.section-title-2-left {
 				display: flex;
 				align-items: center;
-				gap: 20rpx;
+				gap: 18.116rpx;
 
 				.section-title-vertical {
 					box-sizing: border-box;
 					width: 8rpx;
-					height: 32rpx;
+					height: 28.9856rpx;
 					background: #3d65f5;
 				}
 
 				.section-title-text {
-					font-size: 28rpx;
+					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
 
@@ -496,13 +496,13 @@
 				width: 112rpx;
 				height: 112rpx;
 				background: url('../../static/images/c2.png') center center no-repeat;
-				background-size: 24rpx;
+				background-size: 21.7392rpx;
 				margin-right: -31rpx;
 				transition: transform 0.3s ease;
 
 				&.active {
 					background: url('../../static/images/c2.png') center center no-repeat !important;
-					background-size: 24rpx !important;
+					background-size: 21.7392rpx !important;
 					margin-right: -31rpx !important;
 					transform: rotate(180deg);
 				}
@@ -532,7 +532,7 @@
 		}
 
 		.info-list {
-			padding: 0 32rpx 20rpx;
+			padding: 0 28.9856rpx 18.116rpx;
 			.info-item-column {
                 flex-direction: column;
 
@@ -565,8 +565,8 @@
 			min-width: 180rpx;
 			max-width: 280rpx;
 			padding-right: 10rpx;
-			line-height: 40rpx;
-			font-size: 24rpx;
+			line-height: 36.232rpx;
+			font-size: 21.7392rpx;
 			color: #000;
 			white-space: nowrap;
 			&.info-label-width {
@@ -577,32 +577,32 @@
 
 		.info-value {
 			flex: 1;
-			font-size: 24rpx;
+			font-size: 21.7392rpx;
 			color: #666;
-			line-height: 40rpx;
+			line-height: 36.232rpx;
 			text-align: right;
 		}
 
 		// 用款情况样式
 		.usage-details {
-			padding: 0 32rpx 40rpx;
+			padding: 0 28.9856rpx 36.232rpx;
 
 			.contract-section {
 				box-sizing: border-box;
 				border: 2rpx solid #ddd;
-				padding: 16rpx;
+				padding: 14.4928rpx;
 				overflow: hidden;
 
 				.contract-header {
 					background: #f6f8fc;
-					height: 48rpx;
+					height: 43.4784rpx;
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #000;
 					font-weight: bold;
-					padding: 4rpx 16rpx;
+					padding: 3.6232rpx 14.4928rpx;
 				}
 
 				.contract-details {
@@ -613,29 +613,29 @@
 			.other-info {
 				box-sizing: border-box;
 				border-radius: 25rpx;
-				padding: 16rpx 20rpx;
+				padding: 14.4928rpx 18.116rpx;
 				overflow: hidden;
 			}
 
 			.detail-row {
 				box-sizing: border-box;
 				width: 100%;
-				height: 48rpx;
+				height: 43.4784rpx;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				padding: 0 16rpx;
+				padding: 0 14.4928rpx;
 
 				.detail-label {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					min-width: 200rpx;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #000000;
 				}
 
 				.detail-value {
 					flex: 1;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #666;
 					text-align: right;
 				}
@@ -643,15 +643,15 @@
 
 			.summary-row {
 				border-top: 2rpx solid #ddd;
-				margin-top: 20rpx;
-				padding: 20rpx 16rpx 8rpx;
+				margin-top: 18.116rpx;
+				padding: 18.116rpx 14.4928rpx 8rpx;
 				height: auto !important;
 
 				.summary-label {
 					display: flex;
 					align-items: center;
-					height: 48rpx;
-					font-size: 28rpx;
+					height: 43.4784rpx;
+					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
 				}
@@ -660,8 +660,8 @@
 					display: flex;
 					align-items: center;
 					justify-content: flex-end;
-					height: 48rpx;
-					font-size: 28rpx;
+					height: 43.4784rpx;
+					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
 				}
@@ -677,14 +677,14 @@
 
 		// 付款账户信息独立样式 - 不与其他样式共用
 		.account-info-section {
-			padding: 0 32rpx 40rpx;
+			padding: 0 28.9856rpx 36.232rpx;
 
 			.account-card {
 
 				.account-company-title {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #000;
-					margin-bottom: 20rpx;
+					margin-bottom: 18.116rpx;
 					text-align: left;
 				}
 
@@ -701,7 +701,7 @@
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
-						padding: 16rpx;
+						padding: 14.4928rpx;
 						border-bottom: 2rpx solid #dddddd;
 						background: #f6f8fc;
 
@@ -710,14 +710,14 @@
 						}
 
 						.account-info-label {
-							font-size: 24rpx;
+							font-size: 21.7392rpx;
 							color: #000;
 							text-align: left;
 							flex: 0.28;
 						}
 
 						.account-info-value {
-							font-size: 24rpx;
+							font-size: 21.7392rpx;
 							color: #666;
 							text-align: right;
 							flex: 0.72;
@@ -768,8 +768,8 @@
 		box-sizing: border-box;
 		border-left: 2rpx #ddd solid;
 		border-top: 2rpx #ddd solid;
-		padding: 16rpx;
-		font-size: 24rpx;
+		padding: 14.4928rpx;
+		font-size: 21.7392rpx;
 	}
 
 	.table1 .info {
@@ -812,11 +812,11 @@
 
 	/* 审批记录独立样式区域 */
 	.approval-record-section {
-		padding: 20rpx 32rpx 40rpx;
+		padding: 18.116rpx 28.9856rpx 36.232rpx;
 		position: relative;
 	}
 	.attachment-section {
-		padding: 20rpx 32rpx 40rpx;
+		padding: 18.116rpx 28.9856rpx 36.232rpx;
 		position: relative;
 	}
 </style>

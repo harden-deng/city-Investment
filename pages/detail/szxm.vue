@@ -73,7 +73,7 @@
 								</view>
 								
 							</view>
-							<view class="account-info-block" style="margin-top: 20rpx;">
+							<view class="account-info-block" style="margin-top: 18.116rpx;">
 								<view class="account-info-row">
 									<text class="account-info-label">收款单位名称</text>
 									<text class="account-info-value"> {{ itemDatas.receivingCompany || '' }} </text>
@@ -88,7 +88,7 @@
 								</view>
 								
 							</view>
-							<view class="account-info-block" style="margin-top: 20rpx;">
+							<view class="account-info-block" style="margin-top: 18.116rpx;">
 								<view class="account-info-row">
 									<text class="account-info-label">普票金额</text>
 									<text class="account-info-value">{{ formatNumber(itemDatas.vatoamount) || '' }}</text>
@@ -423,7 +423,7 @@
 			flex-direction: column;
 			display: flex;
 			justify-content: space-between;
-			padding: 16rpx 32rpx 0;
+			padding: 14.4928rpx 28.9856rpx 0;
 			background: #2d4ec8;
 			min-height: 200rpx;
 			color: #fff;
@@ -434,12 +434,12 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: flex-start;
-				margin-bottom: 16rpx;
+				margin-bottom: 14.4928rpx;
 			}
 
 			.project-name {
 				width: 60%;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #fff;
 
 				.project-name-1 {
@@ -449,7 +449,7 @@
 					word-break: break-all;
 					white-space: normal;
 					line-height: 1.4;
-					min-height: 72rpx;
+					min-height: 65.2176rpx;
 				}
 			}
 
@@ -459,7 +459,7 @@
 				.amount-label {
 					height: 70rpx;
 					line-height: 70rpx;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #99ccff;
 					text-align: right;
 				}
@@ -469,7 +469,7 @@
 					line-height: 70rpx;
 
 					.amount-value-symbol {
-						font-size: 28rpx;
+						font-size: 25.3624rpx;
 						color: #ffffff;
 						margin-right: 10rpx;
 					}
@@ -484,7 +484,7 @@
 
 			.hero-tags {
 				width: calc(100% - 320rpx);
-				height: 72rpx;
+				height: 65.2176rpx;
 				overflow-x: hidden;
 				display: flex;
 				align-items: center;
@@ -511,7 +511,7 @@
 				bottom: 0;
 				right: 0;
 				width: 350rpx;
-				height: 72rpx;
+				height: 65.2176rpx;
 				background: url('../../static/images/bg_1@2x.jpg') no-repeat center center;
 				background-size: 100% 100%;
 				margin-top: 18rpx;
@@ -532,7 +532,7 @@
 				justify-content: center;
 			
 				border-radius: 25rpx;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #66ccff;
 				white-space: nowrap;
             }
@@ -542,7 +542,7 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				font-weight: 600;
 				color: #fff;
 			}
@@ -563,34 +563,34 @@
 
 		.section {
 			background: #fff;
-			border-radius: 16rpx;
-			margin-bottom: 40rpx;
+			border-radius: 14.4928rpx;
+			margin-bottom: 36.232rpx;
 		}
 
 		.section-title {
-			height: 80rpx;
-			padding: 16rpx 32rpx;
+			height: 72.464rpx;
+			padding: 14.4928rpx 28.9856rpx;
 			display: flex;
 			align-items: center;
-			gap: 20rpx;
+			gap: 18.116rpx;
 
 			.section-title-vertical {
 				box-sizing: border-box;
 				width: 8rpx;
-				height: 32rpx;
+				height: 28.9856rpx;
 				background: #3d65f5;
 			}
 
 			.section-title-text {
-				font-size: 28rpx;
+				font-size: 25.3624rpx;
 				color: #000000;
 				font-weight: bold;
 			}
 		}
 
 		.section-title-2 {
-			height: 80rpx;
-			padding: 16rpx 32rpx;
+			height: 72.464rpx;
+			padding: 14.4928rpx 28.9856rpx;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -598,17 +598,17 @@
 			.section-title-2-left {
 				display: flex;
 				align-items: center;
-				gap: 20rpx;
+				gap: 18.116rpx;
 
 				.section-title-vertical {
 					box-sizing: border-box;
 					width: 8rpx;
-					height: 32rpx;
+					height: 28.9856rpx;
 					background: #3d65f5;
 				}
 
 				.section-title-text {
-					font-size: 28rpx;
+					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
 				}
@@ -618,14 +618,14 @@
 				width: 112rpx;
 				height: 112rpx;
 				background: url('../../static/images/c2.png') center center no-repeat;
-				background-size: 24rpx;
-				margin-right: -32rpx;
+				background-size: 21.7392rpx;
+				margin-right: -28.9856rpx;
 				transition: transform 0.3s ease;
 
 				&.active {
 					background: url('../../static/images/c2.png') center center no-repeat !important;
-					background-size: 24rpx !important;
-					margin-right: -32rpx !important;
+					background-size: 21.7392rpx !important;
+					margin-right: -28.9856rpx !important;
 					transform: rotate(180deg);
 				}
 			}
@@ -652,7 +652,7 @@
 		}
 
 		.info-list {
-			padding: 0 32rpx 20rpx;
+			padding: 0 28.9856rpx 18.116rpx;
 			.info-item-column {
                 flex-direction: column;
 
@@ -685,48 +685,48 @@
 			min-width: 180rpx;
 			max-width: 280rpx;
 			padding-right: 10rpx;
-			line-height: 40rpx;
-			font-size: 24rpx;
+			line-height: 36.232rpx;
+			font-size: 21.7392rpx;
 			color: #000;
 			white-space: nowrap;
 		}
 
 		.info-value {
 			flex: 1;
-			font-size: 24rpx;
+			font-size: 21.7392rpx;
 			color: #666;
-			line-height: 40rpx;
+			line-height: 36.232rpx;
 			text-align: right;
 		}
 
 		.usage-details {
-			padding: 0 32rpx 40rpx;
+			padding: 0 28.9856rpx 36.232rpx;
 
 			.contract-section {
 				box-sizing: border-box;
 				border: 2rpx solid #ddd;
-				padding: 16rpx;
+				padding: 14.4928rpx;
 				overflow: hidden;
 			}
 
 			.detail-row {
 				box-sizing: border-box;
 				width: 100%;
-				height: 48rpx;
+				height: 43.4784rpx;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				padding: 0 16rpx;
+				padding: 0 14.4928rpx;
 
 				.detail-label {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					min-width: 200rpx;
 					color: #000000;
 				}
 
 				.detail-value {
 					flex: 1;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #666;
 					text-align: right;
 				}
@@ -734,15 +734,15 @@
 
 			.summary-row {
 				border-top: 2rpx solid #ddd;
-				margin-top: 20rpx;
-				padding: 20rpx 16rpx 8rpx;
+				margin-top: 18.116rpx;
+				padding: 18.116rpx 14.4928rpx 8rpx;
 				height: auto !important;
 
 				.summary-label {
 					display: flex;
 					align-items: center;
-					height: 48rpx;
-					font-size: 28rpx;
+					height: 43.4784rpx;
+					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
 				}
@@ -751,8 +751,8 @@
 					display: flex;
 					align-items: center;
 					justify-content: flex-end;
-					height: 48rpx;
-					font-size: 28rpx;
+					height: 43.4784rpx;
+					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
 				}
@@ -760,7 +760,7 @@
 		}
 
 		.account-info-section {
-			padding: 0 32rpx 40rpx;
+			padding: 0 28.9856rpx 36.232rpx;
 
 			.account-card {
 				.account-info-block {
@@ -776,7 +776,7 @@
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
-						padding: 16rpx;
+						padding: 14.4928rpx;
 						border-bottom: 2rpx solid #dddddd;
 						background: #f6f8fc;
 
@@ -785,14 +785,14 @@
 						}
 
 						.account-info-label {
-							font-size: 24rpx;
+							font-size: 21.7392rpx;
 							color: #000;
 							text-align: left;
 							flex: 0.28;
 						}
 
 						.account-info-value {
-							font-size: 24rpx;
+							font-size: 21.7392rpx;
 							color: #666;
 							text-align: right;
 							flex: 0.72;
@@ -838,14 +838,14 @@
 		box-sizing: border-box;
 		border-bottom: 2rpx #ddd solid;
 		border-right: 2rpx #ddd solid;
-		padding: 16rpx;
-		font-size: 24rpx;
+		padding: 14.4928rpx;
+		font-size: 21.7392rpx;
 	}
 
 	.table1 .info {
 		text-align: right;
 		color: #666;
-		padding: 16rpx !important;
+		padding: 14.4928rpx !important;
 		max-width: 900rpx;
 		white-space: normal !important;
 		word-break: break-all;
@@ -895,12 +895,12 @@
 	}
 
 	.approval-record-section {
-		padding: 20rpx 32rpx 40rpx;
+		padding: 18.116rpx 28.9856rpx 36.232rpx;
 		position: relative;
 	}
 
 	.attachment-section {
-		padding: 20rpx 32rpx 40rpx;
+		padding: 18.116rpx 28.9856rpx 36.232rpx;
 		position: relative;
 	}
 </style>

@@ -1655,14 +1655,14 @@
 
 				.contract-header {
 					background: #f6f8fc;
-					height: 48rpx;
+					height: 43.4784rpx;
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
 					font-size: 21.7392rpx;
 					color: #000;
 					font-weight: bold;
-					padding: 4rpx 14.4928rpx;
+					padding: 3.6232rpx 14.4928rpx;
 				}
 
 				.contract-details {
@@ -1684,7 +1684,7 @@
 			.detail-row {
 				box-sizing: border-box;
 				width: 100%;
-				min-height: 48rpx;
+				min-height: 43.4784rpx;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
@@ -1715,7 +1715,7 @@
 				.summary-label {
 					display: flex;
 					align-items: center;
-					height: 48rpx;
+					height: 43.4784rpx;
 					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
@@ -1725,7 +1725,7 @@
 					display: flex;
 					align-items: center;
 					justify-content: flex-end;
-					height: 48rpx;
+					height: 43.4784rpx;
 					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
@@ -1825,7 +1825,7 @@
 	}
 
 	.attachment-item:active {
-		transform: translateY(4rpx);
+		transform: translateY(3.6232rpx);
 		box-shadow: 0 6rpx 14.4928rpx rgba(60, 108, 254, 0.12);
 	}
 

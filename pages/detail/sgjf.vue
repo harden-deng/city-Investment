@@ -60,20 +60,20 @@
 						<text class="info-label">内容</text>
 						<text class="info-value">{{ itemDatas.content || '--' }}</text>
 					</view>
-					<view class="usage-details" v-if="itemDatas.requestType === 'GnE'" style="padding: 0;margin-top: 20rpx;">
-					     <view class="detail-row summary-row" style="padding: 20rpx 0 20rpx;">
+					<view class="usage-details" v-if="itemDatas.requestType === 'GnE'" style="padding: 0;margin-top: 18.116rpx;">
+					     <view class="detail-row summary-row" style="padding: 18.116rpx 0 18.116rpx;">
 								<text class="detail-label summary-label">发票金额</text>
 								<text class="detail-value summary-value">{{ formatNumber(itemDatas.invoiceTotalAmountVat) }}</text>
 						 </view>
 					</view>
 					<view class="usage-details" v-if="itemDatas.requestType === 'GnE'" style="padding: 0;">
-					     <view class="detail-row summary-row" style="padding: 20rpx 0 20rpx;">
+					     <view class="detail-row summary-row" style="padding: 18.116rpx 0 18.116rpx;">
 								<text class="detail-label summary-label">可报销金额</text>
 								<text class="detail-value summary-value">{{ formatNumber(itemDatas.claimAmount) }}</text>
 						 </view>
 					</view>
 					<view class="usage-details" v-if="itemDatas.requestType === 'GnE'" style="padding: 0;">
-					     <view class="detail-row summary-row" style="padding: 20rpx 0 0rpx;">
+					     <view class="detail-row summary-row" style="padding: 18.116rpx 0 0rpx;">
 								<text class="detail-label summary-label">实际报销金额</text>
 								<text class="detail-value summary-value">{{ formatNumber(itemDatas.paymentAmount) }}</text>
 						 </view>
@@ -572,11 +572,11 @@
 				width: 100rpx;
 				height: 100rpx;
 				background: url('../../static/images/back.svg') center center no-repeat;
-				background-size: 24rpx;
+				background-size: 21.7392rpx;
 			}
 			
 			.nav-title {
-				font-size: 32rpx;
+				font-size: 28.9856rpx;
 				font-weight: bold;
 				color: #000;
 			}
@@ -592,7 +592,7 @@
 			flex-direction: column;
 			display: flex;
 			justify-content: space-between;
-			padding: 16rpx 32rpx 0;
+			padding: 14.4928rpx 28.9856rpx 0;
 			background: #2d4ec8;
 			min-height: 200rpx;
 			color: #fff;
@@ -603,12 +603,12 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: flex-start;
-				margin-bottom: 16rpx;
+				margin-bottom: 14.4928rpx;
 			}
 			
 			.project-name {
 				width: 60%;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #fff;
 				
 				.project-name-1 {
@@ -618,7 +618,7 @@
 					word-break: break-all;
 					white-space: normal;
 					line-height: 1.4;
-					min-height: 72rpx;
+					min-height: 65.2176rpx;
 				}
 			}
 			
@@ -628,7 +628,7 @@
 				.amount-label {
 					height: 70rpx;
 					line-height: 70rpx;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #99ccff;
 					text-align: right;
 				}
@@ -638,7 +638,7 @@
 					line-height: 70rpx;
 					
 					.amount-value-symbol {
-						font-size: 28rpx;
+						font-size: 25.3624rpx;
 						color: #ffffff;
 						margin-right: 10rpx;
 					}
@@ -653,7 +653,7 @@
 			
 			.hero-tags {
 				width: calc(100% - 320rpx);
-				height: 72rpx;
+				height: 65.2176rpx;
 				overflow-x: hidden;
 				display: flex;
 				align-items: center;
@@ -691,7 +691,7 @@
 				justify-content: center;
 			
 				border-radius: 25rpx;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #66ccff;
 				white-space: nowrap;
                
@@ -702,7 +702,7 @@
 				bottom: 0;
 				right: 0;
 				width: 350rpx;
-				height: 72rpx;
+				height: 65.2176rpx;
 				background: url('../../static/images/bg_1@2x.jpg') no-repeat center center;
 				background-size: 100% 100%;
 				margin-top: 18rpx;
@@ -715,7 +715,7 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				font-weight: 600;
 				color: #fff;
 			}
@@ -736,34 +736,34 @@
 		
 		.section {
 			background: #fff;
-			border-radius: 16rpx;
-			margin-bottom: 40rpx;
+			border-radius: 14.4928rpx;
+			margin-bottom: 36.232rpx;
 		}
 		
 		.section-title {
-			height: 80rpx;
-			padding: 16rpx 32rpx;
+			height: 72.464rpx;
+			padding: 14.4928rpx 28.9856rpx;
 			display: flex;
 			align-items: center;
-			gap: 20rpx;
+			gap: 18.116rpx;
 			
 			.section-title-vertical {
 				box-sizing: border-box;
 				width: 8rpx;
-				height: 32rpx;
+				height: 28.9856rpx;
 				background: #3d65f5;
 			}
 			
 			.section-title-text {
-				font-size: 28rpx;
+				font-size: 25.3624rpx;
 				color: #000000;
 				font-weight: bold;
 			}
 		}
 		
 		.section-title-2 {
-			height: 80rpx;
-			padding: 16rpx 32rpx;
+			height: 72.464rpx;
+			padding: 14.4928rpx 28.9856rpx;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -771,17 +771,17 @@
 			.section-title-2-left {
 				display: flex;
 				align-items: center;
-				gap: 20rpx;
+				gap: 18.116rpx;
 				
 				.section-title-vertical {
 					box-sizing: border-box;
 					width: 8rpx;
-					height: 32rpx;
+					height: 28.9856rpx;
 					background: #3d65f5;
 				}
 				
 				.section-title-text {
-					font-size: 28rpx;
+					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
 				}
@@ -791,13 +791,13 @@
 				width: 112rpx;
 				height: 112rpx;
 				background: url('../../static/images/c2.png') center center no-repeat;
-				background-size: 24rpx;
+				background-size: 21.7392rpx;
 				margin-right: -31rpx;
 				transition: transform 0.3s ease;
 				
 				&.active {
 					background: url('../../static/images/c2.png') center center no-repeat !important;
-					background-size: 24rpx !important;
+					background-size: 21.7392rpx !important;
 					margin-right: -31rpx !important;
 					transform: rotate(180deg);
 				}
@@ -825,7 +825,7 @@
 		}
 		
 		.info-list {
-			padding: 0 32rpx 20rpx;
+			padding: 0 28.9856rpx 18.116rpx;
 		}
 		
 		.info-item {
@@ -847,8 +847,8 @@
 			min-width: 180rpx;
 			max-width: 280rpx;
 			padding-right: 10rpx;
-			line-height: 40rpx;
-			font-size: 24rpx;
+			line-height: 36.232rpx;
+			font-size: 21.7392rpx;
 			color: #000;
 			white-space: nowrap;
 			&.info-label-width {
@@ -859,19 +859,19 @@
 		
 		.info-value {
 			flex: 1;
-			font-size: 24rpx;
+			font-size: 21.7392rpx;
 			color: #666;
-			line-height: 40rpx;
+			line-height: 36.232rpx;
 			text-align: right;
 		}
 		
 		.usage-details {
-			padding: 0 32rpx 40rpx;
+			padding: 0 28.9856rpx 36.232rpx;
 			
 			.contract-section {
 				box-sizing: border-box;
 				// border: 2rpx solid #ddd;
-				padding: 16rpx;
+				padding: 14.4928rpx;
 				overflow: hidden;
 				&.contract-section-vehicle {
 					// border: none !important;
@@ -882,22 +882,22 @@
 			.detail-row {
 				box-sizing: border-box;
 				width: 100%;
-				height: 48rpx;
+				height: 43.4784rpx;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				padding: 0 16rpx;
+				padding: 0 14.4928rpx;
 				
 				.detail-label {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					min-width: 200rpx;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #000000;
 				}
 				
 				.detail-value {
 					flex: 1;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #666;
 					text-align: right;
 				}
@@ -905,14 +905,14 @@
 			
 			.summary-row {
 				border-top: 2rpx solid #ddd;
-				// margin-top: 20rpx;
-				padding: 20rpx 16rpx 20rpx;
+				// margin-top: 18.116rpx;
+				padding: 18.116rpx 14.4928rpx 18.116rpx;
 				height: auto !important;
 				
 				.summary-label {
 					display: flex;
 					align-items: center;
-					height: 48rpx;
+					height: 43.4784rpx;
 					font-size: 26rpx;
 					color: #000000;
 					font-weight: bold;
@@ -922,7 +922,7 @@
 					display: flex;
 					align-items: center;
 					justify-content: flex-end;
-					height: 48rpx;
+					height: 43.4784rpx;
 					font-size: 26rpx;
 					color: #000000;
 					font-weight: bold;
@@ -931,13 +931,13 @@
 		}
 		
 		.account-info-section {
-			padding: 0 32rpx 40rpx;
+			padding: 0 28.9856rpx 36.232rpx;
 			
 			.account-card {
 				.account-company-title {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #000;
-					margin-bottom: 20rpx;
+					margin-bottom: 18.116rpx;
 					text-align: left;
 				}
 				
@@ -954,7 +954,7 @@
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
-						padding: 16rpx;
+						padding: 14.4928rpx;
 						border-bottom: 2rpx solid #dddddd;
 						background: #f6f8fc;
 						
@@ -963,14 +963,14 @@
 						}
 						
 						.account-info-label {
-							font-size: 24rpx;
+							font-size: 21.7392rpx;
 							color: #000;
 							text-align: left;
 							flex: 0.28;
 						}
 						
 						.account-info-value {
-							font-size: 24rpx;
+							font-size: 21.7392rpx;
 							color: #666;
 							text-align: right;
 							flex: 0.72;
@@ -1019,8 +1019,8 @@
 		box-sizing: border-box;
 		// border-left: 2rpx #ddd solid;
 		border-top: 2rpx #ddd solid;
-		padding: 16rpx;
-		font-size: 24rpx;
+		padding: 14.4928rpx;
+		font-size: 21.7392rpx;
 	}
 	
 	.bordr-none{
@@ -1073,19 +1073,19 @@
                 word-wrap: break-word; }
 	
 	.approval-record-section {
-		padding: 20rpx 32rpx 40rpx;
+		padding: 18.116rpx 28.9856rpx 36.232rpx;
 		position: relative;
 	}
 	.attachment-section {
-		padding: 20rpx 32rpx 40rpx;
+		padding: 18.116rpx 28.9856rpx 36.232rpx;
 		position: relative;
 	}
 
 	.company-title-ry {
-		font-size: 24rpx;
+		font-size: 21.7392rpx;
 		color: #666;
 		text-align: left;
 		font-weight: bold;
-		padding: 20rpx 0 20rpx 10rpx;
+		padding: 18.116rpx 0 18.116rpx 10rpx;
 	}
 </style>
