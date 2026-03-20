@@ -101,6 +101,12 @@
             "base" : "./"
         }
     },
+	// "web": {
+	// 	"rpx": true,
+	//     "unit": "px",
+	//     "unitRatio": 0.5,
+	//     "unitPrecision": 5
+	//   },
     // "https" : false
     "vueVersion" : "3"
 }

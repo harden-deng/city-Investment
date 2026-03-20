@@ -115,7 +115,7 @@ export function formatRelativeTime(dateString) {
 // 方法1：使用 toLocaleString() - 推荐
 export function formatNumber(num) {
 	if (num === null || num === undefined || isNaN(num)) {
-	  return '0.00';
+	  return '--';
 	}
 	return Number(num).toLocaleString('en-US', {
 	  minimumFractionDigits: 2,
@@ -224,6 +224,11 @@ export	const handleTableTouchMove = (e) => {
 	 * @returns {Array} 处理后的附件数据
 	 */
 	export function processAttachmentData(attachmentList = [], categories = []) {
+
+		const uniqueFileTagNames = [
+		   ...new Set(attachmentList.map((item) => item.fileTagName).filter((name) => name != null && String(name).trim() !== '')),
+	   ]
+	   const mergedFileTagNames = mergeStringsByPriority(categories, uniqueFileTagNames);
 		// 处理附件列表，统一格式
 		const processedList = (attachmentList || []).map(item => ({
 				fileTagName: item.fileTagName,
@@ -233,7 +238,7 @@ export	const handleTableTouchMove = (e) => {
 		}))
 	
 		// 初始化分类结构
-		const result = categories.map(category => ({
+		const result = mergedFileTagNames.map(category => ({
 				fileTagName: category,
 				children: []
 		}))
@@ -255,6 +260,130 @@ export	const handleTableTouchMove = (e) => {
 		return result
 	}
 			
+
+
+
+	export const toChineseCurrency = (input) => {
+		if (input === null || input === undefined || input === '') return '--';
+	  
+		let num = Number(input);
+		if (Number.isNaN(num)) return '--';
+	  
+		// 处理负数
+		const negative = num < 0;
+		num = Math.abs(num);
+	  
+		// 金额上限控制（可按需调整）
+		if (num > 999999999999999.99) return '--';
+	  
+		const cnNums = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];
+		const cnIntRadice = ['', '拾', '佰', '仟'];
+		const cnIntUnits = ['', '万', '亿', '兆'];
+		const cnDecUnits = ['角', '分'];
+		const cnInteger = '整';
+		const cnIntLast = '元';
+	  
+		// 保留两位小数，避免浮点误差
+		const amount = Math.round(num * 100) / 100;
+		const [integerNum, decimalNumRaw = ''] = amount.toFixed(2).split('.');
+		const decimalNum = decimalNumRaw.slice(0, 2);
+	  
+		let chineseStr = '';
+	  
+		// 整数部分
+		if (Number(integerNum) > 0) {
+		  let zeroCount = 0;
+		  const intLen = integerNum.length;
+	  
+		  for (let i = 0; i < intLen; i++) {
+			const n = integerNum.charAt(i);
+			const p = intLen - i - 1;
+			const q = Math.floor(p / 4);
+			const m = p % 4;
+	  
+			if (n === '0') {
+			  zeroCount++;
+			} else {
+			  if (zeroCount > 0) chineseStr += cnNums[0];
+			  zeroCount = 0;
+			  chineseStr += cnNums[Number(n)] + cnIntRadice[m];
+			}
+	  
+			if (m === 0 && zeroCount < 4) {
+			  chineseStr += cnIntUnits[q];
+			}
+		  }
+		  chineseStr += cnIntLast;
+		} else {
+		  chineseStr = cnNums[0] + cnIntLast;
+		}
+	  
+		// 小数部分
+		if (decimalNum === '00') {
+		  chineseStr += cnInteger;
+		} else {
+		  const jiao = Number(decimalNum.charAt(0));
+		  const fen = Number(decimalNum.charAt(1));
+	  
+		  if (jiao > 0) {
+			chineseStr += cnNums[jiao] + cnDecUnits[0];
+		  } else if (fen > 0) {
+			// 例如 0.05 => 零伍分
+			chineseStr += cnNums[0];
+		  }
+	  
+		  if (fen > 0) {
+			chineseStr += cnNums[fen] + cnDecUnits[1];
+		  }
+		}
+	  
+		return negative ? `负${chineseStr}` : chineseStr;
+	  }
 		
 
 
+	export  function formatDateToCn(dateTimeStr) {
+		if (!dateTimeStr) return '';
+		// 兼容 "2026-03-14 16:28:29"、"2026-03-14" 等
+		const datePart = String(dateTimeStr).trim().split(' ')[0];
+		const [y, m = '01', d = '01'] = datePart.split('-');
+		if (!y || !m || !d) return '';
+		const mm = String(m).padStart(2, '0');
+		const dd = String(d).padStart(2, '0');
+		return `${y}年${mm}月${dd}日`;
+	  }
+
+
+ // 安全获取数值函数
+  function getSafeNumber(value) {
+	if (value === null || value === undefined || value === '') return 0;
+	const num = Number(value);
+	return isNaN(num) || !isFinite(num) ? 0 : num;
+  }
+ // 安全除法函数
+export function safeDivide(numerator, denominator) {
+	const num = getSafeNumber(numerator);
+	const den = getSafeNumber(denominator);
+	return den === 0 ? 0 : Number(((num / den) * 100).toFixed(2));
+}
+
+
+/**
+ * @param {string[]} priority 优先顺序（前面的先出现）
+ * @param {string[]} supplement 补充列表（只追加 priority 里没有的）
+ */
+export function mergeStringsByPriority(priority = [], supplement = []) {
+	const seen = new Set()
+	const out = []
+	for (const s of priority) {
+	  if (s == null || String(s).trim() === '' || seen.has(s)) continue
+	  seen.add(s)
+	  out.push(s)
+	}
+	for (const s of supplement) {
+	  if (s == null || String(s).trim() === '' || seen.has(s)) continue
+	  seen.add(s)
+	  out.push(s)
+	}
+	return out
+  }

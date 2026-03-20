@@ -11,7 +11,7 @@
 						</view>
 						<view class="project-name-1">
 							{{ itemDatas.projectName }}
-							  <!-- {{ itemDatas.projectCategory }} -->
+							<!-- {{ itemDatas.projectCategory }} -->
 						</view>
 					</view>
 					<view class="amount-box">
@@ -28,24 +28,64 @@
 					<view class="btn outline" @click="onReject">打回</view>
 					<view class="btn primary" @click="onApprove">通过</view>
 				</view>
-			
-				<view class="wfstatus-actions" v-show="currentType === 'completed' && (itemDatas.wfstatus == 'Running' || itemDatas.wfstatus == 'Completed')">
+
+				<view class="wfstatus-actions"
+					v-show="currentType === 'completed' && (itemDatas.wfstatus == 'Running' || itemDatas.wfstatus == 'Completed')">
 					{{ wfstatusText }}
 				</view>
 			</view>
 		</view>
 		<scroll-view scroll-y="true" class="scroller">
 			<!-- 顶部蓝卡片 -->
-			<!-- 基本信息 -->
+			<!-- 基础信息 -->
 			<view class="section">
 				<view class="section-title">
 					<text class="section-title-vertical"></text>
-					<text class="section-title-text">基本信息</text>
+					<text class="section-title-text">基础信息</text>
 				</view>
 				<view class="info-list">
-					<view class="info-item" :class="{'info-item-column': (row.value?.length > 34&&row.key === 'businessRemarkPr'),'info-item-border': (row.key === 'businessRemarkPr')}" v-for="(row, idx) in infoRows" :key="idx">
+					<view class="info-item"
+						:class="{'info-item-column': (row.value?.length > 34&&row.key === 'businessRemarkPr'),'info-item-border': (row.key === 'businessRemarkPr')}"
+						v-for="(row, idx) in baseInfo" :key="idx">
 						<text class="info-label">{{ row.label }}</text>
-						<text class="info-value" :class="{'info-value-left': (row.value?.length > 34&&row.key === 'businessRemarkPr')}">{{ row.value || '--' }}</text>
+						<text class="info-value"
+							:class="{'info-value-left': (row.value?.length > 34&&row.key === 'businessRemarkPr')}">{{ row.value || '--' }}</text>
+					</view>
+				</view>
+			</view>
+			<!-- 详细信息 -->
+			<view class="section">
+				<view class="section-title">
+					<text class="section-title-vertical"></text>
+					<text class="section-title-text">详细信息</text>
+				</view>
+				<view class="info-list">
+					<view class="info-item" :class="{'info-item-border': (row.key === 'settlementPhase')}"
+						v-for="(row, idx) in infoRows" :key="idx">
+						<text class="info-label">{{ row.label }}</text>
+						<text class="info-value">{{ row.value || '--' }}</text>
+					</view>
+					<!-- <view class="info-item"
+						v-for="(rows, idxs) in selectionPaymentChannels" :key="idxs">
+						<text class="info-label">资金来源</text>
+						<text class="info-value info-value-flex">
+						 <text>
+							{{rows.name || '--'}}
+						 </text>
+						 <text>{{ formatNumber(itemDatas[rows.value]) }}</text> </text>
+					</view> -->
+					<view class="info-item">
+						<text class="info-label">本次请款总金额</text>
+						<text class="info-value">{{ formatNumber(itemDatas.planToPayTotalPr) }}</text>
+					</view>
+					<view class="info-item">
+						<text class="info-label">本次请款总金额（大写）</text>
+						<text class="info-value">{{ toChineseCurrency(itemDatas.planToPayTotalPr) }}</text>
+					</view>
+					<view class="info-item" :class="{'info-item-column': (itemDatas.businessRemarkPr?.length > 34)}">
+						<text class="info-label">业务摘要</text>
+						<text class="info-value" :class="{'info-value-left': (itemDatas.businessRemarkPr?.length > 34)}"
+							>{{ itemDatas.businessRemarkPr }}</text>
 					</view>
 				</view>
 			</view>
@@ -58,7 +98,7 @@
 						<text class="section-title-text">用款情况</text>
 					</view>
 					<!-- <image class="section-title-2-right" src="../../static/images/c2.png" mode="scaleToFill"
-						style=" width: 28rpx;height: 16rpx;" /> -->
+						style=" width: 25.3624rpx;height: 14.4928rpx;" /> -->
 					<view class="section-title-2-right" :class="{ 'active': getOptions(FUND_USAGE_STATUS) }">
 
 					</view>
@@ -76,30 +116,40 @@
 									<text class="detail-value">{{ formatNumber(itemDatas.contractPrice) }}</text>
 								</view>
 								<view class="detail-row">
+									<text class="detail-label">累计付款 不含本次</text>
+									<text
+										class="detail-value">{{ formatNumber(itemDatas.contractPaymentTotalExcludeCurrent) }}</text>
+								</view>
+								<view class="detail-row">
+									<text class="detail-label">合同支付比例 不含本次</text>
+									<text
+										class="detail-value">{{  safeDivide(itemDatas.contractPaymentTotalExcludeCurrent, itemDatas.contractPrice) == 0 ? "--" : safeDivide(itemDatas.contractPaymentTotalExcludeCurrent, itemDatas.contractPrice) + "%"}}</text>
+								</view>
+								<view class="detail-row">
 									<text class="detail-label">累计付款 含本次</text>
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.contractPaymentTotalIncludeCurrentPr) }}</text>
 								</view>
 								<view class="detail-row">
-									<text class="detail-label">累计付款 不含本次</text>
+									<text class="detail-label">合同支付比例 含本次</text>
 									<text
-										class="detail-value">{{ formatNumber(itemDatas.contractPaymentTotalExcludeCurrentPr) }}</text>
+										class="detail-value">{{  safeDivide(itemDatas.contractPaymentTotalIncludeCurrentPr,itemDatas.contractPrice) == 0 ? '--' : safeDivide(itemDatas.contractPaymentTotalIncludeCurrentPr,itemDatas.contractPrice) + '%' }}</text>
 								</view>
 							</view>
-							<view class="contract-header">
+							<view class="contract-header" v-if="itemDatas.highlightPartPrice || itemDatas.highlightPartPrice || itemDatas.highlightPaymentTotalExcludeCurrent2Pr">
 								其中{{ itemDatas.highlightPartName || '' }}
 							</view>
-							<view class="contract-details">
-								<view class="detail-row">
+							<view class="contract-details" v-if="itemDatas.highlightPartPrice || itemDatas.highlightPartPrice || itemDatas.highlightPaymentTotalExcludeCurrent2Pr">
+								<view class="detail-row" v-if="itemDatas.highlightPartPrice">
 									<text class="detail-label">合同价/审定价</text>
 									<text class="detail-value">{{ formatNumber(itemDatas.highlightPartPrice) }}</text>
 								</view>
-								<view class="detail-row">
+								<view class="detail-row" v-if="itemDatas.highlightPaymentTotalIncludeCurrent2Pr">
 									<text class="detail-label">累计付款 含本次</text>
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.highlightPaymentTotalIncludeCurrent2Pr) }}</text>
 								</view>
-								<view class="detail-row">
+								<view class="detail-row" v-if="itemDatas.highlightPaymentTotalExcludeCurrent2Pr">
 									<text class="detail-label">累计付款 不含本次</text>
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.highlightPaymentTotalExcludeCurrent2Pr) }}</text>
@@ -131,30 +181,39 @@
 									<text class="detail-label">确定性</text>
 									<text class="detail-value">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</text>
 								</view>
-								<view class="detail-row">
+								<view class="detail-row" v-if="itemDatas.planToPayEstimatedPr">
 									<text class="detail-label">预估性</text>
 									<text class="detail-value">{{ formatNumber(itemDatas.planToPayEstimatedPr) }}</text>
 								</view>
 							</view>
-							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0" @touchmove.stop="handleTableTouchMove">
+							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0"
+								@touchmove.stop="handleTableTouchMove">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
-											<td colspan="2" class="type font_w sticky-xz-1 bordr-none bordr-right-none">用款性质</td>
-											<td class="type font_w text_right bordr-none bordr-right-none" v-for="value in roadSectionList"
-												:key="value.id">{{ value.roadName }}</td>
+											<td colspan="2" class="type font_w sticky-xz-1 bordr-none bordr-right-none">
+												用款性质</td>
+											<td class="type font_w text_right bordr-none bordr-right-none"
+												v-for="value in roadSectionList" :key="value.id">{{ value.roadName }}
+											</td>
 										</tr>
 										<tr>
 											<td class="text sticky-xz-1 bordr-right-none">确定性</td>
-											<td class="info sticky-xz-2">{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</td>
-											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.confirmed) }}</td>
+											<td class="info sticky-xz-2">
+												{{ formatNumber(itemDatas.planToPayConfirmedPr) }}</td>
+											<td class="info bordr-right-none" v-for="value in roadSectionList"
+												:key="value.id">
+												{{ formatNumber(value.confirmed) }}
+											</td>
 										</tr>
 										<tr class="border-top">
 											<td class="text sticky-xz-1 bordr-right-none bordr-bottom-none">预估性</td>
-											<td class="info sticky-xz-2 bordr-bottom-none">{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
-											<td class="info bordr-right-none bordr-bottom-none" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.estimated) }}</td>
+											<td class="info sticky-xz-2 bordr-bottom-none">
+												{{ formatNumber(itemDatas.planToPayEstimatedPr)  }}</td>
+											<td class="info bordr-right-none bordr-bottom-none"
+												v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.estimated) }}
+											</td>
 										</tr>
 									</tbody>
 								</table>
@@ -174,27 +233,27 @@
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.planToPayRuralLaborsSalaryPr) }}</text>
 								</view>
-								<view class="detail-row">
+								<view class="detail-row" v-if="itemDatas.planToPayMaterialAmountPr">
 									<text class="detail-label">材料款</text>
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.planToPayMaterialAmountPr) }}</text>
 								</view>
-								<view class="detail-row">
+								<view class="detail-row" v-if="itemDatas.planToPayProphaseAmountPr">
 									<text class="detail-label">前期费用/动拆迁</text>
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.planToPayProphaseAmountPr) }}</text>
 								</view>
-								<view class="detail-row">
+								<view class="detail-row" v-if="itemDatas.planToPayProphaseLineMigrationAmountPr">
 									<text class="detail-label">前期费用/管线搬迁</text>
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.planToPayProphaseLineMigrationAmountPr) }}</text>
 								</view>
-								<view class="detail-row">
+								<view class="detail-row" v-if="itemDatas.planToPayProphaseConstructionAmountPr">
 									<text class="detail-label">前期费用/前期工程款</text>
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.planToPayProphaseConstructionAmountPr) }}</text>
 								</view>
-								<view class="detail-row">
+								<view class="detail-row" v-if="itemDatas.planToPayOtherAmountPr">
 									<text class="detail-label">二类费用等</text>
 									<text
 										class="detail-value">{{ formatNumber(itemDatas.planToPayOtherAmountPr) }}</text>
@@ -204,63 +263,94 @@
 									<text
 										class="detail-value summary-value">{{ formatNumber(itemDatas.planToPayTotalPr) }}</text>
 								</view>
+								<view class="detail-row summary-row" style="text-align: right;margin-top: 0;border-top: none;padding: 0rpx 14.4928rpx 0rpx;">
+									<text class="summary-label"></text>
+									<text class="detail-value summary-value" >{{ toChineseCurrency(itemDatas.planToPayTotalPr) }}</text>
+								</view>
 							</view>
-							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0" @touchmove.stop="handleTableTouchMove">
+							<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0"
+								@touchmove.stop="handleTableTouchMove">
 								<table cellspacing="0" cellpadding="0" class="table1 table2">
 									<tbody>
 										<tr>
-											<td colspan="2" class="type font_w sticky-lx-1  bordr-none bordr-right-none">款项类型</td>
-											<td class="type font_w text_right bordr-none bordr-right-none" v-for="value in roadSectionList"
-												:key="value.id">{{ value.roadName }}</td>
+											<td colspan="2"
+												class="type font_w sticky-lx-1  bordr-none bordr-right-none">款项类型</td>
+											<td class="type font_w text_right bordr-none bordr-right-none"
+												v-for="value in roadSectionList" :key="value.id">{{ value.roadName }}
+											</td>
 										</tr>
 
 										<tr>
 											<td class="text sticky-lx-1 bordr-right-none">工程费用</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayConstructionAmountPr) }}
+											<td class="info sticky-lx-2">
+												{{ formatNumber(itemDatas.planToPayConstructionAmountPr) }}
 											</td>
-											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.constructionAmount) }}</td>
+											<td class="info bordr-right-none" v-for="value in roadSectionList"
+												:key="value.id">
+												{{ formatNumber(value.constructionAmount) }}
+											</td>
 										</tr>
 										<tr>
 											<td class="text sticky-lx-1 bordr-right-none">农民工工资</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayRuralLaborsSalaryPr)  }}
+											<td class="info sticky-lx-2">
+												{{ formatNumber(itemDatas.planToPayRuralLaborsSalaryPr)  }}
 											</td>
-											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.ruralLaborsSalary) }}</td>
+											<td class="info bordr-right-none" v-for="value in roadSectionList"
+												:key="value.id">
+												{{ formatNumber(value.ruralLaborsSalary) }}
+											</td>
 										</tr>
 										<tr>
 											<td class="text sticky-lx-1 bordr-right-none">材料款</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayMaterialAmountPr)  }}
+											<td class="info sticky-lx-2">
+												{{ formatNumber(itemDatas.planToPayMaterialAmountPr)  }}
 											</td>
-											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.materialAmount) }}</td>
+											<td class="info bordr-right-none" v-for="value in roadSectionList"
+												:key="value.id">
+												{{ formatNumber(value.materialAmount) }}
+											</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1 bordr-right-none text_white_space_normal">前期费用/动拆迁</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayProphaseAmountPr)  }}
+											<td class="text sticky-lx-1 bordr-right-none text_white_space_normal">
+												前期费用/动拆迁</td>
+											<td class="info sticky-lx-2">
+												{{ formatNumber(itemDatas.planToPayProphaseAmountPr)  }}
 											</td>
-											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.prophaseAmount) }}</td>
+											<td class="info bordr-right-none" v-for="value in roadSectionList"
+												:key="value.id">
+												{{ formatNumber(value.prophaseAmount) }}
+											</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1 bordr-right-none text_white_space_normal">前期费用/管线搬迁</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayProphaseLineMigrationAmountPr)  }}
+											<td class="text sticky-lx-1 bordr-right-none text_white_space_normal">
+												前期费用/管线搬迁</td>
+											<td class="info sticky-lx-2">
+												{{ formatNumber(itemDatas.planToPayProphaseLineMigrationAmountPr)  }}
 											</td>
-											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.prophaseLineMigrationAmount) }}</td>
+											<td class="info bordr-right-none" v-for="value in roadSectionList"
+												:key="value.id">
+												{{ formatNumber(value.prophaseLineMigrationAmount) }}
+											</td>
 										</tr>
 										<tr>
-											<td class="text sticky-lx-1 bordr-right-none text_white_space_normal">前期费用/前期工程款</td>
-											<td class="info sticky-lx-2">{{ formatNumber(itemDatas.planToPayProphaseConstructionAmountPr)  }}
+											<td class="text sticky-lx-1 bordr-right-none text_white_space_normal">
+												前期费用/前期工程款</td>
+											<td class="info sticky-lx-2">
+												{{ formatNumber(itemDatas.planToPayProphaseConstructionAmountPr)  }}
 											</td>
-											<td class="info bordr-right-none" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.prophaseConstructionAmount) }}</td>
+											<td class="info bordr-right-none" v-for="value in roadSectionList"
+												:key="value.id">
+												{{ formatNumber(value.prophaseConstructionAmount) }}
+											</td>
 										</tr>
 										<tr>
 											<td class="text sticky-lx-1 bordr-right-none bordr-bottom-none">二类费用等</td>
-											<td class="info sticky-lx-2 bordr-bottom-none">{{ formatNumber(itemDatas.planToPayOtherAmountPr)  }}</td>
-											<td class="info bordr-right-none bordr-bottom-none" v-for="value in roadSectionList" :key="value.id">
-												{{ formatNumber(value.otherAmount) }}</td>
+											<td class="info sticky-lx-2 bordr-bottom-none">
+												{{ formatNumber(itemDatas.planToPayOtherAmountPr)  }}</td>
+											<td class="info bordr-right-none bordr-bottom-none"
+												v-for="value in roadSectionList" :key="value.id">
+												{{ formatNumber(value.otherAmount) }}
+											</td>
 										</tr>
 									</tbody>
 								</table>
@@ -270,9 +360,14 @@
 								<text
 									class="detail-value summary-value">{{ formatNumber(itemDatas.planToPayTotalPr) }}</text>
 							</view>
+							<view class="detail-row summary-row" v-if="roadSectionList.length > 0" style="text-align: right;margin-top: 0;border-top: none;padding: 0rpx 14.4928rpx 0rpx;">
+									<text class="summary-label"></text>
+									<text class="detail-value summary-value" >{{ toChineseCurrency(itemDatas.planToPayTotalPr) }}</text>
+								</view>
 						</view>
 
-						<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length == 0" @touchmove.stop="handleTableTouchMove">
+						<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length == 0"
+							@touchmove.stop="handleTableTouchMove">
 							<!-- <table cellspacing="0" cellpadding="0" class="table1 margin_1 table1—left-border"> -->
 							<table cellspacing="0" cellpadding="0" class="table1 margin_1">
 								<tbody>
@@ -282,14 +377,16 @@
 										<td class="type font_w text_right" v-for="value in roadSectionList"
 											:key="value.id">{{ value.roadName }}</td>
 									</tr>
-									<tr>
-										<td rowspan="5" class="type td_w1 sticky-1">城投拨付资金</td>
+									<tr v-if="itemDatas.planToPayCtfundCityPr">
+										<td :rowspan="ctfundRowspan" class="type td_w1 sticky-1">城投拨付资金</td>
 										<td class="type td_w2 sticky-2">市财力</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCityPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCity) }}</td>
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCity) }}
+										</td>
 									</tr>
-									<tr>
+									<tr v-if="itemDatas.planToPayCtfundLandTransferFeePr">
+										<td v-if="isCtfundLandFirstVisible" :rowspan="ctfundRowspan" class="type td_w1 sticky-1">城投拨付资金</td>
 										<td class="type sticky-2">土地出让金</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundLandTransferFeePr) }}
 										</td>
@@ -297,57 +394,77 @@
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundLandTransferFee) }}
 										</td>
 									</tr>
-									<tr>
+									<tr v-if="itemDatas.planToPayCtfundSpecialPurposeBondPr">
+										<td v-if="isCtfundBondFirstVisible" :rowspan="ctfundRowspan" class="type td_w1 sticky-1">城投拨付资金</td>
 										<td class="type sticky-2">专项债</td>
 										<td class="info">
-											{{ formatNumber(itemDatas.planToPayCtfundSpecialPurposeBondPr) }}</td>
+											{{ formatNumber(itemDatas.planToPayCtfundSpecialPurposeBondPr) }}
+										</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundSpecialPurposeBond) }}
 										</td>
 									</tr>
-									<tr>
+									<tr v-if="itemDatas.planToPayCtfundOtherPr">
+										<td v-if="isCtfundOtherFirstVisible" :rowspan="ctfundRowspan" class="type td_w1 sticky-1">城投拨付资金</td>
 										<td class="type sticky-2">城投其他资金</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundOtherPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundOther) }}</td>
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundOther) }}
+										</td>
 									</tr>
-									<tr>
+									<tr v-if="itemDatas.planToPayCtfundCapitalPr">
+										<td v-if="isCtfundCapitalFirstVisible" :rowspan="ctfundRowspan" class="type td_w1 sticky-1">城投拨付资金</td>
 										<td class="type sticky-2">资本金</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayCtfundCapitalPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCapital) }}
 										</td>
 									</tr>
-									<tr>
-										<td rowspan="4" class="type sticky-1">城投拨付资金</td>
+
+
+									<!-- 非城投拨付资金 -->
+									<tr v-if="itemDatas.planToPayNonCtfundCityPr">
+										<td v-if="isNonCtfundCityFirstVisible" :rowspan="nonCtfundRowspan" class="type sticky-1">城投拨付资金</td>
 										<td class="type sticky-2">市财力</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundCityPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundCity) }}
 										</td>
 									</tr>
-									<tr>
+									<tr v-if="itemDatas.planToPayNonCtfundDistrictPr">
+										<td v-if="isNonCtfundDistrictFirstVisible" :rowspan="nonCtfundRowspan" class="type sticky-1">城投拨付资金</td>
 										<td class="type sticky-2">区县财力</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundDistrictPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundDistrict) }}
 										</td>
 									</tr>
-									<tr>
+									<tr v-if="itemDatas.planToPayNonCtfundSelfPr">
+										<td v-if="isNonCtfundSelfFirstVisible" :rowspan="nonCtfundRowspan" class="type sticky-1">城投拨付资金</td>
 										<td class="type sticky-2">自筹资金</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundSelfPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundSelf) }}
 										</td>
 									</tr>
-									<tr>
+									<tr v-if="itemDatas.planToPayNonCtfundOtherPr">
+										<td v-if="isNonCtfundOtherFirstVisible" :rowspan="nonCtfundRowspan" class="type sticky-1">城投拨付资金</td>
 										<td class="type sticky-2">其他</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayNonCtfundOtherPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundOther) }}
 										</td>
 									</tr>
-									<tr>
+
+									<!-- 直拨(无资金流入) -->
+									<tr v-if="itemDatas.planToPayDirectFundTransportationSpecialPr">
+										<td
+												v-if="isDirectFundTransportationFirstVisible"
+												:rowspan="directFundRowspan"
+												class="type sticky-1"
+											>
+												直拨(无资金流入)
+											</td>
 										<td rowspan="3" class="type sticky-1">直拨(无资金流入)</td>
 										<td class="type sticky-2">交通专项</td>
 										<td class="info">
@@ -357,31 +474,47 @@
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundTransportationSpecial) }}
 										</td>
 									</tr>
-									<tr>
+									<tr v-if="itemDatas.planToPayDirectFundUltraTbpr">
+										<td
+											v-if="isDirectFundUltraTbFirstVisible"
+											:rowspan="directFundRowspan"
+											class="type sticky-1"
+										>
+											直拨(无资金流入)
+										</td>
 										<td class="type sticky-2">超长期国债</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundUltraTbpr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundUltraTb) }}
 										</td>
 									</tr>
-									<tr>
+									<tr v-if="itemDatas.planToPayDirectFundOtherPr">
+										<td
+											v-if="isDirectFundOtherFirstVisible"
+											:rowspan="directFundRowspan"
+											class="type sticky-1"
+										>
+											直拨(无资金流入)
+										</td>
 										<td class="type sticky-2">其他</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayDirectFundOtherPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundOther) }}
 										</td>
 									</tr>
-									<tr>
+									<tr v-if="itemDatas.planToPayBankNotePr">
 										<td colspan="2" class="type sticky-1">开具银票(无资金流出)</td>
 										<td class="info">{{ formatNumber(itemDatas.planToPayBankNotePr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayBankNote) }}</td>
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayBankNote) }}
+										</td>
 									</tr>
 								</tbody>
 							</table>
 						</scroll-view>
 
-						<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0" @touchmove.stop="handleTableTouchMove">
+						<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length > 0"
+							@touchmove.stop="handleTableTouchMove">
 							<table cellspacing="0" cellpadding="0" class="table1 margin_1">
 								<tbody>
 									<tr>
@@ -393,13 +526,16 @@
 									<tr>
 										<td rowspan="6" class="type td_w1 sticky-1-plus">城投拨付资金</td>
 										<td class="type td_w2 sticky-2-plus">市财力城区</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayCtfundCityDistrictPr) }}</td>
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayCtfundCityDistrictPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCityDistrict) }}</td>
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCityDistrict) }}
+										</td>
 									</tr>
 									<tr>
 										<td class="type sticky-2-plus">市财力</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayCtfundCityPr) }}
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayCtfundCityPr) }}
 										</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCity) }}
@@ -407,7 +543,8 @@
 									</tr>
 									<tr>
 										<td class="type sticky-2-plus">土地出让金</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayCtfundLandTransferFeePr) }}
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayCtfundLandTransferFeePr) }}
 										</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundLandTransferFee) }}
@@ -416,20 +553,24 @@
 									<tr>
 										<td class="type sticky-2-plus">专项债</td>
 										<td class="info sticky-3-plus">
-											{{ formatNumber(itemDatas.planToPayCtfundSpecialPurposeBondPr) }}</td>
+											{{ formatNumber(itemDatas.planToPayCtfundSpecialPurposeBondPr) }}
+										</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundSpecialPurposeBond) }}
 										</td>
 									</tr>
 									<tr>
 										<td class="type sticky-2-plus">城投其他资金</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayCtfundOtherPr) }}</td>
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayCtfundOtherPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundOther) }}</td>
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundOther) }}
+										</td>
 									</tr>
 									<tr>
 										<td class="type sticky-2-plus">资本金</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayCtfundCapitalPr) }}</td>
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayCtfundCapitalPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayCtfundCapital) }}
 										</td>
@@ -437,28 +578,32 @@
 									<tr>
 										<td rowspan="4" class="type sticky-1-plus">城投拨付资金</td>
 										<td class="type sticky-2-plus">市财力</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayNonCtfundCityPr) }}</td>
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayNonCtfundCityPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundCity) }}
 										</td>
 									</tr>
 									<tr>
 										<td class="type sticky-2-plus">区县财力</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayNonCtfundDistrictPr) }}</td>
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayNonCtfundDistrictPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundDistrict) }}
 										</td>
 									</tr>
 									<tr>
 										<td class="type sticky-2-plus">自筹资金</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayNonCtfundSelfPr) }}</td>
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayNonCtfundSelfPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundSelf) }}
 										</td>
 									</tr>
 									<tr>
 										<td class="type sticky-2-plus">其他</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayNonCtfundOtherPr) }}</td>
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayNonCtfundOtherPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayNonCtfundOther) }}
 										</td>
@@ -475,23 +620,27 @@
 									</tr>
 									<tr>
 										<td class="type sticky-2-plus">超长期国债</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayDirectFundUltraTbpr) }}</td>
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayDirectFundUltraTbpr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundUltraTb) }}
 										</td>
 									</tr>
 									<tr>
 										<td class="type sticky-2-plus">其他</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayDirectFundOtherPr) }}</td>
+										<td class="info sticky-3-plus">
+											{{ formatNumber(itemDatas.planToPayDirectFundOtherPr) }}</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
 											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayDirectFundOther) }}
 										</td>
 									</tr>
 									<tr>
 										<td colspan="2" class="type sticky-1-plus">开具银票(无资金流出)</td>
-										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayBankNotePr) }}</td>
+										<td class="info sticky-3-plus">{{ formatNumber(itemDatas.planToPayBankNotePr) }}
+										</td>
 										<td class="info" v-for="value in roadSectionList" :key="value.id">
-											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayBankNote) }}</td>
+											{{ formatNumber(value.roadSectionPlanToPayInfo.planToPayBankNote) }}
+										</td>
 									</tr>
 								</tbody>
 							</table>
@@ -500,73 +649,7 @@
 					</view>
 				</transition>
 			</view>
-
-			<!-- 付款账户信息 -->
-			<view class="section">
-				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
-					<view class="section-title-2-left">
-						<text class="section-title-vertical"></text>
-						<text class="section-title-text">付款账户信息</text>
-					</view>
-					<view class="section-title-2-right" :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
-
-					</view>
-				</view>
-				<!-- 付款账户信息卡片 -->
-				<transition name="collapse">
-					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
-						<view style="height: 10rpx;"></view>
-						<!-- 多个公司账户信息 -->
-						<template v-if="itemDatas?.roadSectionList?.length > 0">
-							<view class="account-card" v-for="item in itemDatas.roadSectionList" :key="item.id">
-								<view class="account-company-title">{{ item.roadName || '' }}</view>
-								<view class="account-info-block">
-									<view class="account-info-row">
-										<text class="account-info-label">付款银行(资金)</text>
-										<text class="account-info-value">{{ item.paymentBank || '' }}</text>
-									</view>
-									<view class="account-info-row">
-										<text class="account-info-label">付款账号(资金)</text>
-										<text class="account-info-value">{{ item.paymentAccount || '' }}</text>
-									</view>
-									<view class="account-info-row">
-										<text class="account-info-label">付款银行(银票)</text>
-										<text class="account-info-value"> {{ item.paymentBankNote || '' }} </text>
-									</view>
-									<view class="account-info-row">
-										<text class="account-info-label">付款账号(银票)</text>
-										<text class="account-info-value">{{ item.paymentAccountNote || '' }}</text>
-									</view>
-								</view>
-							</view>
-						</template>
-						<!-- 单个公司账户信息 -->
-						<view class="account-card" v-else>
-							<view class="account-company-title">{{ itemDatas.companyName || '' }}</view>
-							<view class="account-info-block">
-								<view class="account-info-row">
-									<text class="account-info-label">付款银行(资金)</text>
-									<text class="account-info-value">{{ itemDatas.paymentBank || '' }}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">付款账号(资金)</text>
-									<text class="account-info-value">{{ itemDatas.paymentAccount || '' }}</text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">付款银行(银票)</text>
-									<text class="account-info-value"> {{ itemDatas.paymentBankNote || '' }} </text>
-								</view>
-								<view class="account-info-row">
-									<text class="account-info-label">付款账号(银票)</text>
-									<text class="account-info-value">{{ itemDatas.paymentAccountBankNote || '' }}</text>
-								</view>
-							</view>
-						</view>
-					</view>
-				</transition>
-			</view>
-
-			<!-- 收款账户信息 -->
+            	<!-- 收款账户信息 -->
 			<view class="section">
 				<view class="section-title-2" @click="setOptions(COLLECTION_ACCOUNT_INFORMATION)">
 					<view class="section-title-2-left">
@@ -626,6 +709,72 @@
 					</view>
 				</transition>
 			</view>
+			<!-- 付款账户信息 -->
+			<view class="section">
+				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
+					<view class="section-title-2-left">
+						<text class="section-title-vertical"></text>
+						<text class="section-title-text">付款账户信息</text>
+					</view>
+					<view class="section-title-2-right" :class="{ 'active': getOptions(PAYMENT_ACCOUNT_INFORMATION) }">
+
+					</view>
+				</view>
+				<!-- 付款账户信息卡片 -->
+				<transition name="collapse">
+					<view class="account-info-section" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
+						<view style="height: 10rpx;"></view>
+						<!-- 多个公司账户信息 -->
+						<template v-if="itemDatas?.roadSectionList?.length > 0">
+							<view class="account-card" v-for="item in itemDatas.roadSectionList" :key="item.id">
+								<view class="account-company-title">{{ item.roadName || '' }}</view>
+								<view class="account-info-block">
+									<view class="account-info-row">
+										<text class="account-info-label">付款银行(资金)</text>
+										<text class="account-info-value">{{ item.paymentBank || '' }}</text>
+									</view>
+									<view class="account-info-row">
+										<text class="account-info-label">付款账号(资金)</text>
+										<text class="account-info-value">{{ item.paymentAccount || '' }}</text>
+									</view>
+									<!-- <view class="account-info-row">
+										<text class="account-info-label">付款银行(银票)</text>
+										<text class="account-info-value"> {{ item.paymentBankNote || '' }} </text>
+									</view>
+									<view class="account-info-row">
+										<text class="account-info-label">付款账号(银票)</text>
+										<text class="account-info-value">{{ item.paymentAccountNote || '' }}</text>
+									</view> -->
+								</view>
+							</view>
+						</template>
+						<!-- 单个公司账户信息 -->
+						<view class="account-card" v-else>
+							<view class="account-company-title">{{ itemDatas.companyName || '' }}</view>
+							<view class="account-info-block">
+								<view class="account-info-row">
+									<text class="account-info-label">付款银行(资金)</text>
+									<text class="account-info-value">{{ itemDatas.paymentBank || '' }}</text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">付款账号(资金)</text>
+									<text class="account-info-value">{{ itemDatas.paymentAccount || '' }}</text>
+								</view>
+							<!-- 	<view class="account-info-row">
+									<text class="account-info-label">付款银行(银票)</text>
+									<text class="account-info-value"> {{ itemDatas.paymentBankNote || '' }} </text>
+								</view>
+								<view class="account-info-row">
+									<text class="account-info-label">付款账号(银票)</text>
+									<text class="account-info-value">{{ itemDatas.paymentAccountBankNote || '' }}</text>
+								</view> -->
+							</view>
+						</view>
+					</view>
+				</transition>
+			</view>
+
+		
 
 			<!-- 附件 -->
 			<view class="section">
@@ -634,8 +783,7 @@
 						<text class="section-title-vertical"></text>
 						<text class="section-title-text">附件</text>
 					</view>
-					<view class="section-title-2-right"
-						:class="{ 'active': getOptions(ATTACHMENT_LIST) }">
+					<view class="section-title-2-right" :class="{ 'active': getOptions(ATTACHMENT_LIST) }">
 					</view>
 				</view>
 				<!-- 附件卡片 -->
@@ -658,7 +806,7 @@
 				<!-- 审批记录卡片 -->
 				<transition name="collapse">
 					<view class="approval-record-section" v-if="getOptions(APPROVAL_RECORD)">
-                        <approvalTimeline :list="approvalRecordList"></approvalTimeline>
+						<approvalTimeline :list="approvalRecordList"></approvalTimeline>
 					</view>
 				</transition>
 			</view>
@@ -673,6 +821,7 @@
 	import {
 		ref,
 		reactive,
+		computed
 	} from 'vue'
 	import {
 		FUND_USAGE_STATUS,
@@ -684,11 +833,24 @@
 	} from '@/utils/definitions'
 	import http from '@/utils/request.js'
 	import {
-		formatNumber,handleTableTouchMove,formatDateTimeMinute,processAttachmentData
+		formatNumber,
+		handleTableTouchMove,
+		formatDateTimeMinute,
+		processAttachmentData,
+		toChineseCurrency,
+		formatDateToCn,
+		safeDivide,
+		mergeStringsByPriority
 	} from '@/utils/h5Bridge'
-	import { useListHeight } from '@/utils/useListHeight.js'
-	import { useApproval } from '@/utils/useApproval.js'
-	import { useDetailCommon } from '@/utils/useDetailCommon.js'
+	import {
+		useListHeight
+	} from '@/utils/useListHeight.js'
+	import {
+		useApproval
+	} from '@/utils/useApproval.js'
+	import {
+		useDetailCommon
+	} from '@/utils/useDetailCommon.js'
 	import detailNavBar from '@/components/navBar/detailNavBar.vue'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
@@ -700,8 +862,11 @@
 	const roadSectionList = ref([]);
 	const stageTags = ref([])
 	const attachmentData = ref([])
-	const {   
-		urlParams, wfstatusText, setOptions, getOptions
+	const {
+		urlParams,
+		wfstatusText,
+		setOptions,
+		getOptions
 	} = useDetailCommon({
 		itemDetail,
 		currentType,
@@ -710,8 +875,11 @@
 			getFormDataApproval()
 			getApprovalRecord()
 		}
-	})	
-	const { listHeight, computeScrollHeight } = useListHeight();
+	})
+	const {
+		listHeight,
+		computeScrollHeight
+	} = useListHeight();
 	const {
 		inputDialogRef,
 		inputDialogRequired,
@@ -723,53 +891,139 @@
 		onApprove,
 		approvalRecordList,
 		getApprovalRecord
-		} = useApproval({
-			itemDetail,
-			currentType
+	} = useApproval({
+		itemDetail,
+		currentType
+	})
+
+
+
+	    const ctfundRowspan = computed(() => {
+		const d = itemDatas.value || {}
+		return [
+			d.planToPayCtfundCityPr,
+			d.planToPayCtfundLandTransferFeePr,
+			d.planToPayCtfundSpecialPurposeBondPr,
+			d.planToPayCtfundOtherPr,
+			d.planToPayCtfundCapitalPr
+		].filter(Boolean).length
+		})
+		const isCtfundCityFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !!d.planToPayCtfundCityPr
+		})
+		const isCtfundLandFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !d.planToPayCtfundCityPr && !!d.planToPayCtfundLandTransferFeePr
+		})
+		const isCtfundBondFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !d.planToPayCtfundCityPr &&
+			!d.planToPayCtfundLandTransferFeePr &&
+			!!d.planToPayCtfundSpecialPurposeBondPr
+		})
+		const isCtfundOtherFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !d.planToPayCtfundCityPr &&
+			!d.planToPayCtfundLandTransferFeePr &&
+			!d.planToPayCtfundSpecialPurposeBondPr &&
+			!!d.planToPayCtfundOtherPr
+		})
+		const isCtfundCapitalFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !d.planToPayCtfundCityPr &&
+			!d.planToPayCtfundLandTransferFeePr &&
+			!d.planToPayCtfundSpecialPurposeBondPr &&
+			!d.planToPayCtfundOtherPr &&
+			!!d.planToPayCtfundCapitalPr
 		})
 
-	const infoRows = ref([{
-			label: '项目名称',
+		const nonCtfundRowspan = computed(() => {
+		const d = itemDatas.value || {}
+		return [
+			d.planToPayNonCtfundCityPr,
+			d.planToPayNonCtfundDistrictPr,
+			d.planToPayNonCtfundSelfPr,
+			d.planToPayNonCtfundOtherPr
+		].filter(Boolean).length
+		})
+		const isNonCtfundCityFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !!d.planToPayNonCtfundCityPr
+		})
+		const isNonCtfundDistrictFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !d.planToPayNonCtfundCityPr && !!d.planToPayNonCtfundDistrictPr
+		})
+		const isNonCtfundSelfFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !d.planToPayNonCtfundCityPr &&
+			!d.planToPayNonCtfundDistrictPr &&
+			!!d.planToPayNonCtfundSelfPr
+		})
+		const isNonCtfundOtherFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !d.planToPayNonCtfundCityPr &&
+			!d.planToPayNonCtfundDistrictPr &&
+			!d.planToPayNonCtfundSelfPr &&
+			!!d.planToPayNonCtfundOtherPr
+		})
+
+
+		const directFundRowspan = computed(() => {
+		const d = itemDatas.value || {}
+		return [
+			d.planToPayDirectFundTransportationSpecialPr,
+			d.planToPayDirectFundUltraTbpr,
+			d.planToPayDirectFundOtherPr
+		].filter(Boolean).length
+		})
+		const isDirectFundTransportationFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !!d.planToPayDirectFundTransportationSpecialPr
+		})
+		const isDirectFundUltraTbFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !d.planToPayDirectFundTransportationSpecialPr &&
+			!!d.planToPayDirectFundUltraTbpr
+		})
+		const isDirectFundOtherFirstVisible = computed(() => {
+		const d = itemDatas.value || {}
+		return !d.planToPayDirectFundTransportationSpecialPr &&
+			!d.planToPayDirectFundUltraTbpr &&
+			!!d.planToPayDirectFundOtherPr
+		})
+
+
+
+
+	const baseInfo = ref([{
+			label: '申请人',
 			value: '',
-			key: 'projectName'
+			key: 'submittedByName'
 		},
 		{
-			label: '项目阶段/预算事项',
+			label: '申请日期',
 			value: '',
-			key: 'budgetContent'
+			key: 'submittedDate'
 		},
 		{
-			label: '付款单位',
+			label: '申请人单位',
 			value: '',
-			key: 'companyName'
+			key: 'subCompanyName'
 		},
 		{
-			label: '合同名称',
+			label: '申请人部门',
 			value: '',
-			key: 'contractName'
+			key: 'businessUnitName'
 		},
 		{
-			label: '合同编号',
+			label: '预算性质',
 			value: '',
-			key: 'contractNo'
-		},
-		// {
-		// 	label: '收款单位',
-		// 	value: '',
-		// 	key: 'payToCompany' //deng
-		// },
-		{
-			label: '具体事项',
-			value: '',
-			key: 'detailedDescription'
+			key: 'planToPayConfirmedPr'
 		},
 		{
-			label: '业务性质',
-			value: '',
-			key: 'businessNature'
-		},
-		{
-			label: '业务类别',
+			label: '概算类别',
 			value: '',
 			key: 'businessCategory'
 		},
@@ -779,9 +1033,51 @@
 			key: 'contentDescription'
 		},
 		{
-			label: '预算事项',
+			label: '科目匹配',
 			value: '',
-			key: 'lv1AccountName'
+			key: 'accountName'
+		},
+		{
+			label: '具体概算',
+			value: '',
+			key: 'jtgs'
+		},
+		{
+			label: '是否先付后票',
+			value: '',
+			key: 'isNoInvoicePayment'
+		},
+	])
+
+	const infoRows = ref([{
+			label: '项目名称',
+			value: '',
+			key: 'projectName'
+		},
+		{
+			label: '项目标段',
+			value: '',
+			key: 'budgetContent'
+		},
+		{
+			label: '合同名称',
+			value: '',
+			key: 'contractName'
+		},
+		{
+			label: '整体合同金额或审定金额',
+			value: '',
+			key: 'contractPrice'
+		},
+		{
+			label: '合同编号',
+			value: '',
+			key: 'contractNo'
+		},
+		{
+			label: '保函有效期',
+			value: '',
+			key: 'guaranteeLetterValidTo'
 		},
 		{
 			label: '支付节点',
@@ -789,30 +1085,10 @@
 			// key: 'budgetCategoryId'
 			key: 'budgetCategoryName'
 		},
-		// {
-		// 	label: '业务备注',
-		// 	value: '',
-		// 	key: '' //deng
-		// },
-		// {
-		// 	label: '备注',
-		// 	value: '',
-		// 	key: '' //deng
-		// },
 		{
-			label: '保函有效期',
+			label: '具体内容',
 			value: '',
-			key: 'guaranteeLetterValidTo'
-		},
-		{
-			label: '业务摘要',
-			value: '',
-			key: 'businessRemarkPr'
-		},
-		{
-			label: '是否有取得发票计划',
-			value: '',
-			key: 'hasInvoicePlan'
+			key: 'detailedDescription'
 		},
 		{
 			label: '验工计价年月',
@@ -825,163 +1101,206 @@
 			key: 'settlementPhase'
 		},
 	])
+	
+    // const selectionPaymentChannels = ref([])
 
 	let cc1 = reactive({
-	"id": "e28c6698fb77416682a12131131332123123245c516bc",
-	"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
-	"roadName": "S2沪芦",
-	"paymentBank": "工商银行市分行营业部",
-	"paymentAccount": "1001244319006338868-000000010",
-	"paymentBankNote": null,
-	"paymentAccountBankNote": null,
-	"planToPayTotal": 30000000,
-	"confirmed": 20000000,
-	"estimated": 10000000,
-	"constructionAmount": 20000000,
-	"ruralLaborsSalary": null,
-	"materialAmount": null,
-	"prophaseAmount": 5000000,
-	"otherAmount": 5000000,
-	"status": "200",
-	"lastApprovedBy": null,
-	"lastApprovedByName": null,
-	"lastApprovedDate": null,
-	"roadSectionPlanToPayInfo": {
-		"planToPayCtfundCityDistrict": 10000000,
-		"planToPayCtfundCity": 10000000,
-		"planToPayCtfundLandTransferFee": 10000000,
-		"planToPayCtfundSpecialPurposeBond": null,
-		"planToPayCtfundOther": null,
-		"planToPayCtfundCapital": null,
-		"planToPayNonCtfundCity": null,
-		"planToPayNonCtfundDistrict": null,
-		"planToPayNonCtfundSelf": null,
-		"planToPayNonCtfundOther": null,
-		"planToPayDirectFundTransportationSpecial": null,
-		"planToPayDirectFundUltraTb": null,
-		"planToPayDirectFundOther": null,
-		"planToPayBankNote": null
-	},
-	"paymentBankList": []
-})
+		"id": "e28c6698fb77416682a12131131332123123245c516bc",
+		"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
+		"roadName": "S2沪芦",
+		"paymentBank": "工商银行市分行营业部",
+		"paymentAccount": "1001244319006338868-000000010",
+		"paymentBankNote": null,
+		"paymentAccountBankNote": null,
+		"planToPayTotal": 30000000,
+		"confirmed": 20000000,
+		"estimated": 10000000,
+		"constructionAmount": 20000000,
+		"ruralLaborsSalary": null,
+		"materialAmount": null,
+		"prophaseAmount": 5000000,
+		"otherAmount": 5000000,
+		"status": "200",
+		"lastApprovedBy": null,
+		"lastApprovedByName": null,
+		"lastApprovedDate": null,
+		"roadSectionPlanToPayInfo": {
+			"planToPayCtfundCityDistrict": 10000000,
+			"planToPayCtfundCity": 10000000,
+			"planToPayCtfundLandTransferFee": 10000000,
+			"planToPayCtfundSpecialPurposeBond": null,
+			"planToPayCtfundOther": null,
+			"planToPayCtfundCapital": null,
+			"planToPayNonCtfundCity": null,
+			"planToPayNonCtfundDistrict": null,
+			"planToPayNonCtfundSelf": null,
+			"planToPayNonCtfundOther": null,
+			"planToPayDirectFundTransportationSpecial": null,
+			"planToPayDirectFundUltraTb": null,
+			"planToPayDirectFundOther": null,
+			"planToPayBankNote": null
+		},
+		"paymentBankList": []
+	})
 	let cc2 = reactive({
-	"id": "e28c6698fb774166werwerw82a13131213132123123245c516bc",
-	"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
-	"roadName": "S2沪芦",
-	"paymentBank": "工商银行市分行营业部",
-	"paymentAccount": "1001244319006338868-000000010",
-	"paymentBankNote": null,
-	"paymentAccountBankNote": null,
-	"planToPayTotal": 30000000,
-	"confirmed": 20000000,
-	"estimated": 10000000,
-	"constructionAmount": 20000000,
-	"ruralLaborsSalary": null,
-	"materialAmount": null,
-	"prophaseAmount": 5000000,
-	"otherAmount": 5000000,
-	"status": "200",
-	"lastApprovedBy": null,
-	"lastApprovedByName": null,
-	"lastApprovedDate": null,
-	"roadSectionPlanToPayInfo": {
-		"planToPayCtfundCityDistrict": 10000000,
-		"planToPayCtfundCity": 10000000,
-		"planToPayCtfundLandTransferFee": 10000000,
-		"planToPayCtfundSpecialPurposeBond": null,
-		"planToPayCtfundOther": null,
-		"planToPayCtfundCapital": null,
-		"planToPayNonCtfundCity": null,
-		"planToPayNonCtfundDistrict": null,
-		"planToPayNonCtfundSelf": null,
-		"planToPayNonCtfundOther": null,
-		"planToPayDirectFundTransportationSpecial": null,
-		"planToPayDirectFundUltraTb": null,
-		"planToPayDirectFundOther": null,
-		"planToPayBankNote": null
-	},
-	"paymentBankList": []
-})
+		"id": "e28c6698fb774166werwerw82a13131213132123123245c516bc",
+		"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
+		"roadName": "S2沪芦",
+		"paymentBank": "工商银行市分行营业部",
+		"paymentAccount": "1001244319006338868-000000010",
+		"paymentBankNote": null,
+		"paymentAccountBankNote": null,
+		"planToPayTotal": 30000000,
+		"confirmed": 20000000,
+		"estimated": 10000000,
+		"constructionAmount": 20000000,
+		"ruralLaborsSalary": null,
+		"materialAmount": null,
+		"prophaseAmount": 5000000,
+		"otherAmount": 5000000,
+		"status": "200",
+		"lastApprovedBy": null,
+		"lastApprovedByName": null,
+		"lastApprovedDate": null,
+		"roadSectionPlanToPayInfo": {
+			"planToPayCtfundCityDistrict": 10000000,
+			"planToPayCtfundCity": 10000000,
+			"planToPayCtfundLandTransferFee": 10000000,
+			"planToPayCtfundSpecialPurposeBond": null,
+			"planToPayCtfundOther": null,
+			"planToPayCtfundCapital": null,
+			"planToPayNonCtfundCity": null,
+			"planToPayNonCtfundDistrict": null,
+			"planToPayNonCtfundSelf": null,
+			"planToPayNonCtfundOther": null,
+			"planToPayDirectFundTransportationSpecial": null,
+			"planToPayDirectFundUltraTb": null,
+			"planToPayDirectFundOther": null,
+			"planToPayBankNote": null
+		},
+		"paymentBankList": []
+	})
 	let cc3 = reactive({
-	"id": "e28c6698fb77416682a1213132131232122423423123245c516bc",
-	"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
-	"roadName": "S2沪芦",
-	"paymentBank": "工商银行市分行营业部",
-	"paymentAccount": "1001244319006338868-000000010",
-	"paymentBankNote": null,
-	"paymentAccountBankNote": null,
-	"planToPayTotal": 30000000,
-	"confirmed": 20000000,
-	"estimated": 10000000,
-	"constructionAmount": 20000000,
-	"ruralLaborsSalary": null,
-	"materialAmount": null,
-	"prophaseAmount": 5000000,
-	"otherAmount": 5000000,
-	"status": "200",
-	"lastApprovedBy": null,
-	"lastApprovedByName": null,
-	"lastApprovedDate": null,
-	"roadSectionPlanToPayInfo": {
-		"planToPayCtfundCityDistrict": 10000000,
-		"planToPayCtfundCity": 10000000,
-		"planToPayCtfundLandTransferFee": 10000000,
-		"planToPayCtfundSpecialPurposeBond": null,
-		"planToPayCtfundOther": null,
-		"planToPayCtfundCapital": null,
-		"planToPayNonCtfundCity": null,
-		"planToPayNonCtfundDistrict": null,
-		"planToPayNonCtfundSelf": null,
-		"planToPayNonCtfundOther": null,
-		"planToPayDirectFundTransportationSpecial": null,
-		"planToPayDirectFundUltraTb": null,
-		"planToPayDirectFundOther": null,
-		"planToPayBankNote": null
-	},
-	"paymentBankList": []
-})
+		"id": "e28c6698fb77416682a1213132131232122423423123245c516bc",
+		"roadId": "roadc8f5e0414ac0a0c16e42743a1001",
+		"roadName": "S2沪芦",
+		"paymentBank": "工商银行市分行营业部",
+		"paymentAccount": "1001244319006338868-000000010",
+		"paymentBankNote": null,
+		"paymentAccountBankNote": null,
+		"planToPayTotal": 30000000,
+		"confirmed": 20000000,
+		"estimated": 10000000,
+		"constructionAmount": 20000000,
+		"ruralLaborsSalary": null,
+		"materialAmount": null,
+		"prophaseAmount": 5000000,
+		"otherAmount": 5000000,
+		"status": "200",
+		"lastApprovedBy": null,
+		"lastApprovedByName": null,
+		"lastApprovedDate": null,
+		"roadSectionPlanToPayInfo": {
+			"planToPayCtfundCityDistrict": 10000000,
+			"planToPayCtfundCity": 10000000,
+			"planToPayCtfundLandTransferFee": 10000000,
+			"planToPayCtfundSpecialPurposeBond": null,
+			"planToPayCtfundOther": null,
+			"planToPayCtfundCapital": null,
+			"planToPayNonCtfundCity": null,
+			"planToPayNonCtfundDistrict": null,
+			"planToPayNonCtfundSelf": null,
+			"planToPayNonCtfundOther": null,
+			"planToPayDirectFundTransportationSpecial": null,
+			"planToPayDirectFundUltraTb": null,
+			"planToPayDirectFundOther": null,
+			"planToPayBankNote": null
+		},
+		"paymentBankList": []
+	})
 
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
 			let data = res.data || {}
 			itemDatas.value = data?.itemdata || {}
+			baseInfo.value.forEach((item, index) => {
+				item.value = itemDatas.value[item.key] || '';
+				if (item.key === 'submittedDate') {
+					item.value = formatDateToCn(itemDatas.value[item.key])
+				}
+				if (item.key === 'accountName') {
+					if (itemDatas.value.lv2AccountName && itemDatas.value.lv3AccountName) {
+						item.value = itemDatas.value.lv2AccountName + '/' + itemDatas.value
+							.lv3AccountName
+					} else {
+						item.value = itemDatas.value.lv3AccountName || itemDatas.value
+							.lv2AccountName || itemDatas.value.lv1AccountName || ''
+					}
+				}
+                if(item.key === 'planToPayConfirmedPr'){
+					item.value = itemDatas.value[item.key] > 0 ? '确定性' : '预估性'
+				}
+				if (item.key === 'isNoInvoicePayment') {
+					item.value = itemDatas.value[item.key] == 1 ? '是' : '否'
+				}
+			});
+
+			let jtgsArr = itemDatas.value['selectionPaymentType'] && JSON.parse(itemDatas.value[
+				'selectionPaymentType']) || [];
+			if (jtgsArr.length >= 1) {
+				let arr = [];
+				let num = 8
+				baseInfo.value.splice(8, 1);
+				jtgsArr.forEach((its, indexChild) => {
+					let obj = {
+						label: '具体概算',
+						value: '',
+						key: 'jtgs'
+					};
+					obj.key = obj.key + (its.group || indexChild + 1);
+					obj.value = its.name || '';
+					baseInfo.value.splice(num, 0, obj);
+					num++
+				})
+			} 
+
 			infoRows.value.forEach(item => {
 				item.value = itemDatas.value[item.key] || ''
-                if(item.key === 'lv1AccountName'){
-					if(itemDatas.value.lv2AccountName && itemDatas.value.lv3AccountName){
-						item.value = itemDatas.value.lv2AccountName + '/' + itemDatas.value.lv3AccountName
-					}else{
-						item.value = itemDatas.value.lv3AccountName || itemDatas.value.lv2AccountName || itemDatas.value.lv1AccountName || ''
-					}
-                    
-                }
-                if(item.key === 'guaranteeLetterValidTo'){
-                    item.value = formatDateTimeMinute(itemDatas.value[item.key])
-                }
-				if(item.key === 'hasInvoicePlan'){
+			    if(item.key === 'contractPrice'){
+					item.value = formatNumber(itemDatas.value.contractPrice)
+				}
+				if (item.key === 'guaranteeLetterValidTo') {
+					item.value = formatDateTimeMinute(itemDatas.value[item.key])
+				}
+				if (item.key === 'hasInvoicePlan') {
 					item.value = itemDatas.value[item.key] == true ? '是' : '否'
 				}
 			})
-
+			
+			// selectionPaymentChannels.value = itemDatas.value.selectionPaymentChannels&&JSON.parse(itemDatas.value.selectionPaymentChannels)
+			// selectionPaymentChannels.value.forEach((item,index)=>{
+			// 	item.value = item.value + 'Pr'
+			// })
 			const tagFields = ['businessCategory', 'businessUnitName', 'budgetCategoryName']
-			for(const field of tagFields){
+			for (const field of tagFields) {
 				itemDatas.value[field] && stageTags.value.push(itemDatas.value[field])
 			}
-			if(itemDatas.value.roadSectionList&&itemDatas.value.roadSectionList.length > 0){
+			if (itemDatas.value.roadSectionList && itemDatas.value.roadSectionList.length > 0) {
 				roadSectionList.value = itemDatas.value.roadSectionList
+				console.log("roadSectionList.value===111==========>",roadSectionList.value)
 			}
+				console.log("roadSectionList.value===222==========>",roadSectionList.value)
 			// else{
 			// 	roadSectionList.value.push({...cc1})
 			// 	roadSectionList.value.push({...cc2})
 			// 	roadSectionList.value.push({...cc3})
 			// }
-
-			attachmentData.value = processAttachmentData(itemDatas.value?.attachmentList || [], ['工程付款申请单','工程费用支付申请表','发票','财务监理付款意见书','合同要求其他资料'])
-
-			computeScrollHeight()
-		})
-	}
-	
+			let attachmentLists = ['工程付款申请单','工程费用支付申请表', '发票', '财务监理付款意见书', '验工计价中间支付单','履约保函','工程款接受监管同意书','农民工工资接受监管同意书',
+				'农民工工资资金支付管理协议','施工许可证','发票跟踪表','其他合同要求的资料'];
+			attachmentData.value = processAttachmentData(itemDatas.value?.attachmentList || [], attachmentLists);
+			computeScrollHeight();
+		});
+	};
 </script>
 
 <style lang="scss" scoped>
@@ -998,6 +1317,7 @@
 		display: none !important;
 		height: 0 !important;
 	}
+
 	.detail-page {
 		width: 100%;
 		height: 100vh;
@@ -1014,7 +1334,7 @@
 			}
 		}
 
-	
+
 
 		.scroller {
 			box-sizing: border-box;
@@ -1026,7 +1346,7 @@
 			flex-direction: column;
 			display: flex;
 			justify-content: space-between;
-			padding: 16rpx 32rpx 0;
+			padding: 14.4928rpx 28.9856rpx 0;
 			background: #2d4ec8;
 			min-height: 200rpx;
 			color: #fff;
@@ -1037,12 +1357,12 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: flex-start;
-				margin-bottom: 16rpx;
+				margin-bottom: 14rpx;
 			}
 
 			.project-name {
 				width: 60%;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #fff;
 
 				.project-name-1 {
@@ -1051,10 +1371,10 @@
 					word-wrap: break-word;
 					word-break: break-all;
 					white-space: normal;
-					line-height: 1.4;
-					min-height: 72rpx;
+					min-height: 65.2175rpx;
 					/* 如果需要最小高度，使用 min-height */
 				}
+
 			}
 
 			.amount-box {
@@ -1062,25 +1382,30 @@
 				// border: 1px solid red;
 
 				.amount-label {
-					height: 70rpx;
-					line-height: 70rpx;
-					font-size: 24rpx;
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
+					word-wrap: break-word;
+					word-break: break-all;
+					white-space: normal;
+					height: 65.2176rpx;
+					font-size: 21.7392rpx;
 					color: #99ccff;
 					text-align: right;
 				}
 
 				.amount-value {
-					height: 70rpx;
-					line-height: 70rpx;
+					height: 65.2175rpx;
+					line-height: 65.2175rpx;
 
 					.amount-value-symbol {
-						font-size: 28rpx;
+						font-size: 21.7392rpx;
 						color: #ffffff;
 						margin-right: 10rpx;
 					}
 
 					.amount-value-number {
-						font-size: 36rpx;
+						font-size: 32.609rpx;
 						color: #ffd615;
 						font-weight: bold;
 					}
@@ -1091,59 +1416,60 @@
 
 			.hero-tags {
 				width: calc(100% - 320rpx);
-				height: 72rpx;
+				height: 65.2176rpx;
 				overflow: hidden;
 				display: flex;
 				align-items: center;
-				gap: 8rpx;
+				gap: 14rpx;
 				flex-wrap: nowrap;
 
 				.tag {
 					box-sizing: border-box;
-					height: 44rpx;
+					height: 36.232rpx;
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					border: 2rpx solid #66ccff;
-					padding: 2rpx 12rpx;
+					border: 1.8116rpx solid #66ccff;
+					padding: 1.8116rpx 12rpx;
 					border-radius: 8rpx;
 					font-size: 18rpx;
 					color: #66ccff;
 					white-space: nowrap;
 				}
+
 				&.hero-tags-width {
 					width: calc(100% - 180rpx);
 				}
 			}
 
-            .wfstatus-actions {
-                position: absolute;
-                bottom: 12rpx;
-                right: 36rpx;
+			.wfstatus-actions {
+				position: absolute;
+				bottom: 12rpx;
+				right: 36rpx;
 				width: 120rpx;
 				height: 42rpx;
-				border: 2rpx solid #66ccff;
+				border: 1.8116rpx solid #66ccff;
 				box-sizing: border-box;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-			
+
 				border-radius: 25rpx;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #66ccff;
 				white-space: nowrap;
-               
-            }
+
+			}
 
 			.hero-actions {
 				position: absolute;
 				bottom: 0;
 				right: 0;
-				width: 350rpx;
-				height: 72rpx;
-				background: url('../../static/images/bg_1@2x.jpg') no-repeat center center;
-				background-size: 100% 100%;
-				// border: 2rpx solid #030303;
+				width: 326.07rpx;
+				height: 65.2175rpx;
+				background: url('../../static/images/bg_1@2x.jpg') left center no-repeat;
+				background-size: cover;
+				// border: 1.8116rpx solid #030303;
 				margin-top: 18rpx;
 				display: flex;
 				justify-content: flex-end;
@@ -1154,47 +1480,46 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				font-size: 24rpx;
-				font-weight: 600;
+				font-size: 21.7392rpx;
 				color: #fff;
 			}
 
 			.btn.primary {
 				box-sizing: border-box;
-				width: 160rpx;
+				width: 126.84rpx;
 				background: #3e65f6;
 			}
 
 			.btn.outline {
 				box-sizing: border-box;
 				border-top-left-radius: 15rpx;
-				width: 120rpx;
+				width: 126.84rpx;
 				background: #6699ff;
 			}
 		}
 
 		.section {
 			background: #fff;
-			border-radius: 16rpx;
-			margin-bottom: 40rpx;
+			border-radius: 14.4928rpx;
+			margin-bottom: 36.232rpx;
 		}
 
 		.section-title {
-			height: 80rpx;
-			padding: 16rpx 32rpx;
+			height: 72.464rpx;
+			padding: 14.4928rpx 28.9856rpx;
 			display: flex;
 			align-items: center;
-			gap: 20rpx;
+			gap: 18.116rpx;
 
 			.section-title-vertical {
 				box-sizing: border-box;
 				width: 8rpx;
-				height: 32rpx;
+				height: 28.9856rpx;
 				background: #3d65f5;
 			}
 
 			.section-title-text {
-				font-size: 28rpx;
+				font-size: 25.3624rpx;
 				color: #000000;
 				font-weight: bold;
 
@@ -1202,8 +1527,8 @@
 		}
 
 		.section-title-2 {
-			height: 80rpx;
-			padding: 16rpx 32rpx;
+			height: 72.464rpx;
+			padding: 14.4928rpx 28.9856rpx;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -1211,17 +1536,17 @@
 			.section-title-2-left {
 				display: flex;
 				align-items: center;
-				gap: 20rpx;
+				gap: 18.116rpx;
 
 				.section-title-vertical {
 					box-sizing: border-box;
 					width: 8rpx;
-					height: 32rpx;
+					height: 28.9856rpx;
 					background: #3d65f5;
 				}
 
 				.section-title-text {
-					font-size: 28rpx;
+					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
 
@@ -1232,13 +1557,13 @@
 				width: 112rpx;
 				height: 112rpx;
 				background: url('../../static/images/c2.png') center center no-repeat;
-				background-size: 24rpx;
+				background-size: 21.7392rpx;
 				margin-right: -31rpx;
 				transition: transform 0.3s ease;
 
 				&.active {
 					background: url('../../static/images/c2.png') center center no-repeat !important;
-					background-size: 24rpx !important;
+					background-size: 21.7392rpx !important;
 					margin-right: -31rpx !important;
 					transform: rotate(180deg);
 				}
@@ -1268,12 +1593,14 @@
 		}
 
 		.info-list {
-			padding: 0 32rpx 20rpx;
-			.info-item-column{
-                flex-direction: column;
+			padding: 0 28.9856rpx 18.116rpx;
+
+			.info-item-column {
+				flex-direction: column;
 
 			}
-			.info-value-left{
+
+			.info-value-left {
 				text-align: left;
 				margin-top: 10rpx;
 				white-space: normal;
@@ -1286,8 +1613,9 @@
 			display: flex;
 			align-items: flex-start;
 			padding: 8rpx 0;
+
 			&.info-item-border {
-				border-bottom: 2rpx dashed #ddd;
+				border-bottom: 1.8116rpx dashed #ddd;
 				padding-bottom: 22rpx !important;
 				margin-bottom: 12rpx;
 			}
@@ -1301,28 +1629,28 @@
 			min-width: 180rpx;
 			max-width: 280rpx;
 			padding-right: 10rpx;
-			line-height: 40rpx;
-			font-size: 24rpx;
+			line-height: 36.232rpx;
+			font-size: 21.7392rpx;
 			color: #000;
 			white-space: nowrap;
 		}
 
 		.info-value {
 			flex: 1;
-			font-size: 24rpx;
+			font-size: 21.7392rpx;
 			color: #666;
-			line-height: 40rpx;
+			line-height: 36.232rpx;
 			text-align: right;
 		}
 
 		// 用款情况样式
 		.usage-details {
-			padding: 0 32rpx 40rpx;
+			padding: 0 28.9856rpx 36.232rpx;
 
 			.contract-section {
 				box-sizing: border-box;
-				border: 2rpx solid #ddd;
-				padding: 16rpx;
+				border: 1.8116rpx solid #ddd;
+				padding: 14.4928rpx;
 				overflow: hidden;
 
 				.contract-header {
@@ -1331,15 +1659,15 @@
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #000;
 					font-weight: bold;
-					padding: 4rpx 16rpx;
+					padding: 4rpx 14.4928rpx;
 				}
 
 				.contract-details {
 					background: #ffffff;
-					// border: 2rpx solid #ac4343;
+					// border: 1.8116rpx solid #ac4343;
 					// border-top: none;
 					// border-radius: 0 0 8rpx 8rpx;
 				}
@@ -1349,7 +1677,7 @@
 				box-sizing: border-box;
 				border-radius: 25rpx;
 				// margin-bottom: 10rpx;
-				padding: 16rpx 20rpx;
+				padding: 14.4928rpx 18.116rpx;
 				overflow: hidden;
 			}
 
@@ -1360,35 +1688,35 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				padding: 0 16rpx;
+				padding: 0 14.4928rpx;
 
 				.detail-label {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					min-width: 200rpx;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #000000;
 				}
 
 				.detail-value {
 					flex: 1;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #666;
 					text-align: right;
-                    word-break: break-all;
+					word-break: break-all;
 				}
 			}
 
 			.summary-row {
-				border-top: 2rpx solid #ddd;
-				margin-top: 20rpx;
-				padding: 20rpx 16rpx 8rpx;
+				border-top: 1.8116rpx solid #ddd;
+				margin-top: 18.116rpx;
+				padding: 18.116rpx 14.4928rpx 8rpx;
 				height: auto !important;
 
 				.summary-label {
 					display: flex;
 					align-items: center;
 					height: 48rpx;
-					font-size: 28rpx;
+					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
 				}
@@ -1398,7 +1726,7 @@
 					align-items: center;
 					justify-content: flex-end;
 					height: 48rpx;
-					font-size: 28rpx;
+					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
 				}
@@ -1407,22 +1735,22 @@
 
 		// 付款账户信息独立样式 - 不与其他样式共用
 		.account-info-section {
-			// padding: 20rpx 30rpx 30rpx;
-			padding: 0 32rpx 20rpx;
+			// padding: 18.116rpx 30rpx 30rpx;
+			padding: 0 28.9856rpx 18.116rpx;
 
 			.account-card {
-				margin-bottom: 40rpx;
+				margin-bottom: 36.232rpx;
 
 				.account-company-title {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #000;
-					margin-bottom: 20rpx;
+					margin-bottom: 18.116rpx;
 					text-align: left;
 				}
 
 				.account-info-block {
 					background: #f6f8fc;
-					border: 2rpx solid #ddd;
+					border: 1.8116rpx solid #ddd;
 					overflow: hidden;
 					padding: 0;
 
@@ -1433,8 +1761,8 @@
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
-						padding: 16rpx;
-						border-bottom: 2rpx solid #dddddd;
+						padding: 14.4928rpx;
+						border-bottom: 1.8116rpx solid #dddddd;
 						background: #f6f8fc;
 
 						&:last-child {
@@ -1442,14 +1770,14 @@
 						}
 
 						.account-info-label {
-							font-size: 24rpx;
+							font-size: 21.7392rpx;
 							color: #000;
 							text-align: left;
 							flex: 0.28;
 						}
 
 						.account-info-value {
-							font-size: 24rpx;
+							font-size: 21.7392rpx;
 							color: #666;
 							text-align: right;
 							flex: 0.72;
@@ -1474,42 +1802,49 @@
 
 
 
-	.attachment-section {    
-		padding: 20rpx 32rpx 40rpx;
+	.attachment-section {
+		padding: 18.116rpx 28.9856rpx 36.232rpx;
 	}
-	.attachment-list {    
-		display: flex;    
-		flex-wrap: wrap;    
-		gap: 24rpx;
+
+	.attachment-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 21.7392rpx;
 	}
-	.attachment-item {    
-		width: 200rpx;    
-		padding: 24rpx 16rpx 18rpx;    
-		border-radius: 24rpx;  
-		background: linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);   
-		box-shadow: 0 8rpx 24rpx rgba(60, 108, 254, 0.08);    display: flex;    
-		flex-direction: column;    align-items: center;    
+
+	.attachment-item {
+		width: 200rpx;
+		padding: 21.7392rpx 14.4928rpx 18rpx;
+		border-radius: 21.7392rpx;
+		background: linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);
+		box-shadow: 0 8rpx 21.7392rpx rgba(60, 108, 254, 0.08);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 		transition: transform 0.2s ease, box-shadow 0.2s ease;
 	}
-	.attachment-item:active {    
-		transform: translateY(4rpx);   
-		box-shadow: 0 6rpx 16rpx rgba(60, 108, 254, 0.12);
+
+	.attachment-item:active {
+		transform: translateY(4rpx);
+		box-shadow: 0 6rpx 14.4928rpx rgba(60, 108, 254, 0.12);
 	}
-	.attachment-item-icon {  
-		width: 80rpx;   
-		height: 80rpx;   
-		border-radius: 50%;    
-		background: rgba(60, 108, 254, 0.12);   
-		display: flex;   
-		align-items: center;    
-		justify-content: center;   
-		margin-bottom: 16rpx;
+
+	.attachment-item-icon {
+		width: 72.464rpx;
+		height: 72.464rpx;
+		border-radius: 50%;
+		background: rgba(60, 108, 254, 0.12);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 14.4928rpx;
 	}
-	.attachment-item-name {   
-   	    font-size: 24rpx;    
-	    color: #333;   
-		text-align: center;   
-		line-height: 1.4;    
+
+	.attachment-item-name {
+		font-size: 21.7392rpx;
+		color: #333;
+		text-align: center;
+		line-height: 1.4;
 		word-break: break-word;
 	}
 
@@ -1517,26 +1852,27 @@
 
 
 
-// ------------------------------------------
+	// ------------------------------------------
 	.margin_1 {
-		margin-top: 40rpx;
+		margin-top: 36.232rpx;
 	}
 
 	.table1 {
 		box-sizing: border-box;
 		width: 100%;
-	
+
 		// border-left: 1px #a83737 solid;
 		// border-top: 1px #ddd solid;
 		// border: 1px #a83737 solid;
-		// padding: 20rpx;	
-	    // border-left: 2rpx #ddd solid;
-		border-top: 2rpx #ddd solid;
+		// padding: 18.116rpx;	
+		// border-left: 1.8116rpx #ddd solid;
+		border-top: 1.8116rpx #ddd solid;
 		border-collapse: separate;
 		border-spacing: 0;
 	}
-	.table1—left-border{
-		border-left: 2rpx #ddd solid;
+
+	.table1—left-border {
+		border-left: 1.8116rpx #ddd solid;
 	}
 
 	.table2 {
@@ -1556,10 +1892,10 @@
 
 	.table1 td {
 		box-sizing: border-box;
-		border-bottom: 2rpx #ddd solid;
-		border-right: 2rpx #ddd solid;
-		padding: 16rpx;
-		font-size: 24rpx;
+		border-bottom: 1.8116rpx #ddd solid;
+		border-right: 1.8116rpx #ddd solid;
+		padding: 14.4928rpx;
+		font-size: 21.7392rpx;
 	}
 
 	.table1 .info {
@@ -1585,7 +1921,7 @@
 		text-align: right;
 	}
 
-    .text_white_space_normal{
+	.text_white_space_normal {
 		white-space: normal !important;
 	}
 
@@ -1610,41 +1946,141 @@
 	}
 
 	/* 需要给表格的前几列设置 sticky 和 left 偏移，按你的列宽自行调整 */
-	.table1 td.sticky-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 218.04rpx !important;min-width: 218.04rpx !important;box-sizing: border-box;  border-left: 2rpx #ddd solid; /* 解决左右滑动时，边框不显示 */ }
-	.table1 td.sticky-2 { position: sticky; left: 218.04rpx;  z-index: 4;box-sizing: border-box; }
-	.table1 td.sticky-3 { position: sticky; left: 440rpx;  z-index: 2;box-sizing: border-box; }
+	.table1 td.sticky-1 {
+		position: sticky;
+		left: 0;
+		top: 0;
+		z-index: 3;
+		max-width: 218.04rpx !important;
+		min-width: 218.04rpx !important;
+		box-sizing: border-box;
+		border-left: 1.8116rpx #ddd solid;
+		/* 解决左右滑动时，边框不显示 */
+	}
 
-	 /* max-width: 55px !important;min-width: 55px !important;确保组件宽度始终精确为55px，忽略所有其他影响因素 */
-	.table1 td.sticky-1-plus { position: sticky; left: 0; top: 0; z-index: 3;max-width: 110rpx !important;min-width: 110rpx !important;box-sizing: border-box; 
-                              white-space: normal; /* 默认值，允许文本换行 */ border-left: 2rpx #ddd solid;  /* 解决左右滑动时，边框不显示 */
-							  background-clip: padding-box; }
-	.table1 td.sticky-2-plus { position: sticky; left: 110rpx;  z-index: 4;max-width: 118rpx !important;min-width: 118rpx !important;box-sizing: border-box;  white-space: normal; /* 默认值，允许文本换行 */
-	                    	}
-	.table1 td.sticky-3-plus { position: sticky; left: 228rpx;  z-index: 2;box-sizing: border-box;background: #fff; 
-		                   }
+	.table1 td.sticky-2 {
+		position: sticky;
+		left: 218.04rpx;
+		z-index: 4;
+		box-sizing: border-box;
+	}
 
-	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 110rpx !important;min-width: 110rpx !important;background: #fff; white-space: normal; /* 默认值，允许文本换行 */}
-	.table1 td.sticky-xz-2 { position: sticky; left: 110rpx;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid !important; }
-	.table1 td.sticky-xz-3 { position: sticky; left: 440rpx;  z-index: 2;background: #fff; }
+	.table1 td.sticky-3 {
+		position: sticky;
+		left: 440rpx;
+		z-index: 2;
+		box-sizing: border-box;
+	}
 
-	.table1 td.sticky-lx-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 152rpx !important;min-width: 152rpx !important;background: #fff; }
-	.table1 td.sticky-lx-2 { position: sticky; left: 152rpx;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid !important; }
-	.table1 td.sticky-lx-3 { position: sticky; left: 440rpx;  z-index: 2;background: #fff; }
+	/* max-width: 55px !important;min-width: 55px !important;确保组件宽度始终精确为55px，忽略所有其他影响因素 */
+	.table1 td.sticky-1-plus {
+		position: sticky;
+		left: 0;
+		top: 0;
+		z-index: 3;
+		max-width: 110rpx !important;
+		min-width: 110rpx !important;
+		box-sizing: border-box;
+		white-space: normal;
+		/* 默认值，允许文本换行 */
+		border-left: 1.8116rpx #ddd solid;
+		/* 解决左右滑动时，边框不显示 */
+		background-clip: padding-box;
+	}
+
+	.table1 td.sticky-2-plus {
+		position: sticky;
+		left: 110rpx;
+		z-index: 4;
+		max-width: 118rpx !important;
+		min-width: 118rpx !important;
+		box-sizing: border-box;
+		white-space: normal;
+		/* 默认值，允许文本换行 */
+	}
+
+	.table1 td.sticky-3-plus {
+		position: sticky;
+		left: 228rpx;
+		z-index: 2;
+		box-sizing: border-box;
+		background: #fff;
+	}
+
+	.table1 td.sticky-xz-1 {
+		position: sticky;
+		left: 0;
+		top: 0;
+		z-index: 3;
+		max-width: 110rpx !important;
+		min-width: 110rpx !important;
+		background: #fff;
+		white-space: normal;
+		/* 默认值，允许文本换行 */
+	}
+
+	.table1 td.sticky-xz-2 {
+		position: sticky;
+		left: 110rpx;
+		z-index: 4;
+		background: #fff;
+		border-right: 1.8116rpx #ddd solid !important;
+	}
+
+	.table1 td.sticky-xz-3 {
+		position: sticky;
+		left: 440rpx;
+		z-index: 2;
+		background: #fff;
+	}
+
+	.table1 td.sticky-lx-1 {
+		position: sticky;
+		left: 0;
+		top: 0;
+		z-index: 3;
+		max-width: 152rpx !important;
+		min-width: 152rpx !important;
+		background: #fff;
+	}
+
+	.table1 td.sticky-lx-2 {
+		position: sticky;
+		left: 152rpx;
+		z-index: 4;
+		background: #fff;
+		border-right: 1.8116rpx #ddd solid !important;
+	}
+
+	.table1 td.sticky-lx-3 {
+		position: sticky;
+		left: 440rpx;
+		z-index: 2;
+		background: #fff;
+	}
 
 	/* 审批记录独立样式区域 */
 	.approval-record-section {
-		padding: 20rpx 32rpx 40rpx;
+		padding: 18.116rpx 28.9856rpx 36.232rpx;
 		position: relative;
 	}
 
 
-	.bordr-none{
+	.bordr-none {
 		border-bottom: none !important;
 	}
-	.bordr-right-none{
+
+	.bordr-right-none {
 		border-right: none !important;
 	}
-	.bordr-bottom-none{
+
+	.bordr-bottom-none {
 		border-bottom: none !important;
+	}
+	:deep(.info-value-flex > span){
+			width: 100%;
+			    display: flex;
+			    justify-content: space-between;
+			    align-items: center;
 	}
 </style>

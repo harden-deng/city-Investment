@@ -153,14 +153,14 @@ const getFileExt = (item) => {
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: 24rpx;
+	gap: 21.7392rpx;
 }
 
 .attachment-list {
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
-	gap: 24rpx;
+	gap: 21.7392rpx;
 
 	.attachment-header {
 		display: flex;
@@ -170,7 +170,7 @@ const getFileExt = (item) => {
 
    .attachment-header-bar {	
 	    width: 6rpx;
-		height: 32rpx;
+		height: 28.9856rpx;
 		border-radius: 3rpx;
 		background: linear-gradient(180deg, #16b777 0%, #49e69f 100%);
 	
@@ -180,7 +180,7 @@ const getFileExt = (item) => {
    }
 
    .attachment-header-text {
-		font-size: 28rpx;
+		font-size: 25.3624rpx;
 		color: #666666;
 		font-weight: 500;
    }
@@ -188,15 +188,15 @@ const getFileExt = (item) => {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	gap: 24rpx;
+	gap: 21.7392rpx;
    }
 }
 
 .attachment-item {
 	width: 150rpx;
-	border-radius: 24rpx;
+	border-radius: 21.7392rpx;
 	background: linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);
-	box-shadow: 0 8rpx 24rpx rgba(60, 108, 254, 0.08);
+	box-shadow: 0 8rpx 21.7392rpx rgba(60, 108, 254, 0.08);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -205,19 +205,19 @@ const getFileExt = (item) => {
 
 .attachment-item:active {
 	transform: translateY(4rpx);
-	box-shadow: 0 6rpx 16rpx rgba(60, 108, 254, 0.12);
+	box-shadow: 0 6rpx 14.4928rpx rgba(60, 108, 254, 0.12);
 }
 
 .attachment-item-icon {
-	width: 80rpx;
-	height: 80rpx;
+	width: 72.464rpx;
+	height: 72.464rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	margin-top: 16rpx;
-	margin-bottom: 16rpx;
+	margin-top: 14.4928rpx;
+	margin-bottom: 14.4928rpx;
 	overflow: hidden;
-	border-radius: 16rpx;
+	border-radius: 14.4928rpx;
 }
 
 .attachment-icon-image {
@@ -227,7 +227,7 @@ const getFileExt = (item) => {
 
 .attachment-item-name {
 	width: 100%;
-	font-size: 24rpx;
+	font-size: 21.7392rpx;
 	color: #333;
 	display: flex;
 	align-items: center;
@@ -235,19 +235,19 @@ const getFileExt = (item) => {
 	word-break: break-word;
 	height: 60rpx;
 	border-bottom: 1px solid #f5f5f5;
-	padding: 0 16rpx;
+	padding: 0 14.4928rpx;
 }
 .attachment-item-text {
 	width: 90%;
 	display: block;
-	font-size: 24rpx;
+	font-size: 21.7392rpx;
 	color: #333;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
 	word-break: break-word;
-	min-height: 40rpx;
-	max-height: 80rpx;
+	min-height: 36.232rpx;
+	max-height: 72.464rpx;
 	text-align: center;
 
 	overflow: hidden;
@@ -264,10 +264,10 @@ const getFileExt = (item) => {
     }
 .preview-popup {
 	width: 768rpx;
-	padding: 32rpx 32rpx 48rpx;
+	padding: 28.9856rpx 28.9856rpx 48rpx;
 	background: #ffffff;
-	border-top-left-radius: 32rpx;
-	border-top-right-radius: 32rpx;
+	border-top-left-radius: 28.9856rpx;
+	border-top-right-radius: 28.9856rpx;
 	min-height: 320rpx;
 	box-sizing: border-box;
 	margin: 0 auto;
@@ -277,7 +277,7 @@ const getFileExt = (item) => {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 24rpx;
+	margin-bottom: 21.7392rpx;
 }
 
 .preview-title {
@@ -304,8 +304,8 @@ const getFileExt = (item) => {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding: 40rpx 0;
-	gap: 24rpx;
+	padding: 36.232rpx 0;
+	gap: 21.7392rpx;
 	width: 90%;
 }
 
@@ -315,7 +315,7 @@ const getFileExt = (item) => {
 }
 
 .preview-file-name {
-	font-size: 26rpx;
+	font-size: 21.7392rpx;
 	color: #333;
 	text-align: center;
 	line-height: 1.5;
@@ -344,7 +344,7 @@ const getFileExt = (item) => {
 }
 
 .preview-action-text {
-	font-size: 26rpx;
+	font-size: 21.7392rpx;
 	color: #3c6cfe;
 }
 </style>

@@ -45,8 +45,11 @@ const handleBack = () => {
 ::v-deep .uni-navbar__header {
 	padding: 0 !important;
 	background: #fff !important;
+	height: 90.58rpx !important;
 }
-
+::v-deep .uni-navbar--border{
+	border-bottom-width: 0rpx !important;
+}
 .status_bar {
 	background: #fff;
 	width: 100%;
@@ -54,14 +57,14 @@ const handleBack = () => {
 
 .nav-bar-top {
 	.back-btn {
-		width: 100rpx;
-		height: 100rpx;
+		width: 90.58rpx;
+		height: 90.58rpx;
 		background: url('../../static/images/back.svg') center center no-repeat;
-		background-size: 24rpx;
+		background-size: 21.7392rpx;
 	}
 
 	.nav-title {
-		font-size: 32rpx;
+		font-size: 28.9856rpx;
 		font-weight: bold;
 		color: #000;
 	}

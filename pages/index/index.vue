@@ -65,7 +65,7 @@
 	// 响应式数据
 	// const phoneNumber = ref('sybjbr1');  //经办人事业部   资金
 	// const phoneNumber = ref('sybzgo');  //您好，业务主管（运管中心）（暂支核销）
-	const phoneNumber = ref('sybzg1');  //业务主管（一事业部） （其他） （科研）
+	//const phoneNumber = ref('sybzg1');  //业务主管（一事业部） （其他） （科研）
 	// const phoneNumber = ref('cwzg');  //业务主管（一事业部）  cwzg财务主管
 	// const phoneNumber = ref('jbrsz');  //经办人（市政）（收入确认）（费用暂支）
 	// 申请人:sybjbro  审核人：sybzgo sybldo cwkj
@@ -73,6 +73,7 @@
 	// 其他费用报销流程
 	// 申请人：sybjbr1
 	// 审批人：sybzg1  
+	const phoneNumber = ref('ctglpengll'); 
 	const password = ref(123);
 	// 方法定义
 	const handleLogin =  async () => {
