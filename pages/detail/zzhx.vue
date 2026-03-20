@@ -379,7 +379,6 @@
 					word-wrap: break-word;
 					word-break: break-all;
 					white-space: normal;
-					line-height: 1.4;
 					min-height: 65.2176rpx;
 					/* 如果需要最小高度，使用 min-height */
 				}
@@ -390,25 +389,31 @@
 				// border: 1px solid red;
 
 				.amount-label {
-					height: 70rpx;
-					line-height: 70rpx;
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
+					word-wrap: break-word;
+					word-break: break-all;
+					white-space: normal;
+					height: 65.2176rpx;
 					font-size: 21.7392rpx;
 					color: #99ccff;
 					text-align: right;
 				}
 
 				.amount-value {
-					height: 70rpx;
-					line-height: 70rpx;
+					height: 65.2175rpx;
+					display: flex;
+					align-items: center;
 
 					.amount-value-symbol {
-						font-size: 25.3624rpx;
+						font-size: 21.7392rpx;
 						color: #ffffff;
 						margin-right: 10rpx;
 					}
 
 					.amount-value-number {
-						font-size: 36rpx;
+						font-size: 32.609rpx;
 						color: #ffd615;
 						font-weight: bold;
 					}
@@ -418,22 +423,22 @@
 
 
 			.hero-tags {
-				width: calc(100% - 320rpx);
+				width: calc(100% - 326.07rpx);
 				height: 65.2176rpx;
 				overflow: hidden;
 				display: flex;
 				align-items: center;
-				gap: 8rpx;
+				gap: 14.4928rpx;
 				flex-wrap: nowrap;
 
 				.tag {
 					box-sizing: border-box;
-					height: 44rpx;
+					height: 36.232rpx;
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					border: 2rpx solid #66ccff;
-					padding: 2rpx 12rpx;
+					border: 1.8116rpx solid #66ccff;
+					padding: 1.8116rpx 12rpx;
 					border-radius: 8rpx;
 					font-size: 18rpx;
 					color: #66ccff;
@@ -450,10 +455,10 @@
 				position: absolute;
 				bottom: 0;
 				right: 0;
-				width: 350rpx;
-				height: 65.2176rpx;
-				background: url('../../static/images/bg_1@2x.jpg') no-repeat center center;
-				background-size: 100% 100%;
+				width: 326.07rpx;
+				height: 65.2175rpx;
+				background: url('../../static/images/bg_1@2x.jpg') left center no-repeat;
+				background-size: cover;
 				margin-top: 18rpx;
 				display: flex;
 				justify-content: flex-end;
@@ -464,7 +469,7 @@
                 right: 36rpx;
 				width: 120rpx;
 				height: 42rpx;
-				border: 2rpx solid #66ccff;
+				border: 1.8116rpx solid #66ccff;
 				box-sizing: border-box;
 				display: flex;
 				align-items: center;
@@ -483,20 +488,19 @@
 				align-items: center;
 				justify-content: center;
 				font-size: 21.7392rpx;
-				font-weight: 600;
 				color: #fff;
 			}
 
 			.btn.primary {
 				box-sizing: border-box;
-				width: 160rpx;
+				width: 126.84rpx;
 				background: #3e65f6;
 			}
 
 			.btn.outline {
 				box-sizing: border-box;
 				border-top-left-radius: 15rpx;
-				width: 120rpx;
+				width: 126.84rpx;
 				background: #6699ff;
 			}
 		}
@@ -615,7 +619,7 @@
 			align-items: flex-start;
 			padding: 8rpx 0;
 			&.info-item-border {
-				border-bottom: 2rpx dashed #ddd;
+				border-bottom: 1.8116rpx dashed #ddd;
 				padding-bottom: 22rpx !important;
 				margin-bottom: 12rpx;
 			}
@@ -653,7 +657,7 @@
 
 			.contract-section {
 				box-sizing: border-box;
-				border: 2rpx solid #ddd;
+				border: 1.8116rpx solid #ddd;
 				padding: 14.4928rpx;
 				overflow: hidden;
 
@@ -706,7 +710,7 @@
 			}
 
 			.summary-row {
-				border-top: 2rpx solid #ddd;
+				border-top: 1.8116rpx solid #ddd;
 				margin-top: 18.116rpx;
 				padding: 18.116rpx 14.4928rpx 8rpx;
 				height: auto !important;
@@ -754,7 +758,7 @@
 
 				.account-info-block {
 					background: #f6f8fc;
-					border: 2rpx solid #ddd;
+					border: 1.8116rpx solid #ddd;
 					overflow: hidden;
 					padding: 0;
 
@@ -766,7 +770,7 @@
 						justify-content: space-between;
 						align-items: center;
 						padding: 14.4928rpx;
-						border-bottom: 2rpx solid #dddddd;
+						border-bottom: 1.8116rpx solid #dddddd;
 						background: #f6f8fc;
 
 						&:last-child {

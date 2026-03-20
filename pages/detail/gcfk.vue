@@ -87,6 +87,11 @@
 						<text class="info-value" :class="{'info-value-left': (itemDatas.businessRemarkPr?.length > 34)}"
 							>{{ itemDatas.businessRemarkPr }}</text>
 					</view>
+					<view class="info-item" :class="{'info-item-column': (itemDatas.remark?.length > 34)}">
+						<text class="info-label">其他说明事项</text>
+						<text class="info-value" :class="{'info-value-left': (itemDatas.remark?.length > 34)}"
+							>{{ itemDatas.remark || '--' }}</text>
+					</view>
 				</view>
 			</view>
 
@@ -1357,7 +1362,7 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: flex-start;
-				margin-bottom: 14rpx;
+				margin-bottom: 14.4928rpx;
 			}
 
 			.project-name {
@@ -1371,7 +1376,7 @@
 					word-wrap: break-word;
 					word-break: break-all;
 					white-space: normal;
-					min-height: 65.2175rpx;
+					min-height: 65.2176rpx;
 					/* 如果需要最小高度，使用 min-height */
 				}
 
@@ -1396,7 +1401,8 @@
 
 				.amount-value {
 					height: 65.2175rpx;
-					line-height: 65.2175rpx;
+					display: flex;
+					align-items: center;
 
 					.amount-value-symbol {
 						font-size: 21.7392rpx;
@@ -1415,12 +1421,12 @@
 
 
 			.hero-tags {
-				width: calc(100% - 320rpx);
+				width: calc(100% - 326.07rpx);
 				height: 65.2176rpx;
 				overflow: hidden;
 				display: flex;
 				align-items: center;
-				gap: 14rpx;
+				gap: 14.4928rpx;
 				flex-wrap: nowrap;
 
 				.tag {
@@ -1469,7 +1475,6 @@
 				height: 65.2175rpx;
 				background: url('../../static/images/bg_1@2x.jpg') left center no-repeat;
 				background-size: cover;
-				// border: 1.8116rpx solid #030303;
 				margin-top: 18rpx;
 				display: flex;
 				justify-content: flex-end;
@@ -1522,7 +1527,6 @@
 				font-size: 25.3624rpx;
 				color: #000000;
 				font-weight: bold;
-
 			}
 		}
 

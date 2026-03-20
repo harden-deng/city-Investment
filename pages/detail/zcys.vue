@@ -20,7 +20,7 @@
 								{{ formatNumber(itemDatas.planToPay) }}</text></view>
 					</view>
 				</view>
-				<view class="hero-tags">
+				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
 					<view class="tag" v-for="(t, i) in stageTags" :key="i">{{ t }}</view>
 				</view>
 				<view class="hero-actions" v-show="currentType === 'pending'">
@@ -386,7 +386,6 @@
 					word-wrap: break-word;
 					word-break: break-all;
 					white-space: normal;
-					line-height: 1.4;
 					min-height: 65.2176rpx;
 				}
 			}
@@ -395,25 +394,31 @@
 				text-align: right;
 
 				.amount-label {
-					height: 70rpx;
-					line-height: 70rpx;
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
+					word-wrap: break-word;
+					word-break: break-all;
+					white-space: normal;
+					height: 65.2176rpx;
 					font-size: 21.7392rpx;
 					color: #99ccff;
 					text-align: right;
 				}
 
 				.amount-value {
-					height: 70rpx;
-					line-height: 70rpx;
+					height: 65.2175rpx;
+					display: flex;
+					align-items: center;
 
 					.amount-value-symbol {
-						font-size: 25.3624rpx;
+						font-size: 21.7392rpx;
 						color: #ffffff;
 						margin-right: 10rpx;
 					}
 
 					.amount-value-number {
-						font-size: 36rpx;
+						font-size: 32.609rpx;
 						color: #ffd615;
 						font-weight: bold;
 					}
@@ -423,26 +428,29 @@
 
 
 			.hero-tags {
-				width: calc(100% - 320rpx);
+				width: calc(100% - 326.07rpx);
 				height: 65.2176rpx;
 				overflow-x: hidden;
 				display: flex;
 				align-items: center;
-				gap: 8rpx;
+				gap: 14.4928rpx;
 				flex-wrap: nowrap;
 
 				.tag {
 					box-sizing: border-box;
-					height: 44rpx;
+					height: 36.232rpx;
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					border: 2rpx solid #66ccff;
-					padding: 2rpx 12rpx;
+					border: 1.8116rpx solid #66ccff;
+					padding: 1.8116rpx 12rpx;
 					border-radius: 8rpx;
 					font-size: 18rpx;
 					color: #66ccff;
 					white-space: nowrap;
+				}
+				&.hero-tags-width {
+					width: calc(100% - 180rpx);
 				}
 			}
 
@@ -452,10 +460,10 @@
 				position: absolute;
 				bottom: 0;
 				right: 0;
-				width: 350rpx;
-				height: 65.2176rpx;
-				background: url('../../static/images/bg_1@2x.jpg') no-repeat center center;
-				background-size: 100% 100%;
+				width: 326.07rpx;
+				height: 65.2175rpx;
+				background: url('../../static/images/bg_1@2x.jpg') left center no-repeat;
+				background-size: cover;
 				margin-top: 18rpx;
 				display: flex;
 				justify-content: flex-end;
@@ -466,7 +474,7 @@
                 right: 36rpx;
 				width: 120rpx;
 				height: 42rpx;
-				border: 2rpx solid #66ccff;
+				border: 1.8116rpx solid #66ccff;
 				box-sizing: border-box;
 				display: flex;
 				align-items: center;
@@ -485,20 +493,19 @@
 				align-items: center;
 				justify-content: center;
 				font-size: 21.7392rpx;
-				font-weight: 600;
 				color: #fff;
 			}
 
 			.btn.primary {
 				box-sizing: border-box;
-				width: 160rpx;
+				width: 126.84rpx;
 				background: #3e65f6;
 			}
 
 			.btn.outline {
 				box-sizing: border-box;
 				border-top-left-radius: 15rpx;
-				width: 120rpx;
+				width: 126.84rpx;
 				background: #6699ff;
 			}
 		}
@@ -635,7 +642,7 @@
 
 			.contract-section {
 				box-sizing: border-box;
-				border: 2rpx solid #ddd;
+				border: 1.8116rpx solid #ddd;
 				padding: 14.4928rpx;
 				overflow: hidden;
 
@@ -688,7 +695,7 @@
 			}
 
 			.summary-row {
-				border-top: 2rpx solid #ddd;
+				border-top: 1.8116rpx solid #ddd;
 				margin-top: 18.116rpx;
 				padding: 18.116rpx 14.4928rpx 8rpx;
 				height: auto !important;
@@ -736,7 +743,7 @@
 
 				.account-info-block {
 					background: #f6f8fc;
-					border: 2rpx solid #ddd;
+					border: 1.8116rpx solid #ddd;
 					overflow: hidden;
 					padding: 0;
 
@@ -748,7 +755,7 @@
 						justify-content: space-between;
 						align-items: center;
 						padding: 14.4928rpx;
-						border-bottom: 2rpx solid #dddddd;
+						border-bottom: 1.8116rpx solid #dddddd;
 						background: #f6f8fc;
 
 						&:last-child {
@@ -790,7 +797,7 @@
 	.table1 {
 		box-sizing: border-box;
 		width: 100%;
-		// border-bottom: 2rpx #ddd solid;
+		// border-bottom: 1.8116rpx #ddd solid;
 	}
 
 	.table2 {
@@ -810,8 +817,8 @@
 
 	.table1 td {
 		box-sizing: border-box;
-		// border-left: 2rpx #ddd solid;
-		border-top: 2rpx #ddd solid;
+		// border-left: 1.8116rpx #ddd solid;
+		border-top: 1.8116rpx #ddd solid;
 		padding: 14.4928rpx;
 		font-size: 21.7392rpx;
 	}
@@ -856,7 +863,7 @@
 	.table1 td.sticky-3 { position: sticky; left: 440rpx;  z-index: 2;box-sizing: border-box; }
 
 	.table1 td.sticky-xz-1 { position: sticky; left: 0; top: 0; z-index: 3;max-width: 220rpx !important;min-width: 220rpx !important;width: 220rpx !important;background: #fff;}
-	.table1 td.sticky-xz-2 { position: sticky; left: 220rpx;  z-index: 4;background: #fff;border-right: 2rpx #ddd solid; }
+	.table1 td.sticky-xz-2 { position: sticky; left: 220rpx;  z-index: 4;background: #fff;border-right: 1.8116rpx #ddd solid; }
 	.table1 td.sticky-xz-3 { position: sticky; left: 440rpx;  z-index: 2;background: #fff; }
 
 	.table1 td.sticky-lx-1 { position: sticky; left: 0; top: 0; z-index: 3;width: 152rpx !important;background: #fff; }
