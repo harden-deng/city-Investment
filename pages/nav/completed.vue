@@ -247,10 +247,10 @@
 
 <style lang="scss" scoped>
 	::v-deep .uni-easyinput__content {
-		height: 62rpx !important;
+		height: 54.348rpx !important;
 		background-color: #FFF !important;
 		border: none !important;
-		border-radius: 32rpx !important;
+		border-radius: 28.9856rpx !important;
 	}
 
 	::v-deep .uniui-clear {
@@ -275,7 +275,10 @@
 	::v-deep .uni-popup {
 		z-index: 999 !important;
 	}
-
+	::v-deep .uni-navbar__header{
+		height: 90.58rpx !important;
+		padding: 0 !important;
+	}
 	// ::v-deep .uni-navbar__header {
 	// 	height: 50px !important;
 	// 	padding: 0 !important;
@@ -324,27 +327,27 @@
 
 		.nav-bar-title {
 			width: 100%;
-			font-size: 32rpx;
+			font-size: 28.9856rpx;
 			color: #000;
 			font-weight: bold;
-			margin-left: 32rpx !important;
+			margin-left: 28.9856rpx !important;
 		}
 
 		.nav-input-view {
 			box-sizing: border-box;
-			width: 324rpx;
-			height: 66rpx;
-			border-radius: 32rpx;
-			font-size: 24rpx;
+			width: 293.4792rpx;
+			height: 57.9712rpx;
+			border-radius: 28.9856rpx;
+			font-size: 21.7392rpx;
 			color: #666;
-			border: 2rpx solid #eee;
+			border: 1.8116rpx solid #eee;
 			display: flex;
 
 			align-items: center;
 
 			.input-seach {
-				width: 24rpx;
-				height: 24rpx;
+				width: 21.7392rpx;
+				height: 21.7392rpx;
 				margin: 0 4rpx 0 30rpx;
 			}
 
@@ -352,7 +355,7 @@
 				flex: 1;
 				// margin-left: 80rpx;
 				// margin-right: 12rpx;
-				font-size: 24rpx !important;
+				font-size: 21.7392rpx !important;
 				color: #666 !important;
 
 			}
@@ -361,8 +364,8 @@
 		.nav-bar-filter {
 			box-sizing: border-box;
 			display: flex;
-			padding: 0 32rpx;
-			font-size: 24rpx;
+			padding: 0 28.9856rpx;
+			font-size: 21.7392rpx;
 			color: #666;
 			align-items: center;
 			justify-content: center;
@@ -449,13 +452,13 @@
 
 	// 分段控制器区域
 	.segmented-section {
-		box-sizing: border-box;
+		// box-sizing: border-box;
 		background-color: #ffffff;
-		// padding: 4px 30rpx -2rpx;
+		// padding: 4px 30rpx -1.8116rpx;
 		border-bottom: 1rpx solid #eee;
 		display: flex;
 		justify-content: space-around;
-		height: 62rpx;
+		height: 54.348rpx;
 
 		.segmented-section-item {
 			display: flex;
@@ -466,8 +469,8 @@
 
 			.section-item-0 {
 				box-sizing: border-box;
-				width: 60rpx;
-				height: 6rpx;
+				width: 54.348rpx;
+				height: 5.4348rpx;
 
 				&.section-item-0-active {
 					background: #3e65f6;
@@ -476,7 +479,7 @@
 
 			.section-item-1 {
 				position: relative;
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 
 				.msg {
 					display: block;
@@ -507,13 +510,13 @@
 	.order-card {
 		box-sizing: border-box;
 		background-color: #ffffff;
-		padding: 32rpx;
+		padding: 28.9856rpx;
 		// margin: 0 30rpx 30rpx;
 		width: 90%;
 		margin-left: auto;
 		margin-right: auto;
-		margin-bottom: 32rpx;
-		border-radius: 24rpx;
+		margin-bottom: 28.9856rpx;
+		border-radius: 21.7392rpx;
 		position: relative;
 		z-index: 19;
 
@@ -522,7 +525,7 @@
 			height: 128rpx;
 			position: absolute;
 			z-index: 29;
-			top: 40rpx;
+			top: 36.232rpx;
 			right: 80rpx;
 			background-image: url('../../static/images/approved.png');
 			background-size: contain;
@@ -534,14 +537,14 @@
 
 	.order-header {
 		box-sizing: border-box;
-		height: 80rpx;
+		height: 72.464rpx;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 
 		.order-id {
 			width: calc(100% - 130rpx);
-			font-size: 32rpx;
+			font-size: 28.9856rpx;
 			color: #000000;
 			font-weight: bold;
 			white-space: normal;
@@ -558,7 +561,7 @@
 			align-items: center;
 
 			.time-text {
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #999;
 				text-align: right;
 			}
@@ -571,31 +574,31 @@
 
 		.quote-section {
 			box-sizing: border-box;
-			min-height: 40rpx;
-			line-height: 40rpx;
+			min-height: 36.232rpx;
+			line-height: 36.232rpx;
 			display: flex;
 			padding: 8rpx 0;
 
 			.quote-label {
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #000;
 				white-space: nowrap;
 				width: 120rpx;
-				line-height: 40rpx;
+				line-height: 36.232rpx;
 			}
 
 			.quote-price {
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #3e65f6;
 				font-weight: bold;
-				line-height: 40rpx;
+				line-height: 36.232rpx;
 				margin-left: 8rpx;
 			}
 
 			.description-text {
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 				color: #666;
-				line-height: 40rpx;
+				line-height: 36.232rpx;
 				margin-left: 8rpx;
 
 			}
@@ -625,7 +628,7 @@
 				min-width: 10rpx;
 				white-space: nowrap;
 				height: 36rpx;
-				border: 2rpx #88afff solid;
+				border: 1.8116rpx #88afff solid;
 				border-radius: 20rpx;
 				display: flex;
 				justify-content: center;
@@ -642,7 +645,7 @@
 				}
 
 				.label-text {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #3e65f6;
 				}
 			}

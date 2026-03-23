@@ -4,7 +4,7 @@
 			<!-- 状态指示器 -->
 			<view class="timeline-indicator-container">
 				<view
-					class="timeline-indicator"
+					class="timeline-indicator status-default"
 					:class="{
 						'status-pending': item.approvalActionType === 'vmPending',
 						'status-approved': item.approvalActionType === '已审批' && item.approvalResult == '批准',
@@ -14,7 +14,7 @@
 					}"
 				>
 					<view class="indicator-checkmark" v-if="item.approvalResult == '完成' || item.approvalResult === '处理完成'">
-						<uni-icons type="smallcircle-filled" size="24rpx" color="#07c160"></uni-icons>
+						<uni-icons type="smallcircle-filled" size="21.7392rpx" color="#07c160"></uni-icons>
 					</view>
 					<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批' && item.approvalResult == '批准'">
 						<uni-icons type="checkmarkempty" size="20rpx" color="#07c160"></uni-icons>
@@ -38,7 +38,7 @@
 								'status-text-green':
 									item.approvalActionType === '已审批' ||
 									item.approvalActionType === 'vmPending' ||
-									item.approvalActionType === '提交'
+									item.approvalActionType === '提交' || item.approvalActionType === '已处理'
 							}"
 						>
 							{{ item.approvalActionType == 'vmPending' ? '审批中' : item.approvalActionType }}
@@ -52,7 +52,7 @@
 						<view
 							class="action-btn"
 							:class="{
-								'btn-approved': item.approvalResult == '批准' || item.approvalResult == '提交' || item.approvalResult == '完成' || item.approvalResult === '处理完成',
+								'btn-approved': item.approvalResult == '批准' || item.approvalResult == '提交' || item.approvalResult == '完成' || item.approvalResult === '处理完成' || item.approvalResult === '已确认' || item.approvalResult === '已支付' || item.approvalResult === '已处理',
 								'btn-pending': item.approvalResult == '待审批' || item.approvalResult == '待处理',
 								'btn-rejected': item.approvalResult == '驳回'|| item.approvalResult == '已拒绝'
 							}"
@@ -93,10 +93,10 @@ defineProps({
 	/* 整体左侧时间线（如需） */
 	.timeline-line-main {
 		position: absolute;
-		left: 24rpx;
+		left: 21.7392rpx;
 		top: 48rpx;
 		bottom: 0;
-		width: 2rpx;
+		width: 1.8116rpx;
 		background: #ddd;
 		z-index: 1;
 	}
@@ -105,10 +105,10 @@ defineProps({
 .approval-item:not(:last-child)::before {
 	content: "";
 	position: absolute;
-	left: 16rpx;
+	left: 14rpx;
 	top: 0;
 	z-index: 0;
-	width: 2rpx;
+	width: 1.8116rpx;
 	height: 100%;
 	background: #ddd;
 }
@@ -139,35 +139,39 @@ defineProps({
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding-top: 1rpx;
+		padding-top: 1.8116rpx;
 
 		&.status-approved {
 			background: #fff;
-			border: 2rpx solid #07c160;
+			border: 1.8116rpx solid #07c160 !important;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
 		&.status-successed {
 			background: #fff;
-			border: 2rpx solid #07c160;
+			border: 1.8116rpx solid #07c160 !important;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
 		&.status-rejected {
 			background: #fff;
-			border: 2rpx solid #ffb800;
+			border: 1.8116rpx solid #ffb800 !important;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
 		&.status-pending {
 			background: #fff;
+			border: none !important;
 		}
 		&.status-submitted {
 			background: #fff;
-			border: 2rpx solid #07c160;
+			border: 1.8116rpx solid #07c160 !important;
+		}
+		&.status-default {
+			border: 1.8116rpx solid #889eaf;
 		}
 
 		.indicator-checkmark {
@@ -190,9 +194,9 @@ defineProps({
 		.indicator-loading {
 			width: 100%;
 			height: 100%;
-			border: 2rpx solid transparent;
-			border-top: 2rpx solid #7b93a6;
-			border-right: 2rpx solid #7b93a6;
+			border: 1.8116rpx solid transparent;
+			border-top: 1.8116rpx solid #7b93a6;
+			border-right: 1.8116rpx solid #7b93a6;
 			border-radius: 50%;
 			animation: rotate 1s linear infinite;
 		}
@@ -225,13 +229,13 @@ defineProps({
 			flex-wrap: wrap;
 
 			.title-text {
-				font-size: 28rpx;
+				font-size: 21.7392rpx;
 				font-weight: bold;
 				color: #000;
 			}
 
 			.title-status {
-				font-size: 24rpx;
+				font-size: 21.7392rpx;
 
 				&.status-text-green {
 					color: #07c160;
@@ -244,16 +248,16 @@ defineProps({
 				display: flex;
 				justify-content: flex-start;
 				align-items: center;
-				gap: 10rpx;
+				gap: 10.9696rpx;
 				flex-wrap: wrap;
 
 				.approver-name {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #000;
 				}
 
 				.approval-time {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #999;
 					text-align: right;
 					flex: 1;
@@ -262,9 +266,9 @@ defineProps({
 
 				.action-btn {
 					display: block;
-					padding: 4rpx 10rpx;
+					padding: 0rpx 10.9696rpx;
 					border-radius: 6rpx;
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #fff;
 
 					&.btn-approved {
@@ -283,12 +287,12 @@ defineProps({
 				margin-top: 12rpx;
 
 				.remark-label {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #666;
 					margin-right: 8rpx;
 				}
 				.remark-text {
-					font-size: 24rpx;
+					font-size: 21.7392rpx;
 					color: #666;
 					line-height: 1.6;
 				}

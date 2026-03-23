@@ -24,7 +24,7 @@
 					<view class="access-item" v-for="(item, index) in quickAccessList" :key="index"
 						@click="handleQuickAccess(item)">
 						<view class="access-icon" :style="{ backgroundColor: item.bjColor }">
-							<image :src="item.imgUrl" mode="aspectFit" style="width: 59%; height: 59%"></image>
+							<image :src="item.imgUrl" class="access-icon-img" mode="aspectFit"></image>
 						</view>
 						<text class="access-label">{{ item.label }}</text>
 					</view>
@@ -43,7 +43,7 @@
 				<!-- 在线帮助 -->
 				<view class="help-section" @click="handleHelp">
 					<image src="../../static/images/ib_2.jpg" mode="" aria-label="在线帮助" loading="lazy"
-						style="width: 100%;height: 100%;border-radius: 24rpx;"></image>
+						style="width: 100%;height: 100%;border-radius: 21.7392rpx;"></image>
 				</view>
 			</view>
 		</scroll-view>
@@ -191,7 +191,8 @@
 			}
 
 			.header-banner {
-				height: 320rpx;
+				width: 100%;
+				height: 289.856rpx;
 				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 				position: relative;
 				overflow: hidden;
@@ -203,15 +204,13 @@
 					right: 0;
 					bottom: 0;
 					background: url('../../static/images/banner.jpg') center/cover;
-					display: flex;
-					align-items: center;
-					justify-content: center;
+					width: 100%;
 				}
 			}
 
 			.notification-bar {
 				width: 90%;
-				margin: -30rpx auto 0;
+				margin: -27.174rpx auto 0;
 				position: relative;
 				z-index: 10;
 
@@ -219,25 +218,25 @@
 					background: #FFFFFF;
 					border-radius: 125rpx;
 					box-sizing: border-box;
-					height: 60rpx;
-					padding: 0 30rpx;
+					height: 54.348rpx;
+					padding: 0 27.174rpx;
 					display: flex;
 					align-items: center;
-					box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+					box-shadow: 0 8rpx 28.9856rpx rgba(0, 0, 0, 0.1);
 
 					.speaker-icon {
-						width: 28rpx;
-						height: 28rpx;
+						width: 25.3624rpx;
+						height: 25.3624rpx;
 						// margin-right: 22rpx;
 						background-image: url('../../static/images/icon_1.svg');
 						background-size: contain;
 						background-repeat: no-repeat;
 						background-position: center;
-						margin-right: 30rpx;
+						margin-right: 27.174rpx;
 					}
 
 					.notification-text {
-						font-size: 24rpx;
+						font-size: 21.7392rpx;
 						color: #333;
 						flex: 1;
 						white-space: nowrap;
@@ -251,43 +250,44 @@
 
 
 		.main-content {
-			padding: 30rpx 0 34rpx;
+			padding: 28.9856rpx 0 28.9856rpx;
 
 			.quick-access {
 				box-sizing: border-box;
-				height: 220rpx;
+				height: 199.276rpx;
 				width: 90%;
 				margin-left: auto;
 				margin-right: auto;
 				display: flex;
-				justify-content: space-around;
+				justify-content: center;
 				align-items: center;
-				margin-bottom: 32rpx;
+				margin-bottom: 28.9856rpx;
 				background-color: #ffffff;
 				border-radius: 25rpx;
 				box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 				padding: 0 4rpx;
-				margin-top: 2rpx;
+				margin-top: 1.8116rpx;
 
 				.access-item {
-					flex: 1;
+					width: 135.000432rpx;
+					height: 128.6236rpx;
 					display: flex;
 					flex-direction: column;
 					align-items: center;
-					margin: 0 10rpx;
+					margin: 0 14.4928rpx;
 
 					.access-icon {
-						width: 90rpx;
-						height: 90rpx;
-						border-radius: 24rpx;
+						width: 81.522rpx;
+						height: 81.522rpx;
+						border-radius: 21.7392rpx;
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						margin-bottom: 20rpx;
+						margin-bottom: 18.116rpx;
 					}
 
 					.access-label {
-						font-size: 24rpx;
+						font-size: 21.7392rpx;
 						color: #333333;
 						text-align: center;
 					}
@@ -300,10 +300,10 @@
 				// height: 448rpx;
 				margin-left: auto;
 				margin-right: auto;
-				margin-bottom: 30rpx;
+				margin-bottom: 28.9856rpx;
 				background-color: #ffffff;
-				padding: 26rpx 32rpx 32rpx 32rpx;
-				border-radius: 25rpx;
+				padding: 23.5508rpx 28.9856rpx 28.9856rpx 28.9856rpx;
+				border-radius: 21.7392rpx;
 				box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 				display: flex;
 				flex-direction: column;
@@ -312,12 +312,12 @@
 				.section-title {
 					// width: 622rpx;
 					width: 100%;
-					height: 44rpx;
+					height: 41.6668rpx;
 					position: relative;
-					margin-bottom: 16rpx;
+					margin-bottom: 14.4928rpx;
 
 					.section-title-text {
-						font-size: 32rpx;
+						font-size: 28.9856rpx;
 						color: #000000;
 						font-weight: bold;
 						position: absolute;
@@ -350,9 +350,9 @@
 				margin-left: auto;
 				margin-right: auto;
 				height: 200rpx;
-				border-radius: 24rpx;
+				border-radius: 21.7392rpx;
 				box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-				padding: 2rpx;
+				padding: 1.8116rpx;
 				background-color: #ffffff;
 			}
 		}
@@ -367,11 +367,11 @@
 	// 窄屏下适当减小字体与间距：
 	@media screen and (max-width: 360px) {
 		.notification-text {
-			font-size: 22rpx;
+			font-size: 21.7392rpx;
 		}
 
 		.access-label {
-			font-size: 22rpx;
+			font-size: 21.7392rpx;
 		}
 	}
 
@@ -417,4 +417,10 @@
 	// 		}
 	// 	}
 	// }
+	.access-icon-img {
+  width: 100%;
+  height: 100%;
+  max-width: 60%;
+  max-height: 60%;
+}
 </style>

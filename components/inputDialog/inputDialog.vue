@@ -110,28 +110,28 @@ import { ref, watch, computed,reactive } from 'vue'
 	.idlg-title {
 		display: block;
 		text-align: center;
-		font-size: 30rpx;
+		font-size: 25.3624rpx;
 		color: #000;
-		padding-top: 25rpx;
+		padding-top: 28.9856rpx;
 	}
 
 	.idlg-input-wrap {
-		padding: 40rpx 24rpx;
+		padding: 28.9856rpx 21.7392rpx;
 	}
 
 	.idlg-footer {
 		display: flex;
 		align-items: stretch;
-		border-top: 1rpx solid #eee;
+		border-top: 1.8116rpx solid #eee;
 	}
 
 	.btn {
 		flex: 1;
-		height: 92rpx;
-		line-height: 92rpx;
+		height: 83.3336rpx;
+		line-height: 83.3336rpx;
 		border-radius: 0;
 		background: #fff;
-		font-size: 30rpx;
+		font-size: 25.3624rpx;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -150,7 +150,7 @@ import { ref, watch, computed,reactive } from 'vue'
 	}
 
 	.divider {
-		width: 1rpx;
-		border-left: 1rpx solid #eee;
+		width: 1.8116rpx;
+		border-left: 1.8116rpx solid #eee;
 	}
 </style>

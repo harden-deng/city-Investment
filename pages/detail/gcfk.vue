@@ -28,7 +28,6 @@
 					<view class="btn outline" @click="onReject">打回</view>
 					<view class="btn primary" @click="onApprove">通过</view>
 				</view>
-
 				<view class="wfstatus-actions"
 					v-show="currentType === 'completed' && (itemDatas.wfstatus == 'Running' || itemDatas.wfstatus == 'Completed')">
 					{{ wfstatusText }}

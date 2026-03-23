@@ -19,7 +19,7 @@
 			<view class="preview-popup" @touchmove.stop.prevent>
 				<view class="preview-header">
 					<text class="preview-title">{{ currentAttachment?.fileTagName || '附件预览' }}</text>
-					<uni-icons type="closeempty" size="30" color="#666" @click="closePopup"></uni-icons>
+					<uni-icons type="closeempty" size="25.3624rpx" color="#666" @click="closePopup"></uni-icons>
 				</view>
 				<view class="preview-body" v-if="currentAttachment">
 					<image
@@ -34,7 +34,7 @@
 						<text class="preview-file-name">{{ currentAttachment.fileName || currentAttachment.fileUrl || '无文件名称'}}</text>
 						<view class="preview-actions">
 							<view class="preview-action-btn" @click="openAttachment">
-								<uni-icons type="download" size="28" color="#3C6CFE"></uni-icons>
+								<uni-icons type="download" size="25.3624rpx" color="#3C6CFE"></uni-icons>
 								<text class="preview-action-text">打开附件</text>
 							</view>
 						</view>
@@ -281,9 +281,9 @@ const getFileExt = (item) => {
 }
 
 .preview-title {
-	font-size: 30rpx;
+	font-size: 25.3624rpx;
 	color: #111;
-	font-weight: 600;
+	font-weight: bold;
 }
 
 .preview-body {

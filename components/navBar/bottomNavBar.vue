@@ -190,14 +190,10 @@
 		right: 0;
 		height: 50px;
 		background: #ffffff;
-		// border-top: 1rpx solid #ffffff;
 		display: flex;
 		align-items: center;
 		justify-content: space-around;
-		// padding-bottom: constant(safe-area-inset-bottom);
-		// padding-bottom: env(safe-area-inset-bottom);
 		z-index: 19;
-		// box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.1);
 
 		.nav-item {
 			max-height: 50px;
@@ -300,7 +296,8 @@
 						}
 					}
 					.nav-label {
-						font-size: 12px;margin-top: 4rpx;
+						font-size: 12px;
+						margin-top: 3.6232rpx;
 					}
 				}
 			}
@@ -311,11 +308,11 @@
 			.bottom-nav-bar {
 				height: 60px;
 				.nav-item {
-					padding: 0rpx 8rpx;
+					padding: 0rpx 7.2464rpx;
 					.icon-container {
-						width: 50rpx;
-						height: 50rpx;
-						margin-bottom: 6rpx;
+						width: 45.2928rpx;
+						height: 45.2928rpx;
+						margin-bottom: 5.4348rpx;
 						.nav-icon {
 							width: 100%;
 							height: 100%;
@@ -331,7 +328,7 @@
 		// PC端适配
 	@media screen and (min-width: 768px) {
 		.bottom-nav-bar {
-			max-width: 768rpx;
+			max-width: 724.64rpx;
 			margin: 0 auto;
 		}
 	}

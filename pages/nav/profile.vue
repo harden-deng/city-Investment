@@ -6,7 +6,8 @@
 				<view class="card__header">
 					<text class="card__company">上海公路投资建设发展有限公司</text>
 					<view class="card__body">
-						<text class="card__name">{{ userInfo?.userFullName || '暂无姓名' }}</text>
+						<!-- <text class="card__name">{{ userInfo?.userFullName || '暂无姓名' }}</text> -->
+						<h4 class="card__name">{{ userInfo?.userFullName || '暂无姓名' }}</h4>
 						<text class="card__dept">{{ userInfo?.departmentName || '暂无部门' }}</text>
 					</view>
 				</view>
@@ -178,7 +179,7 @@ page {
 .profile {
 	height: auto;
 	background: #f3f7ff;
-	padding: 16rpx 0px;
+	padding: 14.4928rpx 0px;
 }
 
 // PC端适配
@@ -192,31 +193,36 @@ page {
 .card {
 	box-sizing: border-box;
 	width: 90%;
-	margin: 32rpx auto;
+	margin: 28.9856rpx auto;
 	background: #fff;
-	border-radius: 24rpx;
-	padding: 32rpx;
-	margin-bottom: 24rpx;
+	border-radius: 21.7392rpx;
+	padding: 28.9856rpx;
+	margin-bottom: 21.7392rpx;
 	display: flex;
 	justify-content: space-between;
-
-	&__header {
+    gap: 18.116rpx;
+	&__header {	
+		flex-grow: 1;
 		flex-direction: column;
 		display: flex;
 		justify-content: space-between;
 	}
 
 	&__company {
-		font-size: 28rpx;
+	
+		font-size: 25.3624rpx;
 		color: #000;
-		height: 112rpx;
-		// line-height: 1.4;
+		height: 97.1017rpx;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+		flex-wrap: wrap;
 	}
 
 	&__avatar {
-		width: 160rpx;
-		height: 160rpx;
-		border-radius: 12rpx;
+		width: 144.928rpx;
+		height: 144.928rpx;
+		border-radius: 10.8696rpx;
 		background: #f0f2f5;
 	}
 
@@ -227,40 +233,40 @@ page {
 
 	&__name {
 		display: block;
-		font-size: 48rpx;
+		font-size: 43.4784rpx;
 		font-weight: bold;
 		color: #000;
-		margin-bottom: 14rpx;
 	}
 
 	&__dept {
 		display: block;
-		font-size: 28rpx;
+		font-size: 25.3624rpx;
 		color: #999;
+		margin-top: 18.116rpx;
 	}
 }
 
 .list {
 	box-sizing: border-box;
 	width: 90%;
-	margin: 32rpx auto;
+	margin: 28.9856rpx auto;
 
 	&__item {
 		background: #fff;
-		border-radius: 24rpx;
-		padding: 26rpx 16rpx 26rpx 32rpx;
+		border-radius: 21.7392rpx;
+		padding: 23.5508rpx 14.4928rpx 23.5508rpx 28.9856rpx;
 		display: flex;
 		align-items: center;
-		margin-bottom: 32rpx;
+		margin-bottom: 28.9856rpx;
 
 		.item-icon {
-			width: 48rpx;
-			height: 48rpx;
+			width: 43.4784rpx;
+			height: 43.4784rpx;
 			border-radius: 6px;
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			margin: 0 28rpx 0 0;
+			margin: 0 25.3624rpx 0 0;
 		}
 
 		.item-icon-1 {
@@ -280,8 +286,8 @@ page {
 		}
 
 		.arrow-right-icon {
-			width: 48rpx;
-			height: 48rpx;
+			width: 43.4784rpx;
+			height: 43.4784rpx;
 		}
 
 
@@ -315,18 +321,21 @@ page {
 	}
 
 	&__item--danger {
-		margin-top: 32rpx;
+		margin-top: 28.9856rpx;
 	}
 
 	&__icon {
-		width: 32rpx;
+		width: 28.9856rpx;
 		height: 28.7rpx;
 	}
 
 	&__text {
 		flex: 1;
-		font-size: 28rpx;
+		font-size: 25.3624rpx;
 		color: #000;
 	}
 }
+
+
+
 </style>
