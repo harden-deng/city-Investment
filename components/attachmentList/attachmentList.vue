@@ -153,7 +153,8 @@ const getFileExt = (item) => {
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: 21.7392rpx;
+	// gap: 21.7392rpx;
+	gap: 36.232rpx;
 }
 
 .attachment-list {
@@ -195,12 +196,16 @@ const getFileExt = (item) => {
 .attachment-item {
 	width: 150rpx;
 	border-radius: 21.7392rpx;
-	background: linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);
+	background: linear-gradient(180deg, #FFF 0%, #f5f7ff 100%);
+	// background: #f6f8fc;
+	// border: 1.8116rpx solid #dfe7f5; // 新增边框
+	// border: 1.8116rpx solid rgba(60,108,254,0.18); // 新增边框
 	box-shadow: 0 8rpx 21.7392rpx rgba(60, 108, 254, 0.08);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	padding: 0 3.6232rpx 3.6232rpx;
 }
 
 .attachment-item:active {

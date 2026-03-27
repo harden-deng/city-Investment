@@ -16,6 +16,7 @@ export const procDefCodeUrlObj = {
   'CB01': '/pages/detail/cbqr',  //成本确认(张旭)11/21 
   'HX01': '/pages/detail/zzhx',  //暂支核销(宋来文)11/25
   'ZC01': '/pages/detail/zcys',  //支出预算(孙总)11/28
+  'YSW01': '/pages/detail/yswq'  //预算外签03/27
 }
 
 export const currentUrlObj = {

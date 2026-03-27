@@ -3,36 +3,18 @@
 		<view class="header-stickt">
 			<detailNavBar></detailNavBar>
 			<!-- 顶部蓝卡片 -->
-			<view class="hero-card">
-				<view class="hero-header">
-					<view class="project-name">
-						<view class="project-name-1">
-							{{ itemDetail.taskName || '工程付款申请单'  }}
-						</view>
-						<view class="project-name-1">
-							{{ itemDatas.projectName }}
-							<!-- {{ itemDatas.projectCategory }} -->
-						</view>
-					</view>
-					<view class="amount-box">
-						<view class="amount-label">申请支付总金额</view>
-						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
-								class="amount-value-number">
-								{{ formatNumber(itemDatas.planToPayTotalPr) }}</text></view>
-					</view>
-				</view>
-				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
-					<view class="tag" v-for="(t, i) in stageTags" :key="i">{{ t }}</view>
-				</view>
-				<view class="hero-actions" v-show="currentType === 'pending'">
-					<view class="btn outline" @click="onReject">打回</view>
-					<view class="btn primary" @click="onApprove">通过</view>
-				</view>
-				<view class="wfstatus-actions"
-					v-show="currentType === 'completed' && (itemDatas.wfstatus == 'Running' || itemDatas.wfstatus == 'Completed')">
-					{{ wfstatusText }}
-				</view>
-			</view>
+			<detailCard
+				:title="itemDetail.taskName || '工程付款申请单'"
+				:sub-title="itemDatas.projectName"
+				amount-label="申请支付总金额"
+				:amount-text="formatNumber(itemDatas.planToPayTotalPr)"
+				:tags="stageTags"
+				:show-action-buttons="currentType === 'pending'"
+				:show-status-text="currentType === 'completed' && (itemDatas.wfstatus == 'Running' || itemDatas.wfstatus == 'Completed')"
+				:status-text="wfstatusText"
+				@reject="onReject"
+				@approve="onApprove"
+			></detailCard>
 		</view>
 		<scroll-view scroll-y="true" class="scroller">
 			<!-- 顶部蓝卡片 -->
@@ -369,7 +351,8 @@
 									<text class="detail-value summary-value" >{{ toChineseCurrency(itemDatas.planToPayTotalPr) }}</text>
 								</view>
 						</view>
-
+						<view class="other-info">
+						</view>
 						<scroll-view scroll-x class="table-scroll-x" v-if="roadSectionList.length == 0"
 							@touchmove.stop="handleTableTouchMove">
 							<!-- <table cellspacing="0" cellpadding="0" class="table1 margin_1 table1—left-border"> -->
@@ -857,6 +840,7 @@
 		useDetailCommon
 	} from '@/utils/useDetailCommon.js'
 	import detailNavBar from '@/components/navBar/detailNavBar.vue'
+	import detailCard from '@/components/detailCard/detailCard.vue'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
@@ -1332,11 +1316,6 @@
 			position: sticky;
 			top: 0;
 			z-index: 19;
-
-			.status_bar {
-				background: #fff;
-				width: 100%;
-			}
 		}
 
 
@@ -1344,163 +1323,6 @@
 		.scroller {
 			box-sizing: border-box;
 			height: v-bind(listHeight);
-		}
-
-		.hero-card {
-			box-sizing: border-box;
-			flex-direction: column;
-			display: flex;
-			justify-content: space-between;
-			padding: 14.4928rpx 28.9856rpx 0;
-			background: #2d4ec8;
-			min-height: 200rpx;
-			color: #fff;
-			position: relative;
-			z-index: 9;
-
-			.hero-header {
-				display: flex;
-				justify-content: space-between;
-				align-items: flex-start;
-				margin-bottom: 14.4928rpx;
-			}
-
-			.project-name {
-				width: 60%;
-				font-size: 21.7392rpx;
-				color: #fff;
-
-				.project-name-1 {
-					display: flex;
-					align-items: center;
-					word-wrap: break-word;
-					word-break: break-all;
-					white-space: normal;
-					min-height: 65.2176rpx;
-					/* 如果需要最小高度，使用 min-height */
-				}
-
-			}
-
-			.amount-box {
-				text-align: right;
-				// border: 1px solid red;
-
-				.amount-label {
-					display: flex;
-					align-items: center;
-					justify-content: flex-end;
-					word-wrap: break-word;
-					word-break: break-all;
-					white-space: normal;
-					height: 65.2176rpx;
-					font-size: 21.7392rpx;
-					color: #99ccff;
-					text-align: right;
-				}
-
-				.amount-value {
-					height: 65.2175rpx;
-					display: flex;
-					align-items: center;
-
-					.amount-value-symbol {
-						font-size: 21.7392rpx;
-						color: #ffffff;
-						margin-right: 10rpx;
-					}
-
-					.amount-value-number {
-						font-size: 32.609rpx;
-						color: #ffd615;
-						font-weight: bold;
-					}
-				}
-			}
-
-
-
-			.hero-tags {
-				width: calc(100% - 326.07rpx);
-				height: 65.2176rpx;
-				overflow: hidden;
-				display: flex;
-				align-items: center;
-				gap: 14.4928rpx;
-				flex-wrap: nowrap;
-
-				.tag {
-					box-sizing: border-box;
-					height: 36.232rpx;
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					border: 1.8116rpx solid #66ccff;
-					padding: 1.8116rpx 12rpx;
-					border-radius: 8rpx;
-					font-size: 18rpx;
-					color: #66ccff;
-					white-space: nowrap;
-				}
-
-				&.hero-tags-width {
-					width: calc(100% - 180rpx);
-				}
-			}
-
-			.wfstatus-actions {
-				position: absolute;
-				bottom: 12rpx;
-				right: 36rpx;
-				width: 120rpx;
-				height: 42rpx;
-				border: 1.8116rpx solid #66ccff;
-				box-sizing: border-box;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-
-				border-radius: 25rpx;
-				font-size: 21.7392rpx;
-				color: #66ccff;
-				white-space: nowrap;
-
-			}
-
-			.hero-actions {
-				position: absolute;
-				bottom: 0;
-				right: 0;
-				width: 326.07rpx;
-				height: 65.2175rpx;
-				background: url('../../static/images/bg_1@2x.jpg') left center no-repeat;
-				background-size: cover;
-				margin-top: 18rpx;
-				display: flex;
-				justify-content: flex-end;
-			}
-
-			.btn {
-				height: 100%;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-size: 21.7392rpx;
-				color: #fff;
-			}
-
-			.btn.primary {
-				box-sizing: border-box;
-				width: 126.84rpx;
-				background: #3e65f6;
-			}
-
-			.btn.outline {
-				box-sizing: border-box;
-				border-top-left-radius: 15rpx;
-				width: 126.84rpx;
-				background: #6699ff;
-			}
 		}
 
 		.section {
@@ -1814,56 +1636,7 @@
 		padding: 18.116rpx 28.9856rpx 36.232rpx;
 	}
 
-	.attachment-list {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 21.7392rpx;
-	}
-
-	.attachment-item {
-		width: 200rpx;
-		padding: 21.7392rpx 14.4928rpx 18rpx;
-		border-radius: 21.7392rpx;
-		background: linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);
-		box-shadow: 0 8rpx 21.7392rpx rgba(60, 108, 254, 0.08);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
-	}
-
-	.attachment-item:active {
-		transform: translateY(3.6232rpx);
-		box-shadow: 0 6rpx 14.4928rpx rgba(60, 108, 254, 0.12);
-	}
-
-	.attachment-item-icon {
-		width: 72.464rpx;
-		height: 72.464rpx;
-		border-radius: 50%;
-		background: rgba(60, 108, 254, 0.12);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin-bottom: 14.4928rpx;
-	}
-
-	.attachment-item-name {
-		font-size: 21.7392rpx;
-		color: #333;
-		text-align: center;
-		line-height: 1.4;
-		word-break: break-word;
-	}
-
-
-
-
-
 	// ------------------------------------------
-	.margin_1 {
-		margin-top: 36.232rpx;
-	}
 
 	.table1 {
 		box-sizing: border-box;
@@ -1877,10 +1650,6 @@
 		border-top: 1.8116rpx #ddd solid;
 		border-collapse: separate;
 		border-spacing: 0;
-	}
-
-	.table1—left-border {
-		border-left: 1.8116rpx #ddd solid;
 	}
 
 	.table2 {
@@ -1927,10 +1696,6 @@
 
 	.text_right {
 		text-align: right;
-	}
-
-	.text_white_space_normal {
-		white-space: normal !important;
 	}
 
 	// .table-scroll-x {

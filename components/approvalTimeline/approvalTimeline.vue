@@ -14,7 +14,8 @@
 					}"
 				>
 					<view class="indicator-checkmark" v-if="item.approvalResult == '完成' || item.approvalResult === '处理完成'">
-						<uni-icons type="smallcircle-filled" size="21.7392rpx" color="#07c160"></uni-icons>
+						<!-- <uni-icons type="smallcircle-filled" size="21.7392rpx" color="#07c160"></uni-icons> -->
+						 <view style="width: 21.7392rpx;height: 21.7392rpx;border-radius: 50%;background: #07c160;"></view>
 					</view>
 					<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批' && item.approvalResult == '批准'">
 						<uni-icons type="checkmarkempty" size="20rpx" color="#07c160"></uni-icons>
@@ -135,11 +136,10 @@ defineProps({
 		border-radius: 50%;
 		margin-top: 22rpx;
 		z-index: 2;
-		flex-shrink: 0;
+		// flex-shrink: 0;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding-top: 1.8116rpx;
 
 		&.status-approved {
 			background: #fff;
@@ -179,11 +179,10 @@ defineProps({
 			// font-size: 32rpx;
 			// font-weight: bold;
 			box-sizing: border-box;
-			width: 100%;
+            width: 100%;
 			height: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
+			display: grid;
+			place-items: center; /* 水平 + 垂直一起居中 */
 		}
 
 		.indicator-empty {

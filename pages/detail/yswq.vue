@@ -3,34 +3,18 @@
 		<view class="header-stickt">
 			<detailNavBar></detailNavBar>
 			<!-- 顶部蓝卡片 -->
-			<view class="hero-card">
-				<view class="hero-header">
-					<view class="project-name">
-						<view class="project-name-1">
-							{{ itemDetail.taskName  || '成本确认及发票收讫申请单'}}
-						</view>
-						<view class="project-name-1">
-							{{ itemDatas.contractName }}
-						</view>
-					</view>
-					<view class="amount-box">
-						<view class="amount-label">申请金额</view>
-						<view class="amount-value"><text class="amount-value-symbol">¥</text><text
-								class="amount-value-number">
-								{{ formatNumber(itemDatas.confirmedCostAmountVat) }}</text></view>
-					</view>
-				</view>
-				<view class="hero-tags" :class="{'hero-tags-width': currentType != 'pending' }">
-					<view class="tag" v-for="(t, i) in stageTags" :key="i">{{ t }}</view>
-				</view>
-				<view class="hero-actions" v-show="currentType === 'pending'">
-					<view class="btn outline" @click="onReject">打回</view>
-					<view class="btn primary" @click="onApprove">通过</view>
-				</view>
-				<view class="wfstatus-actions" v-show="currentType === 'completed' && (itemDatas.wfstatus == 'Running' || itemDatas.wfstatus == 'Completed')">
-					{{ wfstatusText }}
-				</view>
-			</view>
+			<detailCard
+                :title="itemDetail.taskName || '预算外事项提请付款申请表'"
+                :sub-title="itemDatas.contractName"
+                amount-label="申请金额"
+                :amount-text="formatNumber(itemDatas.confirmedCostAmountVat)"
+                :tags="stageTags"
+                :show-action-buttons="currentType === 'pending'"
+                :show-status-text="currentType === 'completed' && (itemDatas.wfstatus == 'Running' || itemDatas.wfstatus == 'Completed')"
+                :status-text="wfstatusText"
+                @reject="onReject"
+                @approve="onApprove"
+            ></detailCard>
 		</view>
 		<scroll-view scroll-y="true" class="scroller">
 			<!-- 顶部蓝卡片 -->
@@ -47,28 +31,8 @@
 					</view>
 				</view>
 			</view>
-			<!-- 发票信息 -->
-			<view class="section" v-if="itemDatas.invoiceReceived == 1">
-				<view class="section-title-2" @click="setOptions(FUND_USAGE_STATUS)">
-					<view class="section-title-2-left">
-						<text class="section-title-vertical"></text>
-						<text class="section-title-text">发票信息</text>
-					</view>
-					<view class="section-title-2-right" :class="{ 'active': getOptions(FUND_USAGE_STATUS) }">
-
-					</view>
-				</view>
-				<transition name="collapse">
-                    <view class="info-list" v-if="getOptions(FUND_USAGE_STATUS)">
-                        <view class="info-item"  v-for="(row, idx) in infoRows2" :key="idx">
-                            <text class="info-label">{{ row.label }}</text>
-                            <text class="info-value">{{ row.value || '--' }}</text>
-                        </view>
-				    </view>
-				</transition>
-			</view>
             <!-- 确认成本信息 -->
-			<view class="section">
+			<!-- <view class="section">
 				<view class="section-title-2" @click="setOptions(PAYMENT_ACCOUNT_INFORMATION)">
 					<view class="section-title-2-left">
 						<text class="section-title-vertical"></text>
@@ -79,12 +43,6 @@
 					</view>
 				</view>
 				<transition name="collapse">
-                    <!-- <view class="info-list" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
-                        <view class="info-item" v-for="(row, idx) in infoRows3" :key="idx">
-                            <text class="info-label">{{ row.label }}</text>
-                            <text class="info-value">{{ row.value || '--' }}</text>
-                        </view>
-				    </view> -->
 					<view class="usage-details" v-if="getOptions(PAYMENT_ACCOUNT_INFORMATION)">
 							<scroll-view scroll-x class="table-scroll-x" @touchmove.stop="handleTableTouchMove">
 								<table cellspacing="0" cellpadding="0" class="table1">
@@ -140,7 +98,7 @@
 							</scroll-view>
 					</view>
 				</transition>
-			</view>
+			</view> -->
 
 			<!-- 附件 -->
 			<view class="section">
@@ -205,6 +163,7 @@
 	import { useApproval } from '@/utils/useApproval.js'
 	import { useDetailCommon } from '@/utils/useDetailCommon.js'
 	import detailNavBar from '@/components/navBar/detailNavBar.vue'
+    import detailCard from '@/components/detailCard/detailCard.vue'
 	import InputDialog from '@/components/inputDialog/inputDialog.vue'
 	import approvalTimeline from '@/components/approvalTimeline/approvalTimeline.vue'
 	import attachmentList from '@/components/attachmentList/attachmentList.vue'
@@ -242,115 +201,93 @@
 		currentType
 	})
 	const infoRows = ref([{
-			label: '合同名称',
+			label: '经办人',
 			value: '',
-			key: 'relatedContractName'
+			key: 'ApplicantName'
 		},{
-			label: '合同编号',
+			label: '填报单位',
 			value: '',
-			key: 'contractNo'
+			key: 'BusinessUnit'
 		},
 		{
-			label: '合同子项',
+			label: '付款公司',
 			value: '',
-			key: 'relatedContractItemName' 
+			key: 'FromCompanyID' 
 		},
 		{
 			label: '项目名称',
 			value: '',
-			key: 'projectName'
+			key: 'CTProjectID'
 		},{
-			label: '所属部门',
+			label: '合同编号',
 			value: '',
-			key: 'businessUnitName' 
+			key: 'ContractNo' 
 		},{
-			label: '对方单位',
+			label: '合同价格',
 			value: '',
-			key: 'partyName'
+			key: 'ContractPrice'
 		},{
-			label: '合同金额',
+			label: '申请付款额',
 			value: '',
-			key: 'contractAmountVat'
+			key: 'RequestPaymentAmount'
 		},{
-			label: '对应收入合同编号',
+			label: '未列入预算原因',
 			value: '',
-			key: 'receivingContractNo'
+			key: 'OutBudgetReason'
 		},{
-			label: '是否已收到发票',
+			label: '急需支付理由',
 			value: '',
-			key: 'invoiceReceived'
+			key: 'UrgentReason'
+		},{
+			label: '收款单位名称',
+			value: '',
+			key: 'ToCompanyName'
+		},{
+			label: '收款单位开户行',
+			value: '',
+			key: 'ToBankName'
+		},{
+			label: '收款单位账户名',
+			value: '',
+			key: 'ToBankAccountName'
+		},{
+			label: '收款银行账号',
+			value: '',
+			key: 'ToAccountNumber'
+		},{
+			label: '备注',
+			value: '',
+			key: 'Remark'
 		}
 	])
 
     
-	const infoRows2 = ref([{
-			label: '发票号',
-			value: '',
-			key: 'invoiceId'
-		},{
-			label: '专票含税金额',
-			value: '',
-			key: 'invoiceAmountVat'
-		},
+	// const infoRows2 = ref([{
+	// 		label: '发票号',
+	// 		value: '',
+	// 		key: 'invoiceId'
+	// 	},{
+	// 		label: '专票含税金额',
+	// 		value: '',
+	// 		key: 'invoiceAmountVat'
+	// 	},
 		
-		{
-			label: '专票不含税金额',
-			value: '',
-			key: 'invoiceAmountNet'
-		},
-		{
-			label: '专票税额',
-			value: '',
-			key: 'invoiceAmountTax' 
-		},{
-			label: '普票金额',
-			value: '',
-			key: 'invoiceAmountVato'
-		}
-	])
-    const infoRows3 = ref([{
-			label: '确认日期',
-			value: '',
-			key: 'confirmedDate'
-		},
-		{
-			label: '本期确认成本量',
-			value: '',
-			key: 'confirmedCostVat'
-		},
-		{
-			label: '本期成本量占合同比% ',
-			value: '',
-			key: 'contractRatio'
-		},
-		{
-			label: '确认金额(含税)',
-			value: '',
-			key: 'confirmedCostAmountVat'
-		},
-		{
-			label: '增值税税额',
-			value: '',
-			key: 'confirmedCostTaxAmount' 
-		},
-		{
-			label: '确认金额(不含税)',
-			value: '',
-			key: 'confirmedCostAmountNet'
-		},	{
-			label: '累计确认金额(含税)',
-			value: '',
-			key: 'accuredConfirmedCostAmountVat'
-		},	{
-			label: '内容',
-			value: '',
-			key: 'content'
-		},	{
-			label: '确认依据',
-			value: '',
-			key: 'remark'
-		}
-	])
+	// 	{
+	// 		label: '专票不含税金额',
+	// 		value: '',
+	// 		key: 'invoiceAmountNet'
+	// 	},
+	// 	{
+	// 		label: '专票税额',
+	// 		value: '',
+	// 		key: 'invoiceAmountTax' 
+	// 	},{
+	// 		label: '普票金额',
+	// 		value: '',
+	// 		key: 'invoiceAmountVato'
+	// 	}
+	// ])
+
 	
 	const getFormDataApproval = () => {
 		http.get(currentUrlObj[currentType.value], urlParams.value).then(res => {
@@ -358,25 +295,16 @@
 			itemDatas.value = data || {}
 			infoRows.value.forEach(item => {
 				item.value = typeof itemDatas.value[item.key] === 'number' ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key]
-                if(item.key == 'invoiceReceived' && [0,1].includes(itemDatas.value[item.key])){
-					item.value = itemDatas.value[item.key] == 0 ? '否' : '是'
-				}
+                // if(item.key == 'invoiceReceived' && [0,1].includes(itemDatas.value[item.key])){
+				// 	item.value = itemDatas.value[item.key] == 0 ? '否' : '是'
+				// }
 			});
 
-			infoRows2.value.forEach(item => {
-				item.value = (typeof itemDatas.value[item.key] === 'number') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key];
-			});
+			// infoRows2.value.forEach(item => {
+			// 	item.value = (typeof itemDatas.value[item.key] === 'number') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key];
+			// });
 
-			infoRows3.value.forEach(item => {
-				item.value = (typeof itemDatas.value[item.key] === 'number' && item.key != 'contractRatio') ? formatNumber(itemDatas.value[item.key]) : itemDatas.value[item.key];
-                if(item.key == 'contractRatio'){
-					item.value = itemDatas.value[item.key] + '%' || ''
-				}
-				if(item.key == 'confirmedDate'){
-					item.value = formatDateTimeMinute(itemDatas.value[item.key]) || ''
-				}
-                
-			});
+	
 			if(itemDatas.value.businessUnitName){
 				 stageTags.value.push(itemDatas.value.businessUnitName)
 			}

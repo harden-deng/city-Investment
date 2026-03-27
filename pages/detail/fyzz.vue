@@ -323,7 +323,6 @@
 
 			.amount-box {
 				text-align: right;
-				// border: 1px solid red;
 
 				.amount-label {
 					display: flex;
