@@ -238,7 +238,8 @@ const getFileExt = (item) => {
 	padding: 0 14.4928rpx;
 }
 .attachment-item-text {
-	width: 90%;
+	min-width: 90%;
+	width: fit-content;
 	display: block;
 	font-size: 21.7392rpx;
 	color: #333;
@@ -247,7 +248,7 @@ const getFileExt = (item) => {
 	justify-content: flex-start;
 	word-break: break-word;
 	min-height: 36.232rpx;
-	max-height: 72.464rpx;
+	height: fit-content;
 	text-align: center;
 
 	overflow: hidden;

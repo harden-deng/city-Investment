@@ -306,9 +306,9 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			border-radius: 40rpx;
-			font-size: 30rpx;
-			font-weight: bold;
+			border-radius: 36.232rpx;
+			font-size: 28.9856rpx;
+			// font-weight: bold;
 			text-align: center;
 			cursor: pointer;
 			transition: all 0.3s ease;
@@ -316,7 +316,9 @@
 		}
 
 		.save-btn {
-			background: linear-gradient(135deg, #6699ff, #1f67ca);
+			// background: linear-gradient(135deg, #6699ff, #1f67ca);
+			background: #6699ff;
+			// background: linear-gradient(135deg, #6699ff, #1f67ca);
 			color: white;
 			// box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.3);
 

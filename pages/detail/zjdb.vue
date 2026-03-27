@@ -121,6 +121,7 @@
 					</view>
 				</transition>
 			</view>
+			<view style="height: 1.8116rpx;"></view>
 		</scroll-view>
 		<InputDialog ref="inputDialogRef" :required="inputDialogRequired" :title="inputDialogTitle"
 			:placeholder="inputDialogPlaceholder" @confirm="handleInputConfirm" @cancel="handleInputCancel">

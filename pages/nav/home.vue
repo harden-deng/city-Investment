@@ -254,27 +254,28 @@
 
 			.quick-access {
 				box-sizing: border-box;
-				height: 199.276rpx;
+				min-height: 199.276rpx;
+				height: fit-content;
 				width: 90%;
 				margin-left: auto;
 				margin-right: auto;
 				display: flex;
 				justify-content: center;
 				align-items: center;
+				gap: 11.23192rpx;
 				margin-bottom: 28.9856rpx;
 				background-color: #ffffff;
 				border-radius: 25rpx;
 				box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-				padding: 0 4rpx;
-				margin-top: 1.8116rpx;
+				padding: 34.4204rpx 4rpx;
 
 				.access-item {
-					width: 135.000432rpx;
-					height: 128.6236rpx;
+					width: 152.1744rpx;
+					min-height: 128.6236rpx;
+					height: fit-content;
 					display: flex;
 					flex-direction: column;
 					align-items: center;
-					margin: 0 14.4928rpx;
 
 					.access-icon {
 						width: 81.522rpx;
@@ -288,7 +289,7 @@
 
 					.access-label {
 						font-size: 21.7392rpx;
-						color: #333333;
+						color: #000;
 						text-align: center;
 					}
 				}
@@ -312,7 +313,8 @@
 				.section-title {
 					// width: 622rpx;
 					width: 100%;
-					height: 41.6668rpx;
+					min-height: 41.6668rpx;
+					height: fit-content;
 					position: relative;
 					margin-bottom: 14.4928rpx;
 
@@ -321,6 +323,7 @@
 						color: #000000;
 						font-weight: bold;
 						position: absolute;
+						height: fit-content;
 						z-index: 10;
 					}
 

@@ -4,9 +4,8 @@
 		<view class="profile">
 			<view class="card">
 				<view class="card__header">
-					<text class="card__company">上海公路投资建设发展有限公司</text>
+					<text class="card__company">{{ userInfo?.subCompanyName || '暂无公司' }}</text>
 					<view class="card__body">
-						<!-- <text class="card__name">{{ userInfo?.userFullName || '暂无姓名' }}</text> -->
 						<h4 class="card__name">{{ userInfo?.userFullName || '暂无姓名' }}</h4>
 						<text class="card__dept">{{ userInfo?.departmentName || '暂无部门' }}</text>
 					</view>
@@ -212,7 +211,8 @@ page {
 	
 		font-size: 25.3624rpx;
 		color: #000;
-		height: 97.1017rpx;
+		min-height: 97.1017rpx;
+		height: fit-content;
 		display: flex;
 		align-items: flex-start;
 		justify-content: flex-start;
@@ -220,8 +220,10 @@ page {
 	}
 
 	&__avatar {
-		width: 144.928rpx;
-		height: 144.928rpx;
+		min-width: 144.928rpx;
+		max-width: 144.928rpx;
+		min-height: 144.928rpx;
+		max-height: 144.928rpx;
 		border-radius: 10.8696rpx;
 		background: #f0f2f5;
 	}

@@ -814,6 +814,7 @@
 					</view>
 				</transition>
 			</view>
+			<view style="height: 1.8116rpx;"></view>
 		</scroll-view>
 		<InputDialog ref="inputDialogRef" :required="inputDialogRequired" :title="inputDialogTitle"
 			:placeholder="inputDialogPlaceholder" @confirm="handleInputConfirm" @cancel="handleInputCancel">
@@ -1503,9 +1504,11 @@
 		}
 
 		.section {
+			box-sizing: border-box;
 			background: #fff;
 			border-radius: 14.4928rpx;
 			margin-bottom: 36.232rpx;
+			height: fit-content;
 		}
 
 		.section-title {
@@ -1630,7 +1633,7 @@
 
 		.info-label {
 			min-width: 180rpx;
-			max-width: 280rpx;
+			width: fit-content;
 			padding-right: 10rpx;
 			line-height: 36.232rpx;
 			font-size: 21.7392rpx;
@@ -1718,7 +1721,8 @@
 				.summary-label {
 					display: flex;
 					align-items: center;
-					height: 43.4784rpx;
+					min-height: 43.4784rpx;
+					height: fit-content;
 					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;
@@ -1728,7 +1732,8 @@
 					display: flex;
 					align-items: center;
 					justify-content: flex-end;
-					height: 43.4784rpx;
+					min-height: 43.4784rpx;
+					height: fit-content;
 					font-size: 25.3624rpx;
 					color: #000000;
 					font-weight: bold;

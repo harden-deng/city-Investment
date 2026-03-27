@@ -178,6 +178,7 @@
 					</view>
 				</transition>
 			</view>
+			<view style="height: 1.8116rpx;"></view>
 		</scroll-view>
 		<InputDialog ref="inputDialogRef" :required="inputDialogRequired" :title="inputDialogTitle"
 			:placeholder="inputDialogPlaceholder" @confirm="handleInputConfirm" @cancel="handleInputCancel">
@@ -693,7 +694,7 @@
 
 		.info-label {
 			min-width: 120rpx;
-			max-width: 280rpx;
+			width: fit-content;
 			padding-right: 10rpx;
 			line-height: 36.232rpx;
 			font-size: 21.7392rpx;

@@ -47,7 +47,7 @@
 					<view class="order-content">
 						<view class="quote-section">
 							<text class="quote-label">申请费用：</text>
-							<text class="quote-price">¥{{ order.formattedPrice }}</text>
+							<text class="quote-price">{{ order.formattedPrice }}</text>
 						</view>
 						<view class="quote-section">
 							<text class="quote-label">申请单位：</text>
@@ -195,11 +195,11 @@
 	const processedDataList = computed(() => {
 		return dataList.value.map(order => ({
 			...order,
-			formattedPrice: formatNumber(order.planToPayTotal) || '--',
+			formattedPrice:  '¥' + formatNumber(order.planToPayTotal),
 			formattedTime: formatRelativeTime(order.submittedDate),
 			labelArr: order?.labelArr || []
 		}))
-	})
+	});
 	//分页加载--------start
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
 	const queryList = (pageNo, pageSize) => {
@@ -252,7 +252,8 @@
 	}
 
 	::v-deep .uni-navbar__header-btns-left {
-		min-width: 180rpx !important;
+		width: fit-content !important; /* 父级跟着子级内容走 */
+		max-width: 260rpx !important;
 	}
 
 	::v-deep .uni-navbar__header-btns-right {
@@ -308,11 +309,13 @@
 		// height: 100rpx;
 
 		.nav-bar-title {
-			width: 100%;
 			font-size: 28.9856rpx;
 			color: #000;
 			font-weight: bold;
 			margin-left: 28.9856rpx !important;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
 		.nav-input-view {
@@ -517,7 +520,8 @@
 
 	.order-header {
 		box-sizing: border-box;
-		height: 72.464rpx;
+		min-height: 72.464rpx;
+		height: fit-content;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -563,7 +567,9 @@
 				font-size: 21.7392rpx;
 				color: #000;
 				white-space: nowrap;
-				width: 120rpx;
+				width: fit-content;
+				min-width: 120rpx;
+				width: fit-content;
 				line-height: 36.232rpx;
 			}
 
@@ -576,11 +582,14 @@
 			}
 
 			.description-text {
+				flex: 1;
 				font-size: 21.7392rpx;
 				color: #666;
 				line-height: 36.232rpx;
-				margin-left: 8rpx;
-
+				padding-left: 8rpx;
+				white-space: normal;    //合并空白，自动换行
+                overflow-wrap: break-word;    //单词换行: 长单词或URL可在任意位置换行
+                word-break: normal;     //单词断行: CJK文本任意位置断行，非CJK在单词间断行   
 			}
 		}
 
