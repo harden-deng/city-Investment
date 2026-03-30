@@ -185,7 +185,9 @@
 <style lang="scss" scoped>
 	.bottom-nav-bar {
 		position: fixed;
-		bottom: 0;
+		/* 关键：用 iOS safe-area 作为 bottom 偏移（兼容写法） */
+		bottom: constant(safe-area-inset-bottom);
+		bottom: env(safe-area-inset-bottom);
 		left: 0;
 		right: 0;
 		height: 50px;

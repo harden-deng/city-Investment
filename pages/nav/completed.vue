@@ -104,7 +104,10 @@
 	const bottomNavBarHeight = ref(50)
 	const getHeaderHeight = () => {
 		nextTick(() => {
-			const { windowHeight,windowWidth } = uni.getSystemInfoSync() // px
+			// const { windowHeight,windowWidth } = uni.getSystemInfoSync() // px
+			const sys = uni.getSystemInfoSync()
+            const { windowHeight, windowWidth } = sys
+            const safeBottom = (sys.safeAreaInsets && sys.safeAreaInsets.bottom) ? sys.safeAreaInsets.bottom : 0
 			if(windowWidth >= 414 && windowWidth <= 767){
 				bottomNavBarHeight.value = 55
 			}else if(windowWidth >= 768){
@@ -116,7 +119,7 @@
 			query.select('.header-stickt').boundingClientRect((rect) => {
 				if (rect) {
 					const headerH = rect?.height || 0
-					const h = Math.max(0, windowHeight - headerH - bottomNavBarHeight.value)
+					const h = Math.max(0, windowHeight - headerH - bottomNavBarHeight.value - safeBottom)
 					listHeight.value = `${h}px`
 				}
 			}).exec()

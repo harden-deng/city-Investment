@@ -147,12 +147,16 @@ const doLogout = () => {
 }
 const windowHeights = ref(0)
 const bottomNavBarHeight = ref(50)
+const safeBottom = ref(0)
 const scrollViewHeight = computed(() => {
-	return `${Math.max(0, windowHeights.value - bottomNavBarHeight.value)}px`
+	return `${Math.max(0, windowHeights.value - bottomNavBarHeight.value - safeBottom.value)}px`
 })
 
 const computeScrollHeight = () => {
-		const { windowHeight,windowWidth } = uni.getSystemInfoSync()
+		// const { windowHeight,windowWidth } = uni.getSystemInfoSync()
+		const sys = uni.getSystemInfoSync()
+        const { windowHeight, windowWidth } = sys
+        safeBottom.value = (sys.safeAreaInsets && sys.safeAreaInsets.bottom) ? sys.safeAreaInsets.bottom : 0
 		windowHeights.value = windowHeight
 		if(windowWidth >= 414 && windowWidth <= 767){
 			bottomNavBarHeight.value = 55
@@ -168,7 +172,9 @@ const computeScrollHeight = () => {
 ::v-deep .uni-popup {
 	z-index: 999 !important;
 }
-
+.scroller{
+	box-sizing: border-box;
+}
 page {
 	background: #f3f7ff;
 }

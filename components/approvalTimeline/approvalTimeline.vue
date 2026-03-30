@@ -14,14 +14,15 @@
 					}"
 				>
 					<view class="indicator-checkmark" v-if="item.approvalResult == '完成' || item.approvalResult === '处理完成'">
-						<!-- <uni-icons type="smallcircle-filled" size="21.7392rpx" color="#07c160"></uni-icons> -->
 						 <view style="width: 21.7392rpx;height: 21.7392rpx;border-radius: 50%;background: #07c160;"></view>
 					</view>
 					<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批' && item.approvalResult == '批准'">
-						<uni-icons type="checkmarkempty" size="20rpx" color="#07c160"></uni-icons>
+						<!-- <uni-icons type="checkmarkempty" size="20rpx" color="#07c160"></uni-icons> -->
+						<image src="../../static/images/right.svg" mode="aspectFit" style="width: 19rpx;height: 19rpx;"></image>
 					</view>
 					<view class="indicator-checkmark" v-if="item.approvalActionType === '已审批' && (item.approvalResult == '驳回' || item.approvalResult == '已拒绝')">
-						<uni-icons type="checkmarkempty" size="20rpx" color="#ffb800"></uni-icons>
+						<!-- <uni-icons type="checkmarkempty" size="20rpx" color="#ffb800"></uni-icons> -->
+						<image src="../../static/images/right_reject.svg" mode="aspectFit" style="width: 19rpx;height: 19rpx;"></image>
 					</view>
 					<view class="indicator-loading" v-else-if="item.approvalActionType === 'vmPending'"></view>
 					<view class="indicator-empty" v-else-if="item.approvalActionType === '提交'"></view>
@@ -39,7 +40,7 @@
 								'status-text-green':
 									item.approvalActionType === '已审批' ||
 									item.approvalActionType === 'vmPending' ||
-									item.approvalActionType === '提交' || item.approvalActionType === '已处理'
+									item.approvalActionType === '提交' || item.approvalActionType === '已处理' || item.approvalActionType === '撤回'
 							}"
 						>
 							{{ item.approvalActionType == 'vmPending' ? '审批中' : item.approvalActionType }}
@@ -53,15 +54,15 @@
 						<view
 							class="action-btn"
 							:class="{
-								'btn-approved': item.approvalResult == '批准' || item.approvalResult == '提交' || item.approvalResult == '完成' || item.approvalResult === '处理完成' || item.approvalResult === '已确认' || item.approvalResult === '已支付' || item.approvalResult === '已处理',
+								'btn-approved': item.approvalResult == '批准' || item.approvalResult == '提交' || item.approvalResult == '完成' || item.approvalResult === '处理完成' || item.approvalResult === '已确认' || item.approvalResult === '已支付' || item.approvalResult === '已处理' || item.approvalActionType === '撤回',
 								'btn-pending': item.approvalResult == '待审批' || item.approvalResult == '待处理',
 								'btn-rejected': item.approvalResult == '驳回'|| item.approvalResult == '已拒绝'
 							}"
 						>
-							{{ item.approvalResult }}
+							{{ item.approvalResult ? item.approvalResult : (item.approvalActionType == '撤回' ? '撤回' : '') }}
 						</view>
 						<text class="approval-time">
-							{{ formatDateTime(item.approvalResult == '待审批' ? item.approvalTime : item.createdDate) }}
+							{{ formatDateTime((item.approvalResult == '待审批' || item.approvalResult == '待处理') ? item.approvalTime : item.createdDate) }}
 						</text>
 					</view>
 
@@ -136,7 +137,6 @@ defineProps({
 		border-radius: 50%;
 		margin-top: 22rpx;
 		z-index: 2;
-		// flex-shrink: 0;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -264,7 +264,6 @@ defineProps({
 				}
 
 				.action-btn {
-					display: block;
 					padding: 0rpx 10.9696rpx;
 					border-radius: 6rpx;
 					font-size: 21.7392rpx;

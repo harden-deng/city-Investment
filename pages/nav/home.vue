@@ -138,7 +138,10 @@
 	const bottomNavBarHeight = ref(50)
 	const scrollViewHeight = ref('')
 	const computeScrollHeight = () => {
-			const { windowHeight,windowWidth } = uni.getSystemInfoSync()
+			// const { windowHeight,windowWidth } = uni.getSystemInfoSync()
+			const sys = uni.getSystemInfoSync()
+            const { windowHeight, windowWidth } = sys
+            const safeBottom = (sys.safeAreaInsets && sys.safeAreaInsets.bottom) ? sys.safeAreaInsets.bottom : 0
 			if(windowWidth >= 414 && windowWidth <= 767){
 				bottomNavBarHeight.value = 55
 			}else if(windowWidth >= 768){
@@ -146,7 +149,7 @@
 			}else{
 				bottomNavBarHeight.value = 50
 			}
-			scrollViewHeight.value = `${Math.max(0, windowHeight - bottomNavBarHeight.value)}px`;
+			scrollViewHeight.value = `${Math.max(0, windowHeight - bottomNavBarHeight.value - safeBottom)}px`;
 	}
 	onMounted(() => {
 		getAnnouncements();

@@ -6,6 +6,9 @@
 		<!-- 其他内容保持不变 -->
 		<!-- 操作按钮区域 -->
 		<view class="action-buttons">
+			<view @click="goBack" class="back-btn">
+				返回
+			</view>
 			<view 
 				@click="saveSignature" 
 				class="save-btn" 
@@ -13,9 +16,7 @@
 			>
 				保存签名
 			</view>
-			<view @click="goBack" class="back-btn">
-				返回
-			</view>
+		
 		</view>
 	</view>
 </template>
